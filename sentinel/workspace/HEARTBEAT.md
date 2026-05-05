@@ -26,6 +26,22 @@
 
 ---
 
+## PostgreSQL 审计异常检查（每 30 分钟）
+
+运行以下 SQL 检查审计库中最近 30 分钟的异常变更：
+
+```bash
+docker exec openclaw-postgres psql -U postgres -d audit_db -t -c "
+SELECT count(*) FROM audit.log WHERE occurred_at > NOW() - INTERVAL '30 minutes' AND operation = 'DELETE';
+"
+```
+
+**告警规则：**
+- 大量 DELETE（>5 次/30分钟）→ WARNING
+- 敏感表（department_registry, agent_heartbeats）被修改 → WARNING
+
+---
+
 ## 每日汇报（每天一次）
 
 运行 `/opt/openclaw-team/monitor/daily-report.sh` 生成每日汇报。

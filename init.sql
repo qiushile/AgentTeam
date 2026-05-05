@@ -647,3 +647,102 @@ CREATE POLICY dept_artifacts_modify ON shared.shared_artifacts FOR ALL TO dev_us
 CREATE POLICY dept_comments_select ON shared.task_comments FOR SELECT TO dev_user, pm_user, design_user, ads_user, sales_user, marketing_user, project_user, qa_user, support_user, spatial_user, expert_user, game_user, academic_user, finance_user, hr_user, legal_user, supply_chain_user USING (true);
 CREATE POLICY dept_comments_modify ON shared.task_comments FOR ALL TO dev_user, pm_user, design_user, ads_user, sales_user, marketing_user, project_user, qa_user, support_user, spatial_user, expert_user, game_user, academic_user, finance_user, hr_user, legal_user, supply_chain_user USING (author = CURRENT_USER) WITH CHECK (author = CURRENT_USER);
 
+-- ==========================================
+-- 审计系统：独立审计数据库 + dblink 触发器
+-- 所有 shared.* 表的 INSERT/UPDATE/DELETE 自动记录到 audit_db
+-- 团队用户无法访问 audit_db，实现对成员行为的完全追溯
+-- ==========================================
+
+-- 创建独立审计数据库（仅 postgres 可连接）
+SELECT 'Creating audit_db if not exists...' AS info;
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'audit_db') THEN
+        CREATE DATABASE audit_db OWNER postgres ENCODING 'UTF8' LC_COLLATE 'en_US.utf8' LC_CTYPE 'en_US.utf8' TEMPLATE template0;
+    END IF;
+END $$;
+
+-- 限制 audit_db 访问
+REVOKE CONNECT ON DATABASE audit_db FROM PUBLIC;
+GRANT CONNECT ON DATABASE audit_db TO postgres;
+
+-- 安装 dblink（跨数据库写入审计记录）
+CREATE EXTENSION IF NOT EXISTS dblink;
+
+-- 审计写入函数（SECURITY DEFINER，以 postgres 身份写入 audit_db）
+CREATE OR REPLACE FUNCTION public.audit_write(
+    p_db_user TEXT, p_operation TEXT, p_schema_name TEXT, p_table_name TEXT,
+    p_old_data JSONB, p_new_data JSONB, p_changed_fields TEXT[],
+    p_client_addr INET, p_client_port INTEGER
+) RETURNS VOID AS $func$
+DECLARE
+    conn_str TEXT := 'host=127.0.0.1 port=5432 dbname=audit_db user=postgres password=root_super_password';
+    sql TEXT;
+    addr_str TEXT;
+    port_str TEXT;
+BEGIN
+    addr_str := CASE WHEN p_client_addr IS NULL THEN 'NULL' ELSE quote_literal(p_client_addr::text) END;
+    port_str := CASE WHEN p_client_port IS NULL THEN 'NULL' ELSE p_client_port::text END;
+    sql := format(
+        'INSERT INTO audit.log (db_user, operation, schema_name, table_name, old_data, new_data, changed_fields, client_addr, client_port, application_name) VALUES (%L, %L, %L, %L, %L, %L, %L, %s, %s, current_setting(%L, true))',
+        p_db_user, p_operation, p_schema_name, p_table_name,
+        p_old_data, p_new_data, p_changed_fields, addr_str, port_str, 'application_name'
+    );
+    PERFORM dblink_exec(conn_str, sql);
+EXCEPTION WHEN OTHERS THEN
+    RAISE WARNING 'audit_write failed: %', SQLERRM;
+END;
+$func$ LANGUAGE plpgsql SECURITY DEFINER;
+
+REVOKE EXECUTE ON FUNCTION public.audit_write(TEXT,TEXT,TEXT,TEXT,JSONB,JSONB,TEXT[],INET,INTEGER) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.audit_write(TEXT,TEXT,TEXT,TEXT,JSONB,JSONB,TEXT[],INET,INTEGER)
+    TO orchestrator_user, dev_user, pm_user, design_user, ads_user,
+       sales_user, marketing_user, project_user, qa_user, support_user,
+       spatial_user, expert_user, game_user, academic_user, finance_user,
+       hr_user, legal_user, supply_chain_user;
+
+-- 审计触发器函数
+CREATE OR REPLACE FUNCTION shared.audit_capture() RETURNS TRIGGER AS $$
+DECLARE
+    changed TEXT[];
+    key TEXT;
+    old_json JSONB;
+    new_json JSONB;
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        new_json := to_jsonb(NEW);
+        PERFORM audit_write(CURRENT_USER::TEXT, 'INSERT', TG_TABLE_SCHEMA::TEXT, TG_TABLE_NAME::TEXT,
+            NULL::JSONB, new_json, NULL::TEXT[], inet_client_addr(), inet_client_port());
+        RETURN NEW;
+    ELSIF TG_OP = 'UPDATE' THEN
+        old_json := to_jsonb(OLD); new_json := to_jsonb(NEW);
+        changed := ARRAY[]::TEXT[];
+        FOR key IN SELECT jsonb_object_keys(old_json) LOOP
+            IF old_json->>key IS DISTINCT FROM new_json->>key THEN changed := array_append(changed, key); END IF;
+        END LOOP;
+        FOR key IN SELECT jsonb_object_keys(new_json) LOOP
+            IF NOT old_json ? key THEN changed := array_append(changed, key); END IF;
+        END LOOP;
+        PERFORM audit_write(CURRENT_USER::TEXT, 'UPDATE', TG_TABLE_SCHEMA::TEXT, TG_TABLE_NAME::TEXT,
+            old_json, new_json, changed, inet_client_addr(), inet_client_port());
+        RETURN NEW;
+    ELSIF TG_OP = 'DELETE' THEN
+        old_json := to_jsonb(OLD);
+        PERFORM audit_write(CURRENT_USER::TEXT, 'DELETE', TG_TABLE_SCHEMA::TEXT, TG_TABLE_NAME::TEXT,
+            old_json, NULL::JSONB, NULL::TEXT[], inet_client_addr(), inet_client_port());
+        RETURN OLD;
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+-- 在所有 shared.* 表上挂载审计触发器
+DO $$
+DECLARE
+    tbl RECORD;
+BEGIN
+    FOR tbl IN SELECT table_name FROM information_schema.tables WHERE table_schema = 'shared' AND table_type = 'BASE TABLE' LOOP
+        EXECUTE format('DROP TRIGGER IF EXISTS audit_%I ON shared.%I', tbl.table_name, tbl.table_name);
+        EXECUTE format('CREATE TRIGGER audit_%I AFTER INSERT OR UPDATE OR DELETE ON shared.%I FOR EACH ROW EXECUTE FUNCTION shared.audit_capture()', tbl.table_name, tbl.table_name);
+    END LOOP;
+END $$;
+
