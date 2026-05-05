@@ -81,47 +81,44 @@ curl -s --unix-socket /tmp/verge/verge-mihomo.sock \
 
 ## Automated Node Monitoring System
 
-A complete monitoring system is deployed at `~/.hermes/scripts/` with two cron jobs. It continuously checks AI website proxy connectivity and auto-switches to the fastest available San Jose node.
+A monitoring system can be set up via two cron jobs that reference Python scripts. The scripts must be created first — they are NOT pre-deployed.
 
-### Components
+### Required Scripts (must be created before cron jobs work)
 
-**Monitoring Script** (`~/.hermes/scripts/clash_monitor.py`):
-- Normal mode: checks every 17 minutes
-- If current node times out → tests all San Jose nodes, switches to fastest
-- If ALL San Jose nodes timeout → enters emergency mode (checks every 3 minutes)
-- When any node recovers → exits emergency mode, resumes 17-minute checks
+**Monitoring Script** (`clash_monitor.py` — relative path resolves under `~/.hermes/scripts/`):
+- Checks current 🤖AI网站 proxy node latency via Clash delay API
+- If current node times out → tests all San Jose (圣何塞) nodes, switches to fastest
+- If ALL San Jose nodes timeout → enters emergency mode
+- Logs to `~/.hermes/clash-monitor/monitor.log`
+- Saves state to `~/.hermes/clash-monitor/status.json`
 
-**Daily Report Script** (`~/.hermes/scripts/clash_daily_report.py`):
+**Daily Report Script** (`clash_daily_report.py` — relative path resolves under `~/.hermes/scripts/`):
 - Runs at 00:00 daily
-- Generates connectivity stats from previous day's logs
-- Saves JSON report to `~/.hermes/clash-monitor/daily_reports/YYYY-MM-DD.json`
-
-### Notification Strategy
-Only sends notifications on mode changes (normal → emergency or emergency → normal). All checks and auto-switches are silent but logged to `~/.hermes/clash-monitor/connectivity.log`.
+- Reads previous day's connectivity logs from `~/.hermes/clash-monitor/`
+- Generates a JSON report
 
 ### Node Testing via Clash API
-The script uses the Clash delay endpoint to test individual nodes:
+Test individual nodes using the delay endpoint:
 
 ```bash
-curl -s --unix-socket /tmp/verge/verge-mihomo.sock \
+curl -s --noproxy '*' --unix-socket /tmp/verge/verge-mihomo.sock \
   "http://localhost/proxies/{NODE_NAME}/delay?timeout=5000&url=https://www.google.com/generate_204"
 ```
 
 Returns `{"delay": 233}` on success, or `{"message": "timeout"}` on failure.
 
-### State Management
-- State file: `~/.hermes/clash-monitor/state.json`
-- Tracks: mode (normal/emergency), last check time, check/switch counts, current proxy
-
-### Cron Jobs
-- `clash节点监控`: runs `clash_monitor.py` every 3 minutes (script controls actual frequency)
-- `clash节点日报`: runs `clash_daily_report.py` at 00:00 daily
+### Python Socket Approach (Alternative to curl)
+For Python scripts, use Unix socket directly to avoid `--noproxy` issues. Key requirement: handle chunked transfer encoding in responses. See the Pitfalls section below for details.
 
 ## Pitfalls
 1. **Requests intercepted by proxy**: Always use `--noproxy '*'` with curl, otherwise the request goes through the proxy and returns 404 or HTML.
 2. **Unix socket vs HTTP port**: Clash Verge 2 uses Unix socket (`/tmp/verge/verge-mihomo.sock`), NOT the `external-controller` port defined in `config.yaml` (9090).
 3. **Unicode in URLs**: Group names with emojis must be URL-encoded in the PUT request path.
 4. **Latency data**: The `history` field contains the last speed test result. If empty, the node hasn't been tested recently — trigger a test from the UI first.
+5. **Node type values are capitalized**: Clash API returns types like `"Vless"`, `"Hysteria2"` (capitalized first letter), NOT lowercase `"vless"` or `"hysteria2"`. When filtering nodes by type, use `.lower()` for case-insensitive matching.
+6. **PUT requests return HTTP 204 (empty body)**: When switching proxies via `PUT /proxies/{group}`, the API returns 204 No Content with an empty response body. Do NOT check for non-empty JSON to determine success — check `returncode == 0` instead, since empty stdout with exit code 0 means the switch succeeded.
+7. **Chunked transfer encoding**: Clash API responses use chunked transfer encoding. When using Python's raw `socket` module (not `urllib` or `requests`), you must decode chunked responses manually: read size hex line, then that many bytes of data, repeat until size is 0. Using `curl` or `urllib` handles this automatically.
+8. **Python socket Connection: close header**: When making requests via raw Unix socket in Python, always include `Connection: close` in the HTTP request headers, otherwise the socket may hang waiting for the server to close the connection.
 
 ## Find Clash Verge Process
 ```bash
