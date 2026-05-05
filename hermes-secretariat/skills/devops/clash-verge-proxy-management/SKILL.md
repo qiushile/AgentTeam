@@ -79,6 +79,44 @@ curl -s --unix-socket /tmp/verge/verge-mihomo.sock \
 - `🇺🇸美国节点` → `%F0%9F%87%BA%F0%9F%87%B8%E7%BE%8E%E5%9B%BD%E8%8A%82%E7%82%B9`
 - `GLOBAL` → `GLOBAL` (no encoding needed)
 
+## Automated Node Monitoring System
+
+A complete monitoring system is deployed at `~/.hermes/scripts/` with two cron jobs. It continuously checks AI website proxy connectivity and auto-switches to the fastest available San Jose node.
+
+### Components
+
+**Monitoring Script** (`~/.hermes/scripts/clash_monitor.py`):
+- Normal mode: checks every 17 minutes
+- If current node times out → tests all San Jose nodes, switches to fastest
+- If ALL San Jose nodes timeout → enters emergency mode (checks every 3 minutes)
+- When any node recovers → exits emergency mode, resumes 17-minute checks
+
+**Daily Report Script** (`~/.hermes/scripts/clash_daily_report.py`):
+- Runs at 00:00 daily
+- Generates connectivity stats from previous day's logs
+- Saves JSON report to `~/.hermes/clash-monitor/daily_reports/YYYY-MM-DD.json`
+
+### Notification Strategy
+Only sends notifications on mode changes (normal → emergency or emergency → normal). All checks and auto-switches are silent but logged to `~/.hermes/clash-monitor/connectivity.log`.
+
+### Node Testing via Clash API
+The script uses the Clash delay endpoint to test individual nodes:
+
+```bash
+curl -s --unix-socket /tmp/verge/verge-mihomo.sock \
+  "http://localhost/proxies/{NODE_NAME}/delay?timeout=5000&url=https://www.google.com/generate_204"
+```
+
+Returns `{"delay": 233}` on success, or `{"message": "timeout"}` on failure.
+
+### State Management
+- State file: `~/.hermes/clash-monitor/state.json`
+- Tracks: mode (normal/emergency), last check time, check/switch counts, current proxy
+
+### Cron Jobs
+- `clash节点监控`: runs `clash_monitor.py` every 3 minutes (script controls actual frequency)
+- `clash节点日报`: runs `clash_daily_report.py` at 00:00 daily
+
 ## Pitfalls
 1. **Requests intercepted by proxy**: Always use `--noproxy '*'` with curl, otherwise the request goes through the proxy and returns 404 or HTML.
 2. **Unix socket vs HTTP port**: Clash Verge 2 uses Unix socket (`/tmp/verge/verge-mihomo.sock`), NOT the `external-controller` port defined in `config.yaml` (9090).
