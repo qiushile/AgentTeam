@@ -130,6 +130,50 @@ ssh root@ubuntu24.tailcc8506.ts.net "docker logs <container> --tail 30"
 ssh root@ubuntu24.tailcc8506.ts.net "systemctl status openclaw.service --no-pager"
 ```
 
+## Sentinel 故障排查
+
+### systemd 服务管理
+```bash
+# 查看状态
+ssh root@ubuntu24.tailcc8506.ts.net "systemctl status openclaw.service --no-pager"
+
+# 启动/停止/重启
+ssh root@ubuntu24.tailcc8506.ts.net "systemctl start/stop/restart openclaw.service"
+
+# 查看日志
+ssh root@ubuntu24.tailcc8506.ts.net "journalctl -u openclaw.service --no-pager -n 50"
+```
+
+### .env 占位符陷阱 ⚠️
+Sentinel 的 `.env` 可能被意外还原为占位符（`FEISHU_SENTINEL_APP_ID=cli_xxxx`），但**长期运行的进程不受影响**——只有系统重启或服务重启时才会暴露问题。
+
+**症状**：
+- 飞书 WebSocket 连接失败：`code: 1000040346, system busy`
+- Bot 身份查询 400：`GET /open-apis/bot/v3/info` 返回 `Bad Request`
+- 进程正常运行但无法响应消息
+
+**排查**：
+```bash
+# 确认实际加载的 App ID
+ssh root@ubuntu24.tailcc8506.ts.net "grep FEISHU_SENTINEL_APP_ID /opt/openclaw-team/.env"
+# 如果返回 cli_xxxx，说明是占位符
+
+# 从备份中查找历史真实值
+ssh root@ubuntu24.tailcc8506.ts.net "for f in /opt/openclaw-team/backups/env/.env.backup.*; do echo \"\$(basename \$f)\"; grep FEISHU_SENTINEL \$f; done"
+```
+
+**修复**：
+1. 从飞书开放平台获取正确的 App ID / App Secret
+2. 编辑 `/opt/openclaw-team/.env` 填入真实值
+3. `ssh root@ubuntu24.tailcc8506.ts.net "systemctl restart openclaw.service"`
+
+### 飞书 WebSocket 常见错误
+| 错误码 | 含义 | 可能原因 |
+|--------|------|----------|
+| `1000040346, system busy` | 飞书拒绝连接 | App ID/Secret 错误、应用被禁用、权限不足 |
+| `Cannot read properties of undefined (reading 'PingInterval')` | 代码 bug | WebSocket 连接失败后的错误处理缺陷（伴随出现） |
+| `bot identity background retry N/5 failed` | Bot 身份验证失败 | App ID/Secret 不匹配，或应用未发布 |
+
 ## ⚠️ 关键陷阱
 
 ### API Key 端点兼容性
