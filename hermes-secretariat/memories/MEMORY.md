@@ -1,10 +1,3 @@
-OpenClaw 部署架构：
-- 源码仓库：~/WorkStation/mine/claw/openclaw/（只读，不改动，纯部署用）
-- 配置仓库：~/WorkStation/mine/claw/ClawTeam/（可改动的配置代码）
-- 本机部署实例：openclaw-secretariat（位于 ClawTeam/openclaw-secretariat/）
-- Gateway 通过 LaunchAgent (ai.openclaw.gateway.plist) 管理
-- 配置：飞书通道（websocket），端口 18789，主模型 qwen3.6-plus（通过 coding.dashscope）
-§
 DashScope API Key 端点兼容性：`sk-sp-*` 前缀的 Key 仅对 `coding.dashscope.aliyuncs.com/v1` 有效，用于 `dashscope.aliyuncs.com/compatible-mode/v1` 会返回 HTTP 401 "Incorrect API key provided"。两个端点不共用同一个 Key。OpenClaw 的 `.env` 中 `ALIYUN_BASE_URL` 和 `openclaw.json` 中 `models.providers.qwen.baseUrl` 必须保持一致。
 §
 openclaw-team 部署架构：
