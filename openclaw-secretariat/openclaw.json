@@ -223,7 +223,7 @@
             "api": "openai-completions"
           }
         ]
-      }
+      },
       "iflytek": {
         "baseUrl": "${IFLYTEK_OPENAI_URL}",
         "api": "openai-completions",

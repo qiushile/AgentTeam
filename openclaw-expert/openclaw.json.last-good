@@ -399,19 +399,6 @@
         "enabled": false,
         "config": {}
       },
-      "memory-lancedb": {
-        "enabled": true,
-        "config": {
-          "embedding": {
-            "apiKey": "${ALIYUN_COMPAT_KEY}",
-            "model": "text-embedding-v4",
-            "dimensions": 1024,
-            "baseUrl": "${ALIYUN_COMPAT_URL}"
-          },
-          "autoCapture": true,
-          "autoRecall": true
-        }
-      },
       "minimax": {
         "enabled": true
       },
