@@ -8,7 +8,7 @@ x-logging: &default-logging
 
 # OpenClaw 服务的通用基础配置模板
 x-openclaw-base: &openclaw-base
-  image: openclaw:v2026.3.28
+  image: openclaw:v2026.5.7
   restart: unless-stopped
   env_file: .env
   depends_on:
