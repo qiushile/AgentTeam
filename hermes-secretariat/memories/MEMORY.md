@@ -20,6 +20,13 @@ ClawTeam 仓库分工：
 - 本地（macOS）：主要用于编辑源码 + 部署 openclaw-secretariat + 部署 hermes-secretariat
 - 两边的 .env 不同（各自有独立的 API keys 和配置），均被 .gitignore 排除
 §
-m3max 主机（macOS, Tailscale IP 100.86.50.21, hostname M3Max, 用户 m3max）也运行 Hermes。本机 DNS（114.114.114.114）劫持短域名查询返回 198.18.x.x，导致 ssh m3max 连错地址。已修复：/etc/hosts 中 100.86.50.21 m3max。m3max 上 macOS 防火墙已启用，Tailscale 连通正常。Hermes API Key 配置有误待修复。
+m3max（macOS, Tailscale 100.86.50.21, 用户m3max）运行Hermes。SSH需keyboard-interactive认证。/etc/hosts 已设 100.86.50.21 m3max 绕过DNS劫持。防火墙已启用。Hermes API Key配置待修复。
 §
-m3max macOS设备通过Tailscale连接，IP: 100.86.50.21，用户名: m3max。SSH需要keyboard-interactive认证（无key配置）。
+DOCX生成后处理强制规则（所有Word文档）：
+1. 移除 w:pBdr（横线）、w:keepNext（与下段同页）、w:keepLines（段中不分页）
+2. 移除所有主题色（themeColor/themeTint/themeShade/themeFill）
+3. 强制所有颜色为000000黑色
+4. 移除斜体w:i/w:iCs、列表编号w:numPr、修订跟踪w:rsid*
+5. 所有表格加黑色单线边框（sz=4, color=000000）
+6. reference.docx样式中也移除keepNext/keepLines
+7. 默认语言设为zh-CN
