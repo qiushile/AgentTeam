@@ -28,7 +28,7 @@
             "contextWindow": 1000000,
             "maxTokens": 65536,
             "compat": {
-              "thinkingFormat": "qwen"
+              "thinkingFormat": "openai"
             }
           },
           {
@@ -70,7 +70,7 @@
             "contextWindow": 202752,
             "maxTokens": 16384,
             "compat": {
-              "thinkingFormat": "qwen"
+              "thinkingFormat": "openai"
             }
           },
           {
@@ -89,7 +89,7 @@
             "contextWindow": 202752,
             "maxTokens": 16384,
             "compat": {
-              "thinkingFormat": "qwen"
+              "thinkingFormat": "openai"
             }
           }
         ]
@@ -116,7 +116,7 @@
             "contextWindow": 262144,
             "maxTokens": 32768,
             "compat": {
-              "thinkingFormat": "qwen"
+              "thinkingFormat": "openai"
             }
           }
         ]
@@ -241,7 +241,7 @@
       "memory-lancedb"
     ],
     "slots": {
-      "memory": "memory-lancedb"
+      "memory": ""
     },
     "entries": {
       "postgres-tool": {

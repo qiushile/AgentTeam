@@ -245,7 +245,7 @@
       "memory-lancedb"
     ],
     "slots": {
-      "memory": "memory-lancedb"
+      "memory": ""
     },
     "entries": {
       "postgres-tool": {
