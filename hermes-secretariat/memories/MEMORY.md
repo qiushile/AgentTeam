@@ -22,11 +22,12 @@ ClawTeam 仓库分工：
 §
 m3max（macOS, Tailscale 100.86.50.21, 用户m3max）运行Hermes。SSH需keyboard-interactive认证。/etc/hosts 已设 100.86.50.21 m3max 绕过DNS劫持。防火墙已启用。Hermes API Key配置待修复。
 §
-DOCX生成后处理强制规则（所有Word文档）：
-1. 移除 w:pBdr（横线）、w:keepNext（与下段同页）、w:keepLines（段中不分页）
-2. 移除所有主题色（themeColor/themeTint/themeShade/themeFill）
-3. 强制所有颜色为000000黑色
-4. 移除斜体w:i/w:iCs、列表编号w:numPr、修订跟踪w:rsid*
-5. 所有表格加黑色单线边框（sz=4, color=000000）
-6. reference.docx样式中也移除keepNext/keepLines
+DOCX生成与MD编写强制规则：
+1. MD源文件中禁止使用---横线
+2. 所有DOCX正文和表格必须使用宋体(SimSun)，标题可用微软雅黑但必须黑色
+3. 移除w:pBdr（横线）、w:keepNext、w:keepLines
+4. 移除所有主题色（themeColor等），强制颜色为000000黑色
+5. 移除斜体w:i/w:iCs、列表编号w:numPr、修订跟踪w:rsid*
+6. 所有表格加黑色单线边框（sz=4, color=000000）
 7. 默认语言设为zh-CN
+8. MD进git追踪，docx放docx-output/目录被gitignore
