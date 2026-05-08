@@ -164,6 +164,15 @@ content = re.sub(r'<w:i(?:Cs)?\s[^>]*/>|<w:i(?:Cs)?/>', '', content)
 # Force ALL colors to black
 content = re.sub(r'(<w:color[^>]*w:val=")[^"]+(")', r'\g<1>000000\g<2>', content)
 
+# CRITICAL: Strip ALL theme-related attributes. Word's themeColor="accent1"
+# renders as blue even when w:color is set to black.
+content = re.sub(r'\s*w:themeColor="[^"]*"', '', content)
+content = re.sub(r'\s*w:themeTint="[^"]*"', '', content)
+content = re.sub(r'\s*w:themeShade="[^"]*"', '', content)
+content = re.sub(r'\s*w:themeFill="[^"]*"', '', content)
+content = re.sub(r'\s*w:themeFillTint="[^"]*"', '', content)
+content = re.sub(r'\s*w:themeFillShade="[^"]*"', '', content)
+
 with open(styles_path, 'w', encoding='utf-8') as f:
     f.write(content)
 
@@ -213,6 +222,12 @@ def fix_docx(fpath):
     with open(doc_path, 'r', encoding='utf-8') as f:
         content = f.read()
     
+    # Remove horizontal rules (pandoc renders --- as paragraph bottom border)
+    content = re.sub(
+        r'<w:p>\s*<w:pPr>\s*<w:pBdr>\s*<w:bottom[^>]*?/>\s*</w:pBdr>.*?</w:pPr>\s*</w:p>',
+        '', content, flags=re.DOTALL
+    )
+    
     # Remove italic (exact match, not insideH/insideV)
     content = re.sub(r'<w:i(?:Cs)?\s[^>]*/>|<w:i(?:Cs)?/>', '', content)
     
@@ -249,6 +264,13 @@ def fix_docx(fpath):
             sc = f.read()
         sc = re.sub(r'<w:i(?:Cs)?\s[^>]*/>|<w:i(?:Cs)?/>', '', sc)
         sc = re.sub(r'(<w:color[^>]*w:val=")[^"]+(")', r'\g<1>000000\g<2>', sc)
+        # Strip theme colors (same reason as document.xml)
+        sc = re.sub(r'\s*w:themeColor="[^"]*"', '', sc)
+        sc = re.sub(r'\s*w:themeTint="[^"]*"', '', sc)
+        sc = re.sub(r'\s*w:themeShade="[^"]*"', '', sc)
+        sc = re.sub(r'\s*w:themeFill="[^"]*"', '', sc)
+        sc = re.sub(r'\s*w:themeFillTint="[^"]*"', '', sc)
+        sc = re.sub(r'\s*w:themeFillShade="[^"]*"', '', sc)
         with open(styles_path, 'w', encoding='utf-8') as f:
             f.write(sc)
     
