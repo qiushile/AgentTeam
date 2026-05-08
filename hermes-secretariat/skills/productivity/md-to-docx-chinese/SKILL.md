@@ -95,17 +95,130 @@ for name, size in [('Heading 1', 18), ('Heading 2', 14), ('Heading 3', 12), ('He
 doc.save('reference.docx')
 ```
 
-## Step 2: Convert
+## Step 2: Pre-process Markdown
 
-For each markdown file:
+Remove `---`/`***`/`___` horizontal rule lines from the markdown source. Pandoc converts these to paragraph bottom borders (`w:pBdr`), which are difficult to remove cleanly from the output DOCX.
 
-1. **Pre-process**: Remove `---`/`***`/`___` horizontal rule lines from the markdown
-2. **Pandoc convert**: `pandoc -s input.md -o output.docx --reference-doc=reference.docx`
-3. **Post-process** with python-docx:
-   - Remove any remaining paragraph borders (pBdr)
-   - Remove bullet symbols from numbering.xml (`\uf0b7`, `\uf0a7`, `•`, `o`, etc.)
-   - Convert any remaining blue text to black (`b > r + 30 and b > g + 30`)
-   - Add black borders to all tables (`tblBorders` with `single` style, `sz=4`, `color=000000`)
+```python
+import re
+with open(path, 'r') as f:
+    content = f.read()
+content = re.sub(r'^-{3,}$', '', content, flags=re.MULTILINE)
+content = re.sub(r'^\*{3,}$', '', content, flags=re.MULTILINE)
+content = re.sub(r'^_{3,}$', '', content, flags=re.MULTILINE)
+with open(path, 'w') as f:
+    f.write(content)
+```
+
+## Step 3: Pandoc Convert
+
+```bash
+pandoc -s input.md -o output.docx \
+  --reference-doc=reference.docx \
+  --from markdown+pipe_tables+task_lists+footnotes+backtick_code_blocks \
+  --to docx
+```
+
+## Step 4: XML-Level Post-Process (Essential)
+
+python-docx's high-level API is NOT sufficient. Pandoc injects inline formatting (italic, colors, list numbering) that bypasses style definitions. You MUST work directly with the DOCX XML:
+
+```python
+import os, re, zipfile, tempfile, shutil
+
+def clean_docx(fpath):
+    # Extract
+    tmpdir = tempfile.mkdtemp()
+    with zipfile.ZipFile(fpath) as z:
+        z.extractall(tmpdir)
+    
+    # Clean document.xml
+    doc_path = os.path.join(tmpdir, 'word', 'document.xml')
+    with open(doc_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # 1. Remove horizontal rules (paragraph with bottom border)
+    content = re.sub(
+        r'<w:p>\s*<w:pPr>\s*<w:pBdr>\s*<w:bottom[^>]*?/>\s*</w:pBdr>.*?</w:pPr>\s*</w:p>',
+        '', content, flags=re.DOTALL)
+    
+    # 2. Remove ALL italic (including <w:iCs/>)
+    content = re.sub(r'<w:i[^>]*?/>', '', content)
+    content = re.sub(r'<w:iCs[^>]*?/>', '', content)
+    
+    # 3. Replace ALL colors to black
+    content = re.sub(r'(<w:color[^>]*w:val=")[^"]+(")', r'\g<1>000000\g<2>', content)
+    
+    # 4. Remove list numbering (numPr at paragraph level)
+    content = re.sub(r'<w:numPr>.*?</w:numPr>', '', content, flags=re.DOTALL)
+    content = re.sub(r'<w:numPr[^>]*/>', '', content)
+    
+    # 5. Add black borders to ALL tables (6 sides)
+    borders = '<w:tblBorders>' \
+        '<w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>' \
+        '<w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>' \
+        '<w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>' \
+        '<w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>' \
+        '<w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>' \
+        '<w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>' \
+        '</w:tblBorders>'
+    content = re.sub(r'<w:tblBorders>.*?</w:tblBorders>', '', content, flags=re.DOTALL)
+    content = re.sub(r'(<w:tblStyle[^>]*/>)', rf'\1{borders}', content)
+    
+    with open(doc_path, 'w', encoding='utf-8') as f:
+        f.write(content)
+    
+    # Clean styles.xml (pandoc defaults inject italic/color into Heading 4-8 and code styles)
+    styles_path = os.path.join(tmpdir, 'word', 'styles.xml')
+    with open(styles_path, 'r', encoding='utf-8') as f:
+        sc = f.read()
+    sc = re.sub(r'<w:i[^>]*?/>', '', sc)
+    sc = re.sub(r'<w:iCs[^>]*?/>', '', sc)
+    sc = re.sub(r'(<w:color[^>]*w:val=")[^"]+(")', r'\g<1>000000\g<2>', sc)
+    with open(styles_path, 'w', encoding='utf-8') as f:
+        f.write(sc)
+    
+    # Repack
+    with zipfile.ZipFile(fpath, 'w') as z:
+        for root, dirs, files in os.walk(tmpdir):
+            for file in files:
+                fp = os.path.join(root, file)
+                z.write(fp, os.path.relpath(fp, tmpdir))
+    shutil.rmtree(tmpdir)
+```
+
+## Step 5: Verify
+
+```python
+with zipfile.ZipFile(fpath) as z:
+    with z.open('word/document.xml') as xf:
+        dc = xf.read().decode('utf-8')
+    with z.open('word/styles.xml') as xf:
+        sc = xf.read().decode('utf-8')
+
+# Count real italic tags (NOT <w:insideH>/<w:insideV> which contain 'w:i' substring)
+it = len(re.findall(r'<w:i(?:Cs)?\s[^>]*/>|<w:i(?:Cs)?/>', dc)) + \
+     len(re.findall(r'<w:i(?:Cs)?\s[^>]*/>|<w:i(?:Cs)?/>', sc))
+cols = set(re.findall(r'w:color[^>]*?w:val="([0-9a-fA-F]{6})"', dc + sc))
+npr = dc.count('<w:numPr>')
+hr = dc.count('w:pBdr')
+
+assert it == 0, f"Still {it} italic tags"
+assert cols <= {'000000'}, f"Non-black colors: {cols}"
+assert npr == 0, f"Still {npr} list numbering elements"
+assert hr == 0, f"Still {hr} horizontal rules"
+```
+
+## Merging Multiple Markdown Files
+
+When combining multiple docs (e.g., feasibility report + SRS) into one client deliverable:
+
+1. **Read all files**, remove individual titles and revision records
+2. **Deduplicate overlapping sections** (project background appears in both files — keep one)
+3. **Reorganize into a single logical flow**: project overview → feasibility → functional requirements → non-functional → constraints → acceptance criteria → conclusion
+4. **Create a unified cover page** with document version, date, and purpose
+5. **Build a single table of contents** and a single revision record at the end
+6. Convert the merged file through Steps 2-5 above
 
 ## Key Pitfalls
 
