@@ -222,8 +222,12 @@ When combining multiple docs (e.g., feasibility report + SRS) into one client de
 
 ## Key Pitfalls
 
-- **`---` in markdown**: pandoc converts these to paragraph bottom borders. Must remove from source markdown BEFORE conversion.
-- **Bullet symbols persist in numbering.xml**: The `\uf0b7` (Wingdings bullet) character lives in numbering.xml, not in paragraph text. Must modify numbering definitions directly.
-- **Blue heading styles**: The reference template defaults to blue headings. Must set `RGBColor(0, 0, 0)` on all heading styles AND check individual runs.
+- **`---` in markdown**: pandoc converts these to paragraph bottom borders (`w:pBdr`). Must remove from source markdown BEFORE conversion AND clean any remaining `w:pBdr` from document.xml.
+- **python-docx high-level API is insufficient**: Pandoc injects inline `<w:i/>`, `<w:color>`, and `<w:numPr>` directly into runs and paragraphs, bypassing style definitions. Must extract the DOCX as a ZIP and clean document.xml/styles.xml with regex.
+- **styles.xml inherits pandoc defaults**: Heading 4-8 come with italic + blue (`#4F81BD`), and pandoc adds syntax highlighting character styles with colors. These survive python-docx style modifications. Clean styles.xml at XML level.
+- **`<w:insideH>` and `<w:insideV>` are NOT italic**: They contain `w:i` as a substring but are table border elements. Use precise regex: `<w:i(?:Cs)?\s[^>]*/>|<w:i(?:Cs)?/>`.
+- **Blue heading styles**: The reference template defaults to blue headings. Must set `RGBColor(0, 0, 0)` on all heading styles AND force all `w:color` values to `000000` in both document.xml and styles.xml.
 - **Table borders must include all 6 sides**: `top`, `left`, `bottom`, `right`, `insideH`, `insideV` — missing `insideH` or `insideV` leaves internal grid lines invisible.
-- **Run `python-docx` from system python**, not a sandboxed environment where the package isn't installed.
+- **List numbering requires two-level removal**: Remove `<w:numPr>` from paragraphs in document.xml AND remove `numPr` from list style definitions in styles.xml.
+- **Verify at XML level**: Open the DOCX as a ZIP, check document.xml and styles.xml. `grep` or regex counts are more reliable than python-docx properties.
+- **Run python3 from the system environment**, not a sandboxed venv where python-docx isn't installed.
