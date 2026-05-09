@@ -244,3 +244,4 @@ fi
 | Credentials not persisting | Check `git config --global credential.helper` — must be `store` or `cache` |
 | Multiple GitHub accounts | Use SSH with different keys per host alias in `~/.ssh/config`, or per-repo credential URLs |
 | `gh: command not found` + no sudo | Use git-only Method 1 above — no installation needed |
+| `gh auth login --web` fails with `EOF` error but network is fine | On macOS, Homebrew curl may look for CA bundle at a missing path. Fix: `export CURL_CA_BUNDLE=/opt/homebrew/etc/openssl@3/cert.pem` before running `gh` commands. Verify with `curl -v https://github.com` — if it shows `error setting certificate verify locations`, the CA bundle path is wrong |
