@@ -81,21 +81,22 @@ curl -s --unix-socket /tmp/verge/verge-mihomo.sock \
 
 ## Automated Node Monitoring System
 
-A monitoring system can be set up via two cron jobs that reference Python scripts. The scripts must be created first — they are NOT pre-deployed.
+On the ubuntu24 server, the monitoring system consists of two scripts:
+- **Monitoring Script**: `/root/scripts/clash-sj-monitor.py` (runs as daemon, logs to `/tmp/clash-sj-monitor.log`)
+- **Daily Report Script**: `/root/.hermes/scripts/clash-daily-report.py` (runs via cron, parses `/tmp/clash-sj-monitor.log`)
 
-### Required Scripts (must be created before cron jobs work)
-
-**Monitoring Script** (`clash_monitor.py` — relative path resolves under `~/.hermes/scripts/`):
-- Checks current 🤖AI网站 proxy node latency via Clash delay API
+### Monitoring Script (`clash-sj-monitor.py`)
+- Checks current 🚀节点选择 proxy node latency
 - If current node times out → tests all San Jose (圣何塞) nodes, switches to fastest
-- If ALL San Jose nodes timeout → enters emergency mode
-- Logs to `~/.hermes/clash-monitor/monitor.log`
-- Saves state to `~/.hermes/clash-monitor/status.json`
+- Logs plain text to `/tmp/clash-sj-monitor.log` (format: `[YYYY-MM-DD HH:MM:SS] 节点检查/切换: ...`)
+- Uses Unix socket `/tmp/verge/verge-mihomo.sock` (Note: On ubuntu24, mihomo uses HTTP API on `127.0.0.1:9090` — ensure socket exists or update script)
+- Start/Stop: `/root/scripts/clash-sj-start.sh`, `/root/scripts/clash-sj-stop.sh`
 
-**Daily Report Script** (`clash_daily_report.py` — relative path resolves under `~/.hermes/scripts/`):
-- Runs at 00:00 daily
-- Reads previous day's connectivity logs from `~/.hermes/clash-monitor/`
-- Generates a JSON report
+### Daily Report Script (`clash-daily-report.py`)
+- Parses plain text logs from `/tmp/clash-sj-monitor.log` (NOT JSON)
+- Generates Markdown report with stats, delay rankings, switch history, and timeout periods
+- Usage: `python3 /root/.hermes/scripts/clash-daily-report.py [YYYY-MM-DD]` (defaults to yesterday if no date given)
+- Output is plain text/Markdown suitable for Feishu/Chat messages
 
 ### Node Testing via Clash API
 Test individual nodes using the delay endpoint:
@@ -112,15 +113,16 @@ For Python scripts, use Unix socket directly to avoid `--noproxy` issues. Key re
 
 ## Pitfalls
 1. **Requests intercepted by proxy**: Always use `--noproxy '*'` with curl, otherwise the request goes through the proxy and returns 404 or HTML.
-2. **Unix socket vs HTTP port**: Clash Verge 2 uses Unix socket (`/tmp/verge/verge-mihomo.sock`), NOT the `external-controller` port defined in `config.yaml` (9090).
-3. **Unicode in URLs**: Group names with emojis must be URL-encoded in the PUT request path.
-4. **Latency data**: The `history` field contains the last speed test result. If empty, the node hasn't been tested recently — trigger a test from the UI first.
-5. **Node type values are capitalized**: Clash API returns types like `"Vless"`, `"Hysteria2"` (capitalized first letter), NOT lowercase `"vless"` or `"hysteria2"`. When filtering nodes by type, use `.lower()` for case-insensitive matching.
-6. **PUT requests return HTTP 204 (empty body)**: When switching proxies via `PUT /proxies/{group}`, the API returns 204 No Content with an empty response body. **Do NOT check for non-empty JSON to determine success.**
+2. **Unix socket vs HTTP port**: Clash Verge 2 on macOS uses Unix socket (`/tmp/verge/verge-mihomo.sock`). Standalone mihomo on ubuntu24 uses HTTP API (`127.0.0.1:9090`). The monitoring script expects the Unix socket — if deploying on ubuntu24, either create the socket or update the script to use HTTP API.
+3. **Log format is plain text, NOT JSON**: `/tmp/clash-sj-monitor.log` uses format `[YYYY-MM-DD HH:MM:SS] 节点检查/切换: ...`. The daily report script parses this plain text with regex, NOT `json.loads()`.
+4. **Unicode in URLs**: Group names with emojis must be URL-encoded in the PUT request path.
+5. **Latency data**: The `history` field contains the last speed test result. If empty, the node hasn't been tested recently — trigger a test from the UI first.
+6. **Node type values are capitalized**: Clash API returns types like `"Vless"`, `"Hysteria2"` (capitalized first letter), NOT lowercase `"vless"` or `"hysteria2"`. When filtering nodes by type, use `.lower()` for case-insensitive matching.
+7. **PUT requests return HTTP 204 (empty body)**: When switching proxies via `PUT /proxies/{group}`, the API returns 204 No Content with an empty response body. **Do NOT check for non-empty JSON to determine success.**
    - **curl**: Check `exit code == 0` — empty stdout with exit code 0 means success.
    - **Python raw socket**: The 204 status line appears in the HTTP header before `\r\n\r\n`. Check if `"204"` is in the first line of the response header and return `{}` (truthy empty dict) instead of `None`. Also handle empty `body_data` after the header separator — return `{}` instead of trying to parse empty bytes as JSON. Bug pattern: if your `clash_request()` function tries `json.loads(body_data)` on an empty byte string, it raises `JSONDecodeError` and returns `None`, making the caller think the PUT failed when it actually succeeded.
-7. **Chunked transfer encoding**: Clash API responses use chunked transfer encoding. When using Python's raw `socket` module (not `urllib` or `requests`), you must decode chunked responses manually: read size hex line, then that many bytes of data, repeat until size is 0. Using `curl` or `urllib` handles this automatically.
-8. **Python socket Connection: close header**: When making requests via raw Unix socket in Python, always include `Connection: close` in the HTTP request headers, otherwise the socket may hang waiting for the server to close the connection.
+8. **Chunked transfer encoding**: Clash API responses use chunked transfer encoding. When using Python's raw `socket` module (not `urllib` or `requests`), you must decode chunked responses manually: read size hex line, then that many bytes of data, repeat until size is 0. Using `curl` or `urllib` handles this automatically.
+9. **Python socket Connection: close header**: When making requests via raw Unix socket in Python, always include `Connection: close` in the HTTP request headers, otherwise the socket may hang waiting for the server to close the connection.
 
 ## Find Clash Verge Process
 ```bash
