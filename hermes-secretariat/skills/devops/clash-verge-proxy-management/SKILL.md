@@ -81,6 +81,26 @@ curl -s --unix-socket /tmp/verge/verge-mihomo.sock \
 
 ## Automated Node Monitoring System
 
+### macOS Monitoring Setup
+On macOS, the monitoring system lives in `~/.hermes/clash-monitor/`:
+- **Monitoring Script**: `~/.hermes/clash-monitor/clash_monitor.py` (runs as cron job or manually)
+- **Daily Report Script**: `~/.hermes/clash-monitor/clash_daily_report.py`
+- **Active Log**: `~/.hermes/clash-monitor/monitor.log` (plain text, `[YYYY-MM-DD HH:MM:SS] ...` format)
+- **Legacy Log**: `~/.hermes/clash-monitor/connectivity.log` (JSON lines format, may be stale)
+- **Reports**: `~/.hermes/clash-monitor/daily_reports/YYYY-MM-DD.json`
+
+The daily report script parses `monitor.log` as primary source (with `connectivity.log` as fallback). Usage: `python3 ~/.hermes/clash-monitor/clash_daily_report.py [YYYY-MM-DD]` (defaults to yesterday).
+
+**Key log patterns in monitor.log:**
+- `✅ <node>: <latency>ms 正常` — successful node test
+- `<node>: timeout ✗` — failed node test
+- `Current node OK: <latency>ms ✓` — standalone current-node check
+- `Current node timed out or failed. Testing 圣何塞 nodes...` — triggered failover
+- `切换: <node> (<latency>ms)` — successful proxy switch
+- `检查节点: <node>` — named check start
+- `❌ <node>: 超时，尝试圣何塞节点` — check failure triggering switch attempt
+
+### ubuntu24 Server Setup
 On the ubuntu24 server, the monitoring system consists of two scripts:
 - **Monitoring Script**: `/root/scripts/clash-sj-monitor.py` (runs as daemon, logs to `/tmp/clash-sj-monitor.log`)
 - **Daily Report Script**: `/root/.hermes/scripts/clash-daily-report.py` (runs via cron, parses `/tmp/clash-sj-monitor.log`)
