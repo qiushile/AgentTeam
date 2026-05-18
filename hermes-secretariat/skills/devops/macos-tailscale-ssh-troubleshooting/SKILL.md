@@ -101,12 +101,19 @@ rm -rf ~/.orbstack
 - macOS firewall disabled, pf not enabled, sshd running
 - `tailscale status` shows both nodes active with direct connection
 
-### Root Causes
-1. **Clash Verge / Mihomo TUN mode** intercepting Tailscale interface traffic — most common
-2. **macOS kernel-level packet filtering** on the Tailscale utun interface
-3. **Multiple utun interfaces conflicting** (Clash, Tailscale, VPN all create utun devices)
+### Root Causes (check in order)
+1. **Tailscale App "Allow Incoming Connections" disabled** — #1 cause. Tailscale drops all inbound TCP/ICMP at the app level, but UDP tunnel (`tailscale ping`) still works.
+2. **Clash Verge / Mihomo TUN mode** intercepting Tailscale interface traffic
+3. **macOS kernel-level packet filtering** on the Tailscale utun interface
+4. **Multiple utun interfaces conflicting** (Clash, Tailscale, VPN all create utun devices)
 
 ### Diagnosis Steps
+
+#### Step 0: Check Tailscale App "Allow Incoming Connections" (FASTEST — try first!)
+Click Tailscale icon in macOS menu bar → click your avatar/settings → ensure **"Allow Incoming Connections"** is **enabled**.
+- When disabled, Tailscale drops ALL inbound TCP/ICMP at the app level
+- UDP tunnel (`tailscale ping`) still works because it uses Tailscale's internal protocol
+- This is the #1 cause of asymmetric connectivity (Mac can reach others, others can't reach Mac)
 
 #### Step 1: Identify Tailscale utun interface
 ```bash
@@ -180,6 +187,8 @@ sudo pfctl -F all  # Flush all rules
 - **pf "not enabled" is normal on macOS**: Even with pf disabled, macOS Application Firewall (`socketfilterfw`) can block traffic independently.
 - **Application Firewall whitelist**: `sshd-keygen-wrapper` must be in the allowed apps list. Check with `/usr/libexec/ApplicationFirewall/socketfilterfw --listapps`.
 - **macOS 14+ stricter network extension policies**: Newer macOS versions have tighter restrictions on multiple network extensions (Tailscale + Clash TUN + VPN) competing for routing.
+- **Mac Tailscale is App mode, not daemon**: `launchctl kickstart system/com.tailscale.tailscaled` will fail on Mac. Use `tailscale logout` → `tailscale up` or quit+reopen the App to restart.
+- **tcpdump diagnostic pattern**: If `tailscale ping` works but SSH doesn't, run `sudo tcpdump -i utunN -n 'host <remote_ip> and port 22'` on Mac. If you see **zero SYN packets** from the remote node, the packets are being dropped at the Tailscale app layer (check "Allow Incoming Connections") or intercepted by Clash TUN. If SYNs arrive but no SYN-ACK is sent back, the issue is macOS kernel-level filtering or sshd configuration.
 
 ## Workaround: SSH config with full Tailscale domain (bypasses DNS hijacking entirely)
 
