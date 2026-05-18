@@ -92,6 +92,95 @@ rm -rf ~/.orbstack
 # Edit ~/.ssh/config to remove the Include ~/.orbstack/ssh/config line
 ```
 
+## Inbound Connectivity Blocked: tailscale ping works but SSH/ping fails
+
+### Symptoms
+- Remote node (Linux/Windows) → macOS: `ping` and `ssh` both timeout
+- `tailscale ping` from remote to macOS: **works** (uses Tailscale UDP/TCP encapsulation, not ICMP)
+- macOS → remote: works fine (asymmetric failure)
+- macOS firewall disabled, pf not enabled, sshd running
+- `tailscale status` shows both nodes active with direct connection
+
+### Root Causes
+1. **Clash Verge / Mihomo TUN mode** intercepting Tailscale interface traffic — most common
+2. **macOS kernel-level packet filtering** on the Tailscale utun interface
+3. **Multiple utun interfaces conflicting** (Clash, Tailscale, VPN all create utun devices)
+
+### Diagnosis Steps
+
+#### Step 1: Identify Tailscale utun interface
+```bash
+# Find the Tailscale utun (has 100.x.x.x IP)
+for i in $(seq 0 30); do
+  addr=$(ifconfig utun$i 2>/dev/null | grep "inet " | awk '{print $2}')
+  [ -n "$addr" ] && echo "utun$i: $addr"
+done
+# Note which interface has your 100.x.x.x address (e.g., utun26)
+```
+
+#### Step 2: Capture packets to see if they reach the interface
+```bash
+# On macOS, in one terminal:
+sudo tcpdump -i utun26 -n host 100.X.X.X  # Replace with remote node's Tailscale IP
+
+# On remote node, in another terminal:
+ping -c 2 100.Y.Y.Y  # Replace with macOS Tailscale IP
+```
+
+- **If tcpdump shows NO packets** → Tailscale network layer issue or Clash intercepting before utun
+- **If tcpdump shows packets but no reply** → macOS kernel dropping incoming packets
+
+#### Step 3: Check for Clash Verge / proxy interference
+```bash
+# Check if Clash processes are running
+ps aux | grep -i "clash\|mihomo" | grep -v grep
+
+# Check all utun interfaces (too many = conflict)
+ifconfig | grep -E "^utun[0-9]+:" | wc -l
+# Normal: 1-3 (Tailscale + maybe one VPN). 10+ means something is creating many virtual interfaces
+```
+
+#### Step 4: Check routing for conflicts
+```bash
+netstat -rn | grep -E "default|100\."
+# The 100.64/10 (Tailscale) route should point to the correct utun
+# If Clash TUN also claims this range, packets will go to wrong interface
+```
+
+### Fixes
+
+#### Fix 1: Completely quit Clash Verge (not just disable TUN)
+- Click Clash Verge 2 in menu bar → **Quit** (fully exit, don't just toggle TUN off)
+- Verify no processes remain: `ps aux | grep -i "clash\|mihomo" | grep -v grep`
+- Test again from remote node: `ssh user@mac-hostname`
+
+#### Fix 2: Configure Clash TUN to exclude Tailscale CIDR
+In Clash Verge TUN configuration, add Tailscale CIDR to `auto-route` exclusion or `strict-route: false`:
+```yaml
+tun:
+  enable: true
+  auto-route: true
+  auto-detect-interface: true
+  # Add this to prevent Clash from stealing Tailscale traffic:
+  dns-hijack: []
+```
+
+#### Fix 3: If packets reach utun but macOS doesn't respond
+```bash
+# Try adding explicit pf rule to allow all traffic on Tailscale interface
+echo "pass in quick on utun26 proto { tcp, udp, icmp } all keep state" | sudo pfctl -f - -a com.apple/tailscale
+
+# Or try reloading the pf configuration
+sudo pfctl -e  # Enable pf
+sudo pfctl -F all  # Flush all rules
+```
+
+### Pitfalls
+- **Clash "off" ≠ processes killed**: Toggling TUN off in Clash UI doesn't stop the mihomo process. Must fully quit the app.
+- **pf "not enabled" is normal on macOS**: Even with pf disabled, macOS Application Firewall (`socketfilterfw`) can block traffic independently.
+- **Application Firewall whitelist**: `sshd-keygen-wrapper` must be in the allowed apps list. Check with `/usr/libexec/ApplicationFirewall/socketfilterfw --listapps`.
+- **macOS 14+ stricter network extension policies**: Newer macOS versions have tighter restrictions on multiple network extensions (Tailscale + Clash TUN + VPN) competing for routing.
+
 ## Workaround: SSH config with full Tailscale domain (bypasses DNS hijacking entirely)
 
 If DNS hijacking cannot be fixed (e.g., ISP-level UDP 53 hijacking that affects all DNS servers), use the full Tailscale MagicDNS name in `~/.ssh/config`:
