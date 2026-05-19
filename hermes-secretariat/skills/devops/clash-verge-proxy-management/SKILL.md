@@ -143,6 +143,12 @@ For Python scripts, use Unix socket directly to avoid `--noproxy` issues. Key re
    - **Python raw socket**: The 204 status line appears in the HTTP header before `\r\n\r\n`. Check if `"204"` is in the first line of the response header and return `{}` (truthy empty dict) instead of `None`. Also handle empty `body_data` after the header separator — return `{}` instead of trying to parse empty bytes as JSON. Bug pattern: if your `clash_request()` function tries `json.loads(body_data)` on an empty byte string, it raises `JSONDecodeError` and returns `None`, making the caller think the PUT failed when it actually succeeded.
 8. **Chunked transfer encoding**: Clash API responses use chunked transfer encoding. When using Python's raw `socket` module (not `urllib` or `requests`), you must decode chunked responses manually: read size hex line, then that many bytes of data, repeat until size is 0. Using `curl` or `urllib` handles this automatically.
 9. **Python socket Connection: close header**: When making requests via raw Unix socket in Python, always include `Connection: close` in the HTTP request headers, otherwise the socket may hang waiting for the server to close the connection.
+10. **Tailscale MagicDNS intercepted by Clash proxy**: `*.ts.net` domains are intercepted by Clash Verge's system proxy (port 7890) even when `prepend-rules` contains `DOMAIN-SUFFIX,.ts.net,DIRECT`. The `prepend-rules` may not be injected into runtime rules. Symptoms: `curl http://xxx.tailcc8506.ts.net/` returns 502, while `curl --noproxy '*'` works.
+    - **Root causes**: (a) `~/.curlrc` has `proxy = http://127.0.0.1:7890` forcing all traffic through Clash. (b) macOS system proxy (Wi-Fi) also points to 7890. (c) `prepend-rules` not loaded at runtime — verify with `/rules` API endpoint.
+    - **Fix curl**: Add `noproxy = localhost,127.0.0.1,.ts.net,100.64.0.0/10` to `~/.curlrc`.
+    - **Fix browser**: In Clash Verge → Settings → System Proxy → Bypass domains, add `*.ts.net, 100.64.0.0/10`.
+    - **Diagnose**: `curl -sv http://xxx.ts.net/ 2>&1 | head` — if you see `Connected to 127.0.0.1 (127.0.0.1) port 7890`, traffic is being proxied.
+    - **Verify runtime rules**: `curl -s --noproxy '*' --unix-socket /tmp/verge/verge-mihomo.sock 'http://localhost/rules'` — search for `.ts.net` in the payload. If absent, `prepend-rules` failed to load.
 
 ## Find Clash Verge Process
 ```bash
