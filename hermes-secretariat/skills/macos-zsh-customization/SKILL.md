@@ -52,6 +52,19 @@ with open(path, 'w') as f:
 EOF
 ```
 
+### Pitfall: %1{...%} is broken zsh syntax
+Some OMZ theme versions use `%1{emoji%}` (e.g., `%1{➜%}`) which zsh doesn't recognize. It treats the closing `%}` as a literal `}`, causing stray `}` in the prompt like `➜ M2 }~`.
+
+**Fix:** Remove `%1{` wrapper, use just the emoji directly:
+```zsh
+# BROKEN — causes stray } in prompt:
+PROMPT="%(?:%{$fg_bold[green]%}%1{➜%} ...)"
+
+# CORRECT:
+PROMPT="%(?:%{$fg_bold[green]%}➜ ...)"
+```
+Also fix `%1{✗%}` → `✗` in `ZSH_THEME_GIT_PROMPT_DIRTY`.
+
 ### Key zsh prompt escapes
 | Escape | Meaning |
 |--------|---------|
