@@ -1,0 +1,304 @@
+{
+  "agents": {
+    "defaults": {
+      "workspace": "/Users/qiushile/.openclaw/workspace",
+      "models": {
+        "qwen/qwen3.6-plus": {},
+        "modelstudio/qwen3.6-plus": {},
+        "qwen/qwen3-max-2026-01-23": {},
+        "modelstudio/qwen3-max-2026-01-23": {},
+        "qwen/qwen3-coder-next": {},
+        "modelstudio/qwen3-coder-next": {},
+        "qwen/qwen3-coder-plus": {},
+        "modelstudio/qwen3-coder-plus": {},
+        "qwen/MiniMax-M2.5": {},
+        "modelstudio/MiniMax-M2.5": {},
+        "qwen/glm-5": {},
+        "modelstudio/glm-5": {},
+        "qwen/glm-4.7": {},
+        "modelstudio/glm-4.7": {},
+        "qwen/kimi-k2.5": {},
+        "modelstudio/kimi-k2.5": {},
+        "iflytek/astron-code-latest": {}
+      },
+      "model": {
+        "primary": "qwen/qwen3.6-plus"
+      }
+    }
+  },
+  "channels": {
+    "feishu": {
+      "enabled": true,
+      "appId": "${FEISHU_SECRETARIAT_APP_ID}",
+      "appSecret": "${FEISHU_SECRETARIAT_APP_SECRET}",
+      "domain": "feishu",
+      "connectionMode": "websocket",
+      "dmPolicy": "pairing",
+      "groupPolicy": "allowlist",
+      "requireMention": true,
+      "typingIndicator": true,
+      "resolveSenderNames": true
+    }
+  },
+  "gateway": {
+    "mode": "local",
+    "auth": {
+      "mode": "token",
+      "token": "${GATEWAY_AUTH_TOKEN_SECRETARIAT}"
+    },
+    "port": 18789,
+    "bind": "lan",
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    },
+    "controlUi": {
+      "allowedOrigins": [
+        "http://localhost:18789",
+        "http://127.0.0.1:18789"
+      ]
+    },
+    "nodes": {
+      "denyCommands": [
+        "camera.snap",
+        "camera.clip",
+        "screen.record",
+        "contacts.add",
+        "calendar.add",
+        "reminders.add",
+        "sms.send",
+        "sms.search"
+      ]
+    }
+  },
+  "session": {
+    "dmScope": "per-channel-peer"
+  },
+  "tools": {
+    "profile": "coding"
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "qwen": {
+        "baseUrl": "https://coding.dashscope.aliyuncs.com/v1",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "qwen3.6-plus",
+            "name": "qwen3.6-plus",
+            "reasoning": true,
+            "input": [
+              "text",
+              "image"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 1000000,
+            "maxTokens": 65536,
+            "api": "openai-completions"
+          },
+          {
+            "id": "qwen3-max-2026-01-23",
+            "name": "qwen3-max-2026-01-23",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 262144,
+            "maxTokens": 65536,
+            "api": "openai-completions"
+          },
+          {
+            "id": "qwen3-coder-next",
+            "name": "qwen3-coder-next",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 262144,
+            "maxTokens": 65536,
+            "api": "openai-completions"
+          },
+          {
+            "id": "qwen3-coder-plus",
+            "name": "qwen3-coder-plus",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 1000000,
+            "maxTokens": 65536,
+            "api": "openai-completions"
+          },
+          {
+            "id": "MiniMax-M2.5",
+            "name": "MiniMax-M2.5",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 1000000,
+            "maxTokens": 65536,
+            "api": "openai-completions"
+          },
+          {
+            "id": "glm-5",
+            "name": "glm-5",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 202752,
+            "maxTokens": 16384,
+            "api": "openai-completions"
+          },
+          {
+            "id": "glm-4.7",
+            "name": "glm-4.7",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 202752,
+            "maxTokens": 16384,
+            "api": "openai-completions"
+          },
+          {
+            "id": "kimi-k2.5",
+            "name": "kimi-k2.5",
+            "reasoning": false,
+            "input": [
+              "text",
+              "image"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 262144,
+            "maxTokens": 32768,
+            "api": "openai-completions"
+          }
+        ]
+      },
+      "iflytek": {
+        "baseUrl": "${IFLYTEK_OPENAI_URL}",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "astron-code-latest",
+            "name": "GLM-5.1",
+            "reasoning": true,
+            "input": [
+              "text",
+              "image"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 65536,
+            "api": "openai-completions"
+          }
+        ]
+      }
+    }
+  },
+  "auth": {
+    "profiles": {
+      "qwen:default": {
+        "provider": "qwen",
+        "mode": "api_key"
+      },
+      "iflytek:default": {
+        "provider": "iflytek",
+        "mode": "api_key"
+      }
+    }
+  },
+  "meta": {
+    "lastTouchedVersion": "2026.4.9",
+    "lastTouchedAt": "2026-04-10T08:24:27.663Z"
+  },
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "session-memory": {
+          "enabled": true
+        },
+        "command-logger": {
+          "enabled": true
+        },
+        "bootstrap-extra-files": {
+          "enabled": true
+        },
+        "boot-md": {
+          "enabled": true
+        }
+      }
+    }
+  },
+  "wizard": {
+    "lastRunAt": "2026-04-10T08:23:50.558Z",
+    "lastRunVersion": "2026.4.9",
+    "lastRunCommand": "onboard",
+    "lastRunMode": "local"
+  },
+  "plugins": {
+    "entries": {
+      "qwen": {
+        "enabled": true
+      },
+      "feishu": {
+        "enabled": true
+      }
+    }
+  }
+}
