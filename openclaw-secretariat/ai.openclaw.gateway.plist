@@ -23,7 +23,7 @@
     <key>ProgramArguments</key>
     <array>
       <string>/opt/homebrew/bin/node</string>
-      <string>/Users/qiushile/WorkStation/mine/claw/openclaw/dist/index.js</string>
+      <string>/Users/qiushile/WorkStation/ai/agent/openclaw/dist/index.js</string>
       <string>gateway</string>
       <string>--port</string>
       <string>18789</string>
