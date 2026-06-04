@@ -154,10 +154,30 @@ curl -s --unix-socket /tmp/verge/verge-mihomo.sock "http://localhost/configs"
 
 ## Pitfalls
 - **Never assume `~/Library/Application Support/clash-verge/`** — the rev version uses `io.github.clash-verge-rev.clash-verge-rev`
-- System proxy showing `Enabled: No` even when Clash config has `enable_system_proxy: true` — toggle in UI to fix
+- System proxy showing `Enabled: No` even when Clash config has `enable_system_proxy: true` — toggle in UI to fix. If UI toggle doesn't work, use manual `networksetup` as definitive fix (see Step 12 below).
 - TUN mode intercepts traffic at kernel level independently of system proxy settings — domain rules may not apply to TUN traffic
 - Some Chinese CDN sites (aliyun, alibaba) block curl's default UA — need browser UA string
 - Clash API on port 9097 may be disabled; always use unix socket `/tmp/verge/verge-mihomo.sock`
 - `no_proxy` env vars may be empty in terminal sessions even if set in shell config files
 - SIP blocks writes to `/usr/share/` — use `CURL_CA_BUNDLE` env var instead of symlinking
 - When browser can't access domestic sites (aliyun, baidu, etc.) but curl works: **TUN mode is the culprit**, not DNS or proxy config
+- **TUN creates new interface instead of reusing existing one**: Enabling TUN via API may create a NEW `utunN` (e.g., `utun7`) instead of using the existing `utun0`. The new interface may not route correctly, causing `SSL_ERROR_SYSCALL` TLS handshake failures for HTTPS traffic. Check with `ifconfig utunX` — if no `inet` address is assigned, the interface is broken.
+- **Config vs runtime sync issue**: `verge.yaml` may show `enable_tun_mode: true` / `enable_system_proxy: true` while the runtime API reports both as `false`. This means Clash Verge's UI toggles are not being applied to the running core. Fix by toggling off then on in UI, or use API PATCH + manual `networksetup` commands.
+- **Explicit proxy works but TUN doesn't**: If `curl -x 127.0.0.1:7890 https://...` succeeds (HTTP 204) but direct `curl https://...` fails with `SSL_ERROR_SYSCALL` after enabling TUN, the TUN routing is broken. Disable TUN and fall back to system proxy.
+
+### 12. Manual System Proxy Enablement (Definitive Fix)
+When Clash Verge UI toggles don't sync to macOS system settings (`networksetup` shows `Enabled: No`), use these commands as the definitive fix:
+
+```bash
+# Enable all three proxy types
+networksetup -setwebproxy Wi-Fi 127.0.0.1 7890
+networksetup -setsecurewebproxy Wi-Fi 127.0.0.1 7890
+networksetup -setsocksfirewallproxy Wi-Fi 127.0.0.1 7890
+
+# Set bypass list (adjust as needed)
+networksetup -setproxybypassdomains Wi-Fi '*.local, 169.254/16, 127.0.0.1, localhost, *.ts.net, 100.64.0.0/10'
+
+# Verify
+networksetup -getwebproxy Wi-Fi
+networksetup -getsecurewebproxy Wi-Fi
+```
