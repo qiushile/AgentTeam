@@ -122,6 +122,44 @@ If the server was rebuilt from scratch, the `~/.ssh/authorized_keys` file on the
 | "换了证书" (certificate changed) | SSH uses host keys, not TLS certificates |
 | "之前管用的密钥现在不行" | Server was rebuilt; `authorized_keys` was reset |
 
+## OpenSSH version compatibility (modern client → old server)
+
+When connecting from macOS (OpenSSH 9.x) to an old Linux server (CentOS 6 / RHEL 6 with **OpenSSH 5.3**), you may see `Permission denied (publickey,...)` even though:
+- Your public key IS in `~/.ssh/authorized_keys` on the server
+- The host key is accepted (`known_hosts` matches)
+- `ssh-copy-id` reported "Number of key(s) added: 1"
+
+### Root cause: two independent incompatibilities
+
+| Your key | Why it fails |
+|----------|-------------|
+| `id_ed25519` | OpenSSH 5.3 **does not support ed25519** (algorithm added in 2014, OpenSSH 5.3 is from 2009) |
+| `id_rsa` | OpenSSH 9.8 client **disabled RSA-SHA1 signatures by default**, but OpenSSH 5.3 **only supports RSA-SHA1** |
+
+So `ssh-copy-id` silently deployed `id_ed25519.pub` to the server (because that's the default key), but the old server can't use it. Meanwhile, `id_rsa` is already on the server from before, but the modern client refuses to sign with SHA1.
+
+### Fix: add `PubkeyAcceptedKeyTypes=+ssh-rsa` to ssh_config
+
+```
+Host <old-server-IP>
+    HostName <IP>
+    HostKeyAlgorithms=+ssh-rsa
+    PubkeyAcceptedKeyTypes=+ssh-rsa
+```
+
+This tells the modern client to allow RSA-SHA1 signatures for this specific host. Your existing `id_rsa` key will then work immediately — no need to re-deploy keys.
+
+### Diagnostic clues
+
+Run `ssh -v` and look for:
+- `remote software version OpenSSH_5.3` → confirms old server
+- `Offering public key: ... ED25519` followed by `Authentications that can continue: publickey,...` (no rejection reason) → server silently ignored ed25519
+- `send_pubkey_test: no mutual signature algorithm` → RSA key offered but SHA1 signature refused by client
+
+### Why `ssh-copy-id` lied
+
+`ssh-copy-id` copies the key successfully (SCP/SFTP works fine), but doesn't verify whether the **server's sshd can actually use that key type**. On an OpenSSH 5.3 server, ed25519 keys are stored in `authorized_keys` but silently rejected during authentication.
+
 ## Common causes on macOS
 
 1. **Missing or corrupted host keys**: Fix with `sudo ssh-keygen -A`
