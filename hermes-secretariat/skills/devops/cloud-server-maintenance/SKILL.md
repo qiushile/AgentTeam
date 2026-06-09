@@ -252,4 +252,5 @@ See `references/post-install-zsh-setup.md` for the complete prompt customization
 - **scp -r on directories with many small files:** Much slower than `tar czf` on remote then `scp` the archive. Always compress first.
 - **CentOS 6 yum failures:** Repos are offline since EOL. `yum install` will fail. Use `curl` to download RPMs directly or use `rpm -Uvh` with archived packages.
 - **Ubuntu reinstall changes default user:** After reinstalling to Ubuntu, the default user is `ecs-user` or `ubuntu`, NOT `root`. Root login may be disabled by default in `sshd_config`.
+- **Ubuntu 24.04 SSH port change via sshd_config doesn't work:** Ubuntu 24.04 uses systemd socket activation (`ssh.socket`). Changing `Port` in `/etc/ssh/sshd_config` is silently ignored because `ssh.socket` controls the listening port. To change SSH port: `systemctl disable --now ssh.socket && systemctl restart ssh`.
 - **Cloud provider "security hardening" checkbox:** On aliyun/腾讯云, the "free security hardening" (云安全中心) installs a daemon that uses 50-100MB RAM. On a 512MB VPS, this is 10-20% of total memory. Uncheck it during reinstall.

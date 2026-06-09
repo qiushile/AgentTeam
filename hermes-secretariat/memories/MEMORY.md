@@ -32,4 +32,4 @@ DOCX生成与MD编写强制规则：
 7. 默认语言设为zh-CN
 8. MD进git追踪，docx放docx-output/目录被gitignore
 §
-Server 114.215.149.37 (qd001): Ubuntu 24.04 LTS, 512MB. SSH root@+ecs-user@ passwordless. Tailscale Exit Node (100.123.102.18), AdvertiseRoutes 0.0.0.0/0+::/0, accept-dns=false. Tailnet: tailcc8506.ts.net.
+Server 114.215.149.37 (qd001): Ubuntu 24.04 LTS, 512MB, Tailscale Exit Node (100.123.102.18). SSH port 10022, zsh/omz, 1GB swap. SSH config uses `???` pattern for tailnet (e.g., `wh???` -> `.tailcc8506.ts.net`, port 10022, root).
