@@ -32,5 +32,4 @@ DOCX生成与MD编写强制规则：
 7. 默认语言设为zh-CN
 8. MD进git追踪，docx放docx-output/目录被gitignore
 §
-Server 114.215.149.37 (kiscod): CentOS 6, 489MB RAM, SSH only (needs +ssh-rsa config). Obsolete for apps.
-Domain qiushile.cn: @/www -> GitHub Pages. frp/jenkins/blog/x -> 114 server (currently down).
+Server 114.215.149.37 (qd001): Ubuntu 24.04 LTS, 512MB. SSH root@+ecs-user@ passwordless. Tailscale Exit Node (100.123.102.18), AdvertiseRoutes 0.0.0.0/0+::/0, accept-dns=false. Tailnet: tailcc8506.ts.net.
