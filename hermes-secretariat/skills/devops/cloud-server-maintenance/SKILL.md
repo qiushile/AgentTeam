@@ -159,7 +159,63 @@ curl -s -o /dev/null -w '%{http_code}' http://<domain>
 1. Complete Phase 4 (backup triage)
 2. Record current DNS entries (screenshot or export)
 3. Note the cloud provider's default login user (Ubuntu → `ecs-user` or `ubuntu`, not `root`)
-4. Plan post-install steps: Tailscale, SSH key setup, firewall
+4. Plan post-install steps: SSH key setup, firewall, zsh/omz, Tailscale
+
+## Phase 7: Post-Install Setup
+
+After OS reinstallation, run these steps in order:
+
+### 1. SSH key setup
+The default user on Ubuntu ECS is `ecs-user` (not `root`):
+```bash
+ssh ecs-user@<IP>
+ssh-copy-id ecs-user@<IP>
+```
+
+### 2. Install zsh + oh-my-zsh + plugins
+```bash
+ssh ecs-user@<IP> '
+sudo apt update && sudo apt install -y zsh git curl zsh-autosuggestions zsh-syntax-highlighting
+
+# Install oh-my-zsh (use mirror if GitHub times out)
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+
+# Set as default shell
+sudo chsh -s $(which zsh) ecs-user
+'
+```
+
+**Important:** On Alibaba Cloud servers, GitHub `git clone` often times out. Install zsh plugins via `apt install zsh-autosuggestions zsh-syntax-highlighting` instead of cloning from GitHub. The apt packages install to `/usr/share/zsh-*/` and are loaded by sourcing the `.zsh` files directly.
+
+### 3. Write .zshrc with custom prompt
+Use python3 heredoc to write .zshrc over SSH (avoids bash quoting hell):
+```bash
+ssh ecs-user@<IP> 'python3 << "PYEOF"
+content = """export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="robbyrussell"
+plugins=(git)
+source $ZSH/oh-my-zsh.sh
+# Load apt-installed plugins
+source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# Prompt: hostname + path (robbyrussell style with %m for hostname)
+PROMPT="${ret_status} %(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) %{$fg_bold[cyan]%}%m%{$reset_color%} %{$fg[blue]%}%c%{$reset_color%} $(git_prompt_info)"
+"""
+with open("/home/ecs-user/.zshrc", "w") as f:
+    f.write(content)
+print("OK")
+PYEOF'
+```
+
+### 4. Set hostname
+```bash
+ssh ecs-user@<IP> '
+sudo hostnamectl set-hostname <new-hostname>
+sudo sed -i "s/^127.0.1.1.*/127.0.1.1 <new-hostname>/" /etc/hosts
+'
+```
+
+See `references/post-install-zsh-setup.md` for the complete prompt customization reference and verified .zshrc templates.
 
 ### CentOS 6 specific: Tailscale cannot be installed
 - No systemd (uses init.d)
