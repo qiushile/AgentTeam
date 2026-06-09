@@ -1,15 +1,67 @@
 {
+  "cloud-server-maintenance": {
+    "archived_at": null,
+    "created_at": "2026-06-09T05:18:21.680910+00:00",
+    "created_by": "agent",
+    "last_patched_at": "2026-06-09T05:18:48.972015+00:00",
+    "last_used_at": "2026-06-09T05:18:51.964483+00:00",
+    "last_viewed_at": "2026-06-09T05:18:51.963887+00:00",
+    "patch_count": 2,
+    "pinned": false,
+    "state": "active",
+    "use_count": 1,
+    "view_count": 1
+  },
+  "lan-device-discovery": {
+    "archived_at": null,
+    "created_at": "2026-06-09T05:16:59.663993+00:00",
+    "created_by": null,
+    "last_patched_at": null,
+    "last_used_at": "2026-06-09T05:16:59.665316+00:00",
+    "last_viewed_at": "2026-06-09T05:16:59.664015+00:00",
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 1,
+    "view_count": 1
+  },
   "macos-ssh-troubleshooting": {
     "archived_at": null,
     "created_at": "2026-06-09T03:09:22.585688+00:00",
     "created_by": null,
-    "last_patched_at": "2026-06-09T03:20:25.930749+00:00",
-    "last_used_at": "2026-06-09T04:12:48.697570+00:00",
-    "last_viewed_at": "2026-06-09T04:12:48.696666+00:00",
-    "patch_count": 2,
+    "last_patched_at": "2026-06-09T05:18:59.880371+00:00",
+    "last_used_at": "2026-06-09T05:17:22.248340+00:00",
+    "last_viewed_at": "2026-06-09T05:17:22.247256+00:00",
+    "patch_count": 4,
     "pinned": false,
     "state": "active",
-    "use_count": 4,
-    "view_count": 4
+    "use_count": 6,
+    "view_count": 6
+  },
+  "macos-tailscale-ssh-troubleshooting": {
+    "archived_at": null,
+    "created_at": "2026-06-09T05:17:06.217780+00:00",
+    "created_by": null,
+    "last_patched_at": null,
+    "last_used_at": "2026-06-09T05:17:06.219416+00:00",
+    "last_viewed_at": "2026-06-09T05:17:06.217801+00:00",
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 1,
+    "view_count": 1
+  },
+  "ubuntu24-hermes-maintenance": {
+    "archived_at": null,
+    "created_at": "2026-06-09T05:16:49.920716+00:00",
+    "created_by": null,
+    "last_patched_at": null,
+    "last_used_at": "2026-06-09T05:16:49.921740+00:00",
+    "last_viewed_at": "2026-06-09T05:16:49.920740+00:00",
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 1,
+    "view_count": 1
   }
 }
