@@ -70,6 +70,58 @@ sudo killall sshd
 sudo launchctl start com.openssh.sshd
 ```
 
+## Server-side host key change (cloud VPS rebuild / reimage)
+
+When connecting to a cloud server (阿里云, AWS, etc.) that was **rebuilt, reimaged, or had SSH re-initialized**, you'll see:
+
+```
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Password authentication is disabled to avoid man-in-the-middle attacks.
+```
+
+**Critical: this is NOT about your client keys (`id_rsa`, `id_ed25519`).** SSH has two separate key pairs:
+- **Client keys** (`~/.ssh/id_*`): prove your identity to the server
+- **Server host keys** (`/etc/ssh/ssh_host_*` on the remote): prove the server's identity to you
+
+The `known_hosts` file stores server host key fingerprints from previous connections. When the server rebuilds, it generates new host keys, and the old fingerprints in `known_hosts` no longer match. SSH treats this as a potential MITM attack and **disables all authentication methods** (including password and keyboard-interactive).
+
+### Fix
+
+```bash
+# 1. Remove the old host key record for this IP
+ssh-keygen -R <IP_or_hostname>
+
+# 2. Reconnect — SSH will prompt to accept the new host key
+ssh <user>@<IP_or_hostname>
+# Type 'yes' when prompted
+```
+
+### After host key change: authorized_keys may also be reset
+
+If the server was rebuilt from scratch, the `~/.ssh/authorized_keys` file on the server is also reset. This means **previously working public keys will be rejected** with `Permission denied (publickey,...)` even after clearing `known_hosts`.
+
+**Diagnostic sequence after host key change:**
+1. Clear old host key: `ssh-keygen -R <IP>`
+2. Try pubkey auth: `ssh <user>@<IP>` → if `Permission denied`, your pubkey is no longer on the server
+3. Try password auth: `ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no <user>@<IP>`
+4. If password also fails, you need console/VNC access to the server to re-add your pubkey:
+   ```bash
+   # On the server (via console):
+   mkdir -p ~/.ssh && chmod 700 ~/.ssh
+   echo "<your-public-key>" >> ~/.ssh/authorized_keys
+   chmod 600 ~/.ssh/authorized_keys
+   ```
+
+### Common confusion points
+
+| User suspects | Actual cause |
+|---------------|-------------|
+| "我本地换了新密钥" (new client key) | Server host key changed — `known_hosts` mismatch |
+| "换了证书" (certificate changed) | SSH uses host keys, not TLS certificates |
+| "之前管用的密钥现在不行" | Server was rebuilt; `authorized_keys` was reset |
+
 ## Common causes on macOS
 
 1. **Missing or corrupted host keys**: Fix with `sudo ssh-keygen -A`
