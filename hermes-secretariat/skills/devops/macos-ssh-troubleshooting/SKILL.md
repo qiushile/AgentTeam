@@ -187,6 +187,45 @@ print('Done')
 sed -i '' '/pattern/ a\    NewLineToAdd' ~/.ssh/config
 ```
 
+## Pitfall: SSH `Host` patterns — use globs, NOT bracket regex
+
+OpenSSH `Host` directives use **shell-style glob patterns**, NOT regex. Bracket character classes like `[a-z]` ARE supported, but a pattern like `[a-z][a-z][0-9][0-9][0-9]` is fragile and can silently fail to match on some OpenSSH versions (especially macOS OpenSSH 9.8+).
+
+**Symptom**: `ssh wh002` does NOT match `Host [a-z][a-z][0-9][0-9][0-9]`, falls through to default config (possibly hitting a proxy or wrong host). `ssh -G wh002` shows `hostname wh002` unchanged (no suffix appended).
+
+**Fix**: Use simple glob patterns instead:
+
+```diff
+- Host [a-z][a-z][0-9][0-9][0-9]
++ Host hz* wh* hx* qd*
+    HostName %h.tailcc8506.ts.net
+```
+
+**Diagnose with `ssh -G`**:
+```bash
+ssh -G wh002 | grep hostname
+# Should show: hostname wh002.tailcc8506.ts.net
+# If it shows: hostname wh002  → pattern did NOT match
+```
+
+**Pro tip**: When a `Host` block matches, the `!` prefix inverts the match for exclusion. Example:
+```
+Host hz* wh* hx* qd* !*.tailcc8506.ts.net
+  HostName %h.tailcc8506.ts.net
+```
+The first line matches short names (not already full domain). The second line matches the full domain names for User/Port settings.
+
+## Pitfall: Environment variables overriding SSH proxy settings
+
+Even if `ProxyCommand` is commented out in `~/.ssh/config`, SSH may still route through a proxy if environment variables like `ALL_PROXY`, `HTTPS_PROXY`, or `all_proxy` are set. Check with:
+```bash
+env | grep -i proxy
+```
+If `all_proxy=socks5://127.0.0.1:7890` is set, SSH will use it. Temporarily bypass with:
+```bash
+env -u all_proxy ssh wh002
+```
+
 ## OrbStack-specific notes
 
 - OrbStack machines use `~/.orbstack/ssh/config` with fdpass proxy

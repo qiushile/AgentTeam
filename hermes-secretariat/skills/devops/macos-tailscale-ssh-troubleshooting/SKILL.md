@@ -208,3 +208,55 @@ tailscale status
 # OR
 tailscale dns-status  # if supported
 ```
+
+## Tailscale Exit Node setup on Linux (Ubuntu/Debian)
+
+### Configuration: `/etc/default/tailscaled` uses `$FLAGS` and `$PORT`, NOT `TS_EXTRA_ARGS`
+
+The systemd service file reads:
+```
+ExecStart=/usr/sbin/tailscaled --state=... --socket=... --port=${PORT} $FLAGS
+```
+
+**Correct `/etc/default/tailscaled`:**
+```
+PORT=41641
+FLAGS=--accept-dns=false --accept-routes --advertise-exit-node
+```
+
+**WRONG (will fail with `INVALIDARGUMENT`):**
+```
+TS_AUTH_ONCE=true
+TS_EXTRA_ARGS='--accept-dns=false --accept-routes --advertise-exit-node'
+```
+`TS_EXTRA_ARGS` is not read by the default systemd unit — those arguments get passed as-is to `tailscaled`, which doesn't recognize `--accept-dns=false` as a daemon flag.
+
+**Also: `--port=` empty string causes `can't be the empty string` error.** If the env file is empty or missing `PORT`, systemd expands `${PORT}` to `""` and tailscaled refuses to start. Always set `PORT=41641` (or any valid port) even if you don't need a custom port.
+
+### Exit Node requires TWO approvals
+
+1. **Login auth** (browser): `tailscale up --advertise-exit-node` → open the URL in browser
+2. **Admin Console approval**: Go to [https://login.tailscale.com/admin/machines](https://login.tailscale.com/admin/machines) → find the node → **⋯ → Edit route settings** → toggle **Use as exit node** ON
+
+After both are done, verify:
+```bash
+tailscale up --accept-dns=false --accept-routes --advertise-routes=0.0.0.0/0,::/0
+# Then wait ~10 seconds for control plane to propagate
+tailscale exit-node list   # Should show the node
+```
+
+**Note**: If `tailscale status --json` shows `AdvertiseRoutes: ['0.0.0.0/0', '::/0']` but `tailscale exit-node list` shows `no exit nodes found`, the Admin Console approval is still pending.
+
+### IP forwarding must be enabled
+
+```bash
+sysctl -w net.ipv4.ip_forward=1
+sysctl -w net.ipv6.conf.all.forwarding=1
+# Persist:
+cat > /etc/sysctl.d/99-tailscale.conf << 'EOF'
+net.ipv4.ip_forward = 1
+net.ipv6.conf.all.forwarding = 1
+EOF
+```
+
+Without IP forwarding, exit node and subnet routing will silently not work — Tailscale will warn but still start.
