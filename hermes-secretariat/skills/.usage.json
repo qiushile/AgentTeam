@@ -4,13 +4,13 @@
     "created_at": "2026-06-09T05:18:21.680910+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-06-09T06:55:09.507057+00:00",
-    "last_used_at": "2026-06-09T06:54:55.774611+00:00",
-    "last_viewed_at": "2026-06-09T06:54:55.773420+00:00",
+    "last_used_at": "2026-06-09T08:14:29.169735+00:00",
+    "last_viewed_at": "2026-06-09T08:14:29.168409+00:00",
     "patch_count": 9,
     "pinned": false,
     "state": "active",
-    "use_count": 5,
-    "view_count": 5
+    "use_count": 6,
+    "view_count": 6
   },
   "lan-device-discovery": {
     "archived_at": null,
@@ -29,14 +29,14 @@
     "archived_at": null,
     "created_at": "2026-06-09T03:09:22.585688+00:00",
     "created_by": null,
-    "last_patched_at": "2026-06-09T07:59:08.997830+00:00",
-    "last_used_at": "2026-06-09T07:58:37.563788+00:00",
-    "last_viewed_at": "2026-06-09T07:58:37.562619+00:00",
-    "patch_count": 5,
+    "last_patched_at": "2026-06-09T08:14:20.971601+00:00",
+    "last_used_at": "2026-06-09T08:14:01.589677+00:00",
+    "last_viewed_at": "2026-06-09T08:14:01.588754+00:00",
+    "patch_count": 8,
     "pinned": false,
     "state": "active",
-    "use_count": 7,
-    "view_count": 7
+    "use_count": 9,
+    "view_count": 9
   },
   "macos-tailscale-ssh-troubleshooting": {
     "archived_at": null,
@@ -69,13 +69,13 @@
     "created_at": "2026-06-09T07:43:27.047382+00:00",
     "created_by": "agent",
     "last_patched_at": null,
-    "last_used_at": null,
-    "last_viewed_at": null,
+    "last_used_at": "2026-06-09T08:13:23.882529+00:00",
+    "last_viewed_at": "2026-06-09T08:13:23.881534+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 0,
-    "view_count": 0
+    "use_count": 1,
+    "view_count": 1
   },
   "ubuntu24-hermes-maintenance": {
     "archived_at": null,

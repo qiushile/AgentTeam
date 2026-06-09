@@ -170,6 +170,25 @@ Run `ssh -v` and look for:
 4. **MaxStartups rate limiting**: Too many concurrent connections from same source
 5. **Corrupted sshd_config**: Reset with `sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak && sudo rm /etc/ssh/sshd_config && sudo systemsetup -setremotelogin on`
 
+## Pitfall: Ubuntu 24.04 SSH port change ignored due to socket activation
+
+On Ubuntu 24.04+, SSH uses **systemd socket activation** by default. A `ssh.socket` unit listens on port 22 and starts `sshd` on demand. When you change `Port 10022` in `/etc/ssh/sshd_config`, the socket **still listens on 22**, and the `sshd_config` Port is silently ignored.
+
+**Symptom**: After changing Port in `sshd_config` and restarting ssh, `ss -tlnp | grep ssh` still shows port 22, and connection on 10022 is refused.
+
+**Fix**: Disable socket activation and use traditional service mode:
+
+```bash
+# On the server
+sudo systemctl disable --now ssh.socket
+sudo systemctl restart ssh
+# Verify
+ss -tlnp | grep ssh
+# Should show: LISTEN 0 128 0.0.0.0:10022
+```
+
+**Why**: The `ssh.socket` unit is a trigger that starts `ssh.service` when traffic arrives on port 22. The socket's port is configured separately from `sshd_config`. Once you disable the socket, `ssh.service` runs directly and respects `sshd_config` Port.
+
 ## Pitfall: `patch` tool refuses to edit `~/.ssh/config`
 
 The Hermes `patch` tool treats `~/.ssh/config` as a protected credential file and will reject edits. Use Python file I/O or `sed` instead:
@@ -208,16 +227,25 @@ ssh -G wh002 | grep hostname
 # If it shows: hostname wh002  → pattern did NOT match
 ```
 
-**Pro tip**: When a `Host` block matches, the `!` prefix inverts the match for exclusion. Example:
+**Pro tip 1**: Use `?` for fixed-length matching. Each `?` matches **exactly one character** — so `wh???` matches only `wh002` (5 chars total) but NOT `wh12345` (too long) or `wh01` (too short). This is safer than `wh*` which matches anything starting with `wh`. When using `???`, you don't even need `!*.tailcc8506.ts.net` exclusion because the full domain name is too long to match `???`.
+
 ```
-Host hz* wh* hx* qd* !*.tailcc8506.ts.net
+Host hz??? wh??? hx??? qd???
   HostName %h.tailcc8506.ts.net
+
+Host hz??? wh??? hx??? qd??? hz*.tailcc8506.ts.net wh*.tailcc8506.ts.net hx*.tailcc8506.ts.net qd*.tailcc8506.ts.net
+  User root
+  Port 10022
 ```
-The first line matches short names (not already full domain). The second line matches the full domain names for User/Port settings.
+
+**Pro tip 2**: Always verify with `ssh -G`:
+```bash
+ssh -G wh002 | grep hostname
+# Should show: hostname wh002.tailcc8506.ts.net
+# If it shows: hostname wh002  → pattern did NOT match
+```
 
 ## Pitfall: Environment variables overriding SSH proxy settings
-
-Even if `ProxyCommand` is commented out in `~/.ssh/config`, SSH may still route through a proxy if environment variables like `ALL_PROXY`, `HTTPS_PROXY`, or `all_proxy` are set. Check with:
 ```bash
 env | grep -i proxy
 ```
