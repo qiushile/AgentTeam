@@ -166,10 +166,30 @@ curl -s -o /dev/null -w '%{http_code}' http://<domain>
 After OS reinstallation, run these steps in order:
 
 ### 1. SSH key setup
-The default user on Ubuntu ECS is `ecs-user` (not `root`):
+The default user on Ubuntu ECS is `ecs-user` (not `root`). Root login may be disabled in `sshd_config`.
+
 ```bash
 ssh ecs-user@<IP>
 ssh-copy-id ecs-user@<IP>
+```
+
+**Root key propagation:** After OS reinstall, `/root/.ssh/authorized_keys` is wiped. `ssh-copy-id root@<IP>` fails non-interactively because it can't prompt for root's password. Workaround — pipe the key through `ecs-user` with sudo:
+
+```bash
+cat ~/.ssh/id_ed25519.pub | ssh ecs-user@<IP> \
+  "sudo tee -a /root/.ssh/authorized_keys > /dev/null && sudo chmod 600 /root/.ssh/authorized_keys"
+```
+
+### 1b. Root zsh setup (optional)
+After OS reinstall, root has no `.zshrc` and no oh-my-zsh. Instead of reinstalling everything for root, copy the working setup from `ecs-user`:
+
+```bash
+ssh root@<IP> '
+  cp /home/ecs-user/.zshrc /root/.zshrc
+  rm -rf /root/.oh-my-zsh
+  cp -r /home/ecs-user/.oh-my-zsh /root/.oh-my-zsh
+  chsh -s /usr/bin/zsh root
+'
 ```
 
 ### 2. Install zsh + oh-my-zsh + plugins
@@ -188,7 +208,7 @@ sudo chsh -s $(which zsh) ecs-user
 **Important:** On Alibaba Cloud servers, GitHub `git clone` often times out. Install zsh plugins via `apt install zsh-autosuggestions zsh-syntax-highlighting` instead of cloning from GitHub. The apt packages install to `/usr/share/zsh-*/` and are loaded by sourcing the `.zsh` files directly.
 
 ### 3. Write .zshrc with custom prompt
-Use python3 heredoc to write .zshrc over SSH (avoids bash quoting hell):
+Use python3 heredoc to write .zshrc over SSH (avoids bash quoting hell). Use single quotes around PROMPT to prevent bash variable expansion:
 ```bash
 ssh ecs-user@<IP> 'python3 << "PYEOF"
 content = """export ZSH="$HOME/.oh-my-zsh"
@@ -198,8 +218,8 @@ source $ZSH/oh-my-zsh.sh
 # Load apt-installed plugins
 source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# Prompt: hostname + path (robbyrussell style with %m for hostname)
-PROMPT="${ret_status} %(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) %{$fg_bold[cyan]%}%m%{$reset_color%} %{$fg[blue]%}%c%{$reset_color%} $(git_prompt_info)"
+# Prompt: hostname + full path (%~ for full path, %m for hostname)
+PROMPT='"'"'%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) %{$fg_bold[cyan]%}%m %{$fg[blue]%}%~%{$reset_color%} $(git_prompt_info)'"'"'
 """
 with open("/home/ecs-user/.zshrc", "w") as f:
     f.write(content)

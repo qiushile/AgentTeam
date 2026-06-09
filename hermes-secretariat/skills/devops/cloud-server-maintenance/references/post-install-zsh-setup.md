@@ -7,8 +7,8 @@
 | Method | Works? | Notes |
 |--------|--------|-------|
 | `git clone` from GitHub | ❌ Often times out | Alibaba Cloud blocks/slow-routes GitHub |
-| `git clone` from Gitee mirrors | ⚠️ May require auth | Many old mirrors are private now |
-| `apt install zsh-*` | ✅ Reliable | Installs to `/usr/share/zsh-*/` |
+| `git clone` from Gitee mirrors | ❌ Auth required now | No longer works without login |
+| `apt install zsh-*` | ✅ Only reliable method | Installs to `/usr/share/zsh-*/` |
 
 ### apt-installed plugin paths
 - `zsh-autosuggestions`: `/usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh`
@@ -18,19 +18,19 @@
 
 **Key zsh prompt escapes:**
 - `%m` — short hostname
-- `%c` — trailing dir component
-- `%~` — full path (abbreviated)
+- `%c` — trailing dir component only (e.g., `log`)
+- `%~` — full path with `~` abbreviation (e.g., `/var/log`, `~/WorkStation`)
 - `%(?:A:B)` — conditional (if exit code 0 then A else B)
 - `$ret_status` — shows exit code if non-zero
 
 **robbyrussell base prompt (after source $ZSH/oh-my-zsh.sh):**
 Override PROMPT variable after sourcing oh-my-zsh to customize.
 
-**Hostname + path format (verified working):**
+**Hostname + full-path format (verified working):**
 ```
-PROMPT="${ret_status} %(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) %{$fg_bold[cyan]%}%m%{$reset_color%} %{$fg[blue]%}%c%{$reset_color%} $(git_prompt_info)"
+PROMPT='%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) %{$fg_bold[cyan]%}%m %{$fg[blue]%}%~%{$reset_color%} $(git_prompt_info)'
 ```
-Renders as: `➜ qd001 ~/path` (hostname in cyan, path in blue)
+Renders as: `➜ qd001 ~/path` or `➜ qd001 /var/log` (hostname cyan, full path blue). Use single quotes to prevent bash variable expansion when writing over SSH.
 
 ### Writing .zshrc over SSH
 Bash heredocs with nested quotes fail silently over SSH. Use python3:
