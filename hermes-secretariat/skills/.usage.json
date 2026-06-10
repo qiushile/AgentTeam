@@ -1,4 +1,17 @@
 {
+  "clash-verge-proxy-management": {
+    "archived_at": null,
+    "created_at": "2026-06-10T16:01:43.767433+00:00",
+    "created_by": null,
+    "last_patched_at": null,
+    "last_used_at": "2026-06-10T16:01:43.768728+00:00",
+    "last_viewed_at": "2026-06-10T16:01:43.767447+00:00",
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 1,
+    "view_count": 1
+  },
   "cloud-server-maintenance": {
     "archived_at": null,
     "created_at": "2026-06-09T05:18:21.680910+00:00",
