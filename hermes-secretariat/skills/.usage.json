@@ -17,13 +17,13 @@
     "created_at": "2026-06-11T12:36:35.068573+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": null,
-    "last_viewed_at": null,
+    "last_used_at": "2026-06-11T12:47:21.464158+00:00",
+    "last_viewed_at": "2026-06-11T12:47:21.462313+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 0,
-    "view_count": 0
+    "use_count": 1,
+    "view_count": 1
   },
   "audiocraft-audio-generation": {
     "archived_at": null,
@@ -37,32 +37,6 @@
     "state": "active",
     "use_count": 0,
     "view_count": 0
-  },
-  "chinese-client-docx": {
-    "archived_at": null,
-    "created_at": "2026-06-11T12:46:29.487203+00:00",
-    "created_by": null,
-    "last_patched_at": null,
-    "last_used_at": "2026-06-11T12:46:29.489851+00:00",
-    "last_viewed_at": "2026-06-11T12:46:29.487221+00:00",
-    "patch_count": 0,
-    "pinned": false,
-    "state": "active",
-    "use_count": 1,
-    "view_count": 1
-  },
-  "chinese-docx-pipeline": {
-    "archived_at": null,
-    "created_at": "2026-06-11T12:46:36.481402+00:00",
-    "created_by": null,
-    "last_patched_at": null,
-    "last_used_at": "2026-06-11T12:46:36.483235+00:00",
-    "last_viewed_at": "2026-06-11T12:46:36.481417+00:00",
-    "patch_count": 0,
-    "pinned": false,
-    "state": "active",
-    "use_count": 1,
-    "view_count": 1
   },
   "clash-verge-proxy-management": {
     "archived_at": null,
@@ -199,13 +173,13 @@
     "created_at": "2026-06-11T12:36:35.087103+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": null,
-    "last_viewed_at": null,
+    "last_used_at": "2026-06-11T12:47:16.575844+00:00",
+    "last_viewed_at": "2026-06-11T12:47:16.574439+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 0,
-    "view_count": 0
+    "use_count": 1,
+    "view_count": 1
   },
   "findmy": {
     "archived_at": null,
@@ -428,19 +402,6 @@
     "use_count": 0,
     "view_count": 0
   },
-  "llama-cpp": {
-    "archived_at": null,
-    "created_at": "2026-06-11T12:36:35.113530+00:00",
-    "created_by": null,
-    "last_patched_at": null,
-    "last_used_at": null,
-    "last_viewed_at": null,
-    "patch_count": 0,
-    "pinned": false,
-    "state": "active",
-    "use_count": 0,
-    "view_count": 0
-  },
   "macos-computer-use": {
     "archived_at": null,
     "created_at": "2026-06-11T12:36:35.115968+00:00",
@@ -523,23 +484,10 @@
     "archived_at": null,
     "created_at": "2026-06-11T12:46:21.258282+00:00",
     "created_by": null,
-    "last_patched_at": null,
+    "last_patched_at": "2026-06-11T12:46:54.843240+00:00",
     "last_used_at": "2026-06-11T12:46:21.260191+00:00",
     "last_viewed_at": "2026-06-11T12:46:21.258295+00:00",
-    "patch_count": 0,
-    "pinned": false,
-    "state": "active",
-    "use_count": 1,
-    "view_count": 1
-  },
-  "md-to-docx-chinese": {
-    "archived_at": null,
-    "created_at": "2026-06-11T12:46:24.757361+00:00",
-    "created_by": null,
-    "last_patched_at": null,
-    "last_used_at": "2026-06-11T12:46:24.759381+00:00",
-    "last_viewed_at": "2026-06-11T12:46:24.757374+00:00",
-    "patch_count": 0,
+    "patch_count": 1,
     "pinned": false,
     "state": "active",
     "use_count": 1,
@@ -600,19 +548,6 @@
   "notion": {
     "archived_at": null,
     "created_at": "2026-06-11T12:36:35.125093+00:00",
-    "created_by": null,
-    "last_patched_at": null,
-    "last_used_at": null,
-    "last_viewed_at": null,
-    "patch_count": 0,
-    "pinned": false,
-    "state": "active",
-    "use_count": 0,
-    "view_count": 0
-  },
-  "obliteratus": {
-    "archived_at": null,
-    "created_at": "2026-06-11T12:36:35.126363+00:00",
     "created_by": null,
     "last_patched_at": null,
     "last_used_at": null,
@@ -849,13 +784,13 @@
     "created_at": "2026-06-11T12:36:35.158347+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": null,
-    "last_viewed_at": null,
+    "last_used_at": "2026-06-11T12:47:26.374489+00:00",
+    "last_viewed_at": "2026-06-11T12:47:26.372546+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 0,
-    "view_count": 0
+    "use_count": 1,
+    "view_count": 1
   },
   "tailscale-exit-node-setup": {
     "archived_at": null,

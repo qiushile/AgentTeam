@@ -334,14 +334,39 @@ Open each file in Word to verify:
 | Tables have no visible borders | Add `<w:tblBorders>` XML elements with `w:val="single" w:color="000000"` to each table's `w:tblPr` |
 | `<w:i>` regex accidentally matches `<w:insideH>`/`<w:insideV>` | Use exact regex: `<w:i(?:Cs)?\s[^>]*/>|<w:i(?:Cs)?/>` — NOT `<w:i` alone |
 
-## When to Use
+### Additional XML Cleanup (from merged skills)
 
-- Converting project documentation, reports, proposals from markdown to client-ready Word documents
-- Batch conversion of multiple markdown files with consistent styling
-- Documents requiring Chinese font support (宋体/微软雅黑/楷体 etc.)
+Beyond italic/color/list removal, also clean these from both `document.xml` and `styles.xml`:
 
-## When NOT to Use
+```python
+# Remove page flow constraints (keepNext/keepLines cause unexpected page breaks)
+content = re.sub(r'<w:keepNext[^>]*/>', '', content)
+content = re.sub(r'<w:keepLines[^>]*/>', '', content)
+
+# Remove revision tracking (RSID) — causes "square dots" in Word
+content = re.sub(r'\s*w:rsid\w*="[^"]+"', '', content)
+content = re.sub(r'<w:rsid\w*[^>]*/>', '', content)
+
+# Set default language to Chinese
+sc = sc.replace('w:val="en-US"', 'w:val="zh-CN"')
+sc = sc.replace('w:eastAsia="en-US"', 'w:eastAsia="zh-CN"')
+```
+
+### Merging Multiple Markdown Files
+
+When combining multiple docs into one client deliverable:
+1. Read all files, remove individual titles and revision records
+2. Deduplicate overlapping sections
+3. Reorganize into a single logical flow
+4. Create a unified cover page and table of contents
+5. Convert the merged file through the standard pipeline
+
+### When NOT to Use
 
 - Need tracked changes, comments, or form controls → use `officecli-docx` skill
 - Need complex tables with merged cells, floating images → use `officecli-docx` skill
 - Single simple file with no formatting needs → `pandoc input.md -o output.docx` without reference-doc is sufficient
+
+### Trigger Patterns (Chinese)
+
+Also load this skill when user says: "生成中文Word文档", "会议纪要", "需求文档", "将Markdown转为DOCX", "中文DOCX".
