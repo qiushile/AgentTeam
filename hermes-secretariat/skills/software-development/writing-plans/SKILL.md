@@ -21,6 +21,14 @@ Assume the implementer is a skilled developer but knows almost nothing about the
 
 **Core principle:** A good plan makes implementation obvious. If someone has to guess, the plan is incomplete.
 
+## Plan Mode vs Writing Plans
+
+**Plan mode** (`/plan`): When the user wants a plan instead of execution. Do not implement code, edit project files (except the plan markdown), or run mutating commands. Deliverable is a markdown plan saved under `.hermes/plans/YYYY-MM-DD_HHMMSS-<slug>.md`. Include goal, context, approach, step-by-step plan, files likely to change, tests/validation, risks/tradeoffs.
+
+**Writing implementation plans**: When you need to write detailed, bite-sized implementation plans for complex features. Includes exact file paths, complete code examples, exact commands, and verification steps. See full guide below.
+
+---
+
 ## When to Use
 
 **Always use before:**
