@@ -1,4 +1,17 @@
 {
+  "ai-coding-agents": {
+    "archived_at": null,
+    "created_at": "2026-06-14T16:50:52.791398+00:00",
+    "created_by": null,
+    "last_patched_at": null,
+    "last_used_at": "2026-06-14T16:50:52.793189+00:00",
+    "last_viewed_at": "2026-06-14T16:50:52.791422+00:00",
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 1,
+    "view_count": 1
+  },
   "airtable": {
     "archived_at": null,
     "created_at": "2026-06-11T12:36:35.065452+00:00",
