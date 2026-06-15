@@ -211,6 +211,17 @@ This produces a ~200–500 KB image that delivers reliably.
   it renders from the accessibility layer and captures any app regardless
   of Space or window server state.
 
+  **Fallback without `computer_use`**: If you must use `screencapture`
+  (e.g. `computer_use` not installed), the window must be on-screen and
+  foreground. Activate the app first, then wait for rendering, then capture:
+  ```bash
+  osascript -e 'tell application "Codex" to activate'
+  sleep 3
+  screencapture -x /tmp/output.png
+  ```
+  Without the `activate` + `sleep` step, the Electron window may remain
+  off-screen and `screencapture` captures only the desktop wallpaper.
+
 ## When NOT to use `computer_use`
 
 - Web automation you can do via `browser_*` tools — those use a real
