@@ -20,8 +20,6 @@ ClawTeam 仓库分工：
 - 本地（macOS）：主要用于编辑源码 + 部署 openclaw-secretariat + 部署 hermes-secretariat
 - 两边的 .env 不同（各自有独立的 API keys 和配置），均被 .gitignore 排除
 §
-m3max（macOS, Tailscale 100.86.50.21, 用户m3max）运行Hermes。SSH需keyboard-interactive认证。/etc/hosts 已设 100.86.50.21 m3max 绕过DNS劫持。防火墙已启用。Hermes API Key配置待修复。
-§
 DOCX生成与MD编写强制规则：
 1. MD源文件中禁止使用---横线
 2. 所有DOCX正文和表格必须使用宋体(SimSun)，标题可用微软雅黑但必须黑色
@@ -32,4 +30,6 @@ DOCX生成与MD编写强制规则：
 7. 默认语言设为zh-CN
 8. MD进git追踪，docx放docx-output/目录被gitignore
 §
-Server 114.215.149.37 (qd001): Ubuntu 24.04 LTS, 512MB, Tailscale Exit Node (100.123.102.18). SSH port 10022, zsh/omz, 1GB swap. SSH config uses `???` pattern for tailnet (e.g., `wh???` -> `.tailcc8506.ts.net`, port 10022, root).
+Server qd001: 114.215.149.37, Ubuntu 24.04, 512MB, Tailscale Exit Node (100.123.102.18), SSH port 10022. SSH config uses `???` pattern for tailnet.
+§
+screencapture 截 Electron 窗口（Codex）：需先 `osascript -e 'tell application "Codex" to activate'` 激活并等2秒，再截。否则可能截到空白桌面。
