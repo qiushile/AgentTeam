@@ -151,13 +151,28 @@ target that app's frontmost window automatically.
 
 ## Delivering screenshots to the user
 
-When the user is on a messaging platform (Telegram, Discord, etc.) and you
-took a screenshot they should see, save it somewhere durable and use
-`MEDIA:/absolute/path.png` in your reply. cua-driver's screenshots are
+When the user is on a messaging platform (Telegram, Discord, Feishu, etc.)
+and you took a screenshot they should see, save it somewhere durable and
+use `MEDIA:/absolute/path.png` in your reply. cua-driver's screenshots are
 PNG bytes; write them out with `write_file` or the terminal (`base64 -d`).
 
 On CLI, you can just describe what you see — the screenshot data stays in
 your conversation context.
+
+### Screenshot size limits
+
+**Always resize before sending on messaging platforms.** Full-resolution
+desktop screenshots (3456×2234+ on Apple Silicon Macs, 10–20 MB PNG) will
+silently fail to deliver on Feishu, Telegram, and similar platforms. The
+user will see no image and no error.
+
+Resize with `sips` before `MEDIA:` delivery:
+
+```bash
+sips -Z 1920 /tmp/full.png --out /tmp/small.png
+```
+
+This produces a ~200–500 KB image that delivers reliably.
 
 ## Safety — these are hard rules
 
@@ -188,6 +203,13 @@ your conversation context.
 - **"blocked pattern in type text"** — You tried to `type` a shell command
   that matches the dangerous-pattern block list (`curl ... | bash`,
   `sudo rm -rf`, etc.). Break the command up or reconsider.
+- **`screencapture` misses certain app windows** — Some apps (Codex,
+  Chrome/Electron-based apps, apps on a different Space) may not appear in
+  a `screencapture -x` screenshot even when their processes are running.
+  `lsappinfo info -only windows -app <App>` returning `"windows"=[ NULL ]`
+  is the tell. Use `computer_use(action="capture", app="…")` instead —
+  it renders from the accessibility layer and captures any app regardless
+  of Space or window server state.
 
 ## When NOT to use `computer_use`
 
