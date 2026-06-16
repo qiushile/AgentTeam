@@ -3,7 +3,7 @@
   "last_run_at": "2026-06-11T12:36:34.667169+00:00",
   "last_run_duration_seconds": 1005.050556,
   "last_run_summary": "auto: no changes; llm: Now let me write the final summary with all consolidations documented.\n\n## Summary\n\nProcessed 14 umbrella consolidations across the following clusters:\n\n**Umbrellas created (12 new + 2 patched):**\n1. `baoyu-creative` — merged 3 Baoyu creati…\narchived 32 skill(s):\n  • plan → writing-plans\n  • apple-notes — pruned (stale)\n  • apple-reminders — pruned (stale)\n  • arxiv — pruned (stale)\n  • ascii-art — pruned (stale)\n  • ascii-video — pruned (stale)\n  • audiocraft-audio-generation — pruned (stale)\n  • baoyu-article-illustrator — pruned (stale)\n  • baoyu-comic — pruned (stale)\n  • baoyu-infographic — pruned (stale)\n  … and 22 more\nfull report: hermes curator status\nkeep an umbrella stable: hermes curator pin writing-plans",
-  "last_run_summary_shown_at": null,
+  "last_run_summary_shown_at": "2026-06-11T12:36:34.667169+00:00",
   "paused": false,
   "run_count": 1
 }

@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "installed": {
+    "creative-ideation": {
+      "source": "official",
+      "identifier": "official/creative/creative-ideation",
+      "trust_level": "builtin",
+      "scan_verdict": "backfilled",
+      "content_hash": "sha256:0045b1d6486f5e2e",
+      "install_path": "creative/creative-ideation",
+      "files": [
+        "SKILL.md",
+        "references/full-prompt-library.md"
+      ],
+      "metadata": {
+        "backfilled_from": "optional-skills"
+      },
+      "installed_at": "2026-06-16T08:32:42.597702+00:00",
+      "updated_at": "2026-06-16T08:32:42.597702+00:00"
+    },
+    "pixel-art": {
+      "source": "official",
+      "identifier": "official/creative/pixel-art",
+      "trust_level": "builtin",
+      "scan_verdict": "backfilled",
+      "content_hash": "sha256:b7ae08576dac501e",
+      "install_path": "creative/pixel-art",
+      "files": [
+        "ATTRIBUTION.md",
+        "SKILL.md",
+        "references/palettes.md",
+        "scripts/__init__.py",
+        "scripts/palettes.py",
+        "scripts/pixel_art.py",
+        "scripts/pixel_art_video.py"
+      ],
+      "metadata": {
+        "backfilled_from": "optional-skills"
+      },
+      "installed_at": "2026-06-16T08:32:42.605026+00:00",
+      "updated_at": "2026-06-16T08:32:42.605026+00:00"
+    },
+    "minecraft-modpack-server": {
+      "source": "official",
+      "identifier": "official/gaming/minecraft-modpack-server",
+      "trust_level": "builtin",
+      "scan_verdict": "backfilled",
+      "content_hash": "sha256:b10f2b1258e9012b",
+      "install_path": "gaming/minecraft-modpack-server",
+      "files": [
+        "SKILL.md"
+      ],
+      "metadata": {
+        "backfilled_from": "optional-skills"
+      },
+      "installed_at": "2026-06-16T08:32:42.606043+00:00",
+      "updated_at": "2026-06-16T08:32:42.606043+00:00"
+    },
+    "pokemon-player": {
+      "source": "official",
+      "identifier": "official/gaming/pokemon-player",
+      "trust_level": "builtin",
+      "scan_verdict": "backfilled",
+      "content_hash": "sha256:c1bc96fc9bb270c0",
+      "install_path": "gaming/pokemon-player",
+      "files": [
+        "SKILL.md"
+      ],
+      "metadata": {
+        "backfilled_from": "optional-skills"
+      },
+      "installed_at": "2026-06-16T08:32:42.606532+00:00",
+      "updated_at": "2026-06-16T08:32:42.606532+00:00"
+    },
+    "dspy": {
+      "source": "official",
+      "identifier": "official/mlops/research/dspy",
+      "trust_level": "builtin",
+      "scan_verdict": "backfilled",
+      "content_hash": "sha256:bbbe1148d27953a8",
+      "install_path": "mlops/research/dspy",
+      "files": [
+        "SKILL.md",
+        "references/examples.md",
+        "references/modules.md",
+        "references/optimizers.md"
+      ],
+      "metadata": {
+        "backfilled_from": "optional-skills"
+      },
+      "installed_at": "2026-06-16T08:32:42.608590+00:00",
+      "updated_at": "2026-06-16T08:32:42.608590+00:00"
+    }
+  }
+}
