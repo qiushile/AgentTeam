@@ -67,6 +67,60 @@ ssh root@ubuntu24.tailcc8506.ts.net \
 
 Look for: `[Lark] [INFO] connected to wss://msg-frontier.feishu.cn/ws/v2`
 
+## Aliyun Dual-Endpoint Architecture
+
+Aliyun has TWO distinct LLM endpoints with NON-interchangeable keys:
+
+| Endpoint | Base URL | Key Prefix | Models | Plan |
+|----------|----------|------------|--------|------|
+| **coding-aliyun** | `https://coding.dashscope.aliyuncs.com/v1` | `sk-sp-*` | qwen3.7-plus, qwen3.6-plus | Coding Plan |
+| **dashscope-bailian** | `https://dashscope.aliyuncs.com/compatible-mode/v1` | `sk-*` (regular) | qwen3.7-max, qwen-plus | Bailian |
+
+**Critical**: A `sk-sp-*` key will get HTTP 401 on the bailian endpoint, and a regular `sk-*` key will get HTTP 401 on the coding endpoint. They are completely separate authentication systems.
+
+### Hermes Custom Providers Config
+
+For Hermes, configure both endpoints as `custom_providers` in config.yaml:
+
+```yaml
+custom_providers:
+- name: coding-aliyun
+  base_url: https://coding.dashscope.aliyuncs.com/v1
+  key_env: ALIYUN_CODING_API_KEY
+- name: dashscope-bailian
+  base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+  key_env: ALIYUN_DASHSCOPE_API_KEY
+
+model:
+  default: qwen3.7-plus
+  provider: custom:coding-aliyun
+  base_url: https://coding.dashscope.aliyuncs.com/v1
+  context_length: 1000000
+
+fallback_providers: [custom:dashscope-bailian]
+```
+
+### Required .env Variables
+
+```bash
+ALIYUN_CODING_API_KEY=***       # coding plan endpoint
+ALIYUN_DASHSCOPE_API_KEY=***         # bailian endpoint
+```
+
+### OpenCode Config
+
+For OpenCode, the model naming convention is `provider/model`:
+- Default: `dashscope-bailian/qwen3.7-max`
+- Fallback: `coding-aliyun/qwen3.7-plus`
+
+### Diagnosing 401 Errors
+
+When getting `invalid_api_key` (401):
+1. Check which endpoint is being hit (look at `base_url` in config)
+2. Check which env var provides the key (look at `key_env` in custom_providers)
+3. Verify the key prefix matches the endpoint (`sk-sp-*` for coding, `sk-*` for bailian)
+4. Test directly: `curl -s -w "\nHTTP:%{http_code}" <base_url>/chat/completions -H "Authorization: Bearer *** -H "Content-Type: application/json" -d '{"model":"<model>","messages":[{"role":"user","content":"hi"}],"max_tokens":10}'`
+
 ## Common Failure Modes
 
 | Symptom | Cause | Fix |
@@ -82,7 +136,9 @@ When editing config.yaml or .env on a remote server:
 
 ### Critical: Kill Gateway First
 
-The running gateway process caches config in memory and can overwrite or ignore file changes. Always kill the gateway before editing:
+The running gateway process caches config in memory and **overwrites file changes on exit/restart**. If you edit config.yaml while the gateway is running, your changes will appear to succeed (grep shows the new values) but get reverted when the gateway restarts.
+
+**Always kill the gateway BEFORE editing config.yaml or .env:**
 
 ```bash
 ssh root@ubuntu24.tailcc8506.ts.net "pkill -f 'hermes_cli.main gateway'"
@@ -92,6 +148,8 @@ Verify it's dead:
 ```bash
 ssh root@ubuntu24.tailcc8506.ts.net "ps aux | grep 'hermes_cli.main gateway' | grep -v grep"
 ```
+
+**Pitfall**: Do NOT trust `grep` verification alone — the gateway may have two processes (Docker s6 + WorkStation). Kill ALL hermes gateway processes before editing.
 
 ### Use Python yaml for Config Editing
 
@@ -123,6 +181,38 @@ ssh root@ubuntu24.tailcc8506.ts.net "grep '^DASHSCOPE_API_KEY' ~/.hermes/.env | 
 ```
 
 If they differ, sync the key from the working machine.
+
+### .env File Corruption Diagnosis
+
+The `.env` file can have truncated/corrupted values while system environment variables hold the correct values. Always compare:
+
+```bash
+# Check env var length
+ssh wh002 'printenv ALIYUN_CODING_API_KEY | wc -c'   # should be ~38 for sk-sp-* keys
+
+# Check .env file value length
+ssh wh002 'awk -F= "/^ALIYUN_CODING_API_KEY/ {print length(\$2)}" ~/.hermes/.env'
+```
+
+If lengths differ, the `.env` file is corrupted. Rebuild it from env vars (see Shell Quoting section below).
+
+### Shell Quoting: SSH + Heredoc + Python
+
+SSH + heredoc + Python with quotes is extremely fragile — nested quotes get mangled across zsh/bash boundaries. Reliable techniques:
+
+1. **scp a local file**: Write the script locally, then `scp script.py wh002:/tmp/ && ssh wh002 'python3 /tmp/script.py'`
+2. **base64 pipe**: `cat script.py | base64 | ssh wh002 'base64 -d > /tmp/script.py && python3 /tmp/script.py'`
+3. **Simple env var injection**: `ssh wh002 'VAR=$(printenv KEY) && echo "LINE=$VAR" >> file'` — but this breaks with special chars in values
+
+For `.env` file repair, the safest approach is:
+```bash
+# On remote: rebuild .env from live environment variables
+ssh wh002 'bash -c "cat > ~/.hermes/.env << ENVEOF
+ALIYUN_CODING_API_KEY=\$ALIYUN_CODING_API_KEY
+ALIYUN_DASHSCOPE_API_KEY=\$ALIYUN_DASHSCOPE_API_KEY
+...other lines...
+ENVEOF"'
+```
 
 ### Remove api_key from config.yaml
 
