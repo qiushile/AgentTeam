@@ -1,4 +1,7 @@
-DashScope API Key 端点兼容性：`sk-sp-*` 前缀的 Key 仅对 `coding.dashscope.aliyuncs.com/v1` 有效，用于 `dashscope.aliyuncs.com/compatible-mode/v1` 会返回 HTTP 401 "Incorrect API key provided"。两个端点不共用同一个 Key。OpenClaw 的 `.env` 中 `ALIYUN_BASE_URL` 和 `openclaw.json` 中 `models.providers.qwen.baseUrl` 必须保持一致。
+DashScope 端点与 Key 兼容性：
+1. `coding.dashscope.aliyuncs.com/v1` — 仅接受 `sk-sp-*` 前缀的 Key，用于其他 Key 返回 401
+2. `dashscope.aliyuncs.com/compatible-mode/v1` — 百炼标准 OpenAI 兼容端点，接受普通 `sk-*` Key。路径必须含 `/compatible-mode/`，裸 `/v1` 返回 404
+3. 两个端点不共用同一个 Key。配置 providers 时 base_url 必须写完整路径（含 `/compatible-mode`），不能只写 `/v1`
 §
 openclaw-team 部署架构：
 - 远端（ubuntu24）：ssh root@ubuntu24.tailcc8506.ts.net，源码/opt/openclaw/，配置/opt/openclaw-team/，sentinel用systemd管理，Agent为Docker容器
