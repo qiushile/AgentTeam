@@ -1,36 +1,40 @@
 ---
-name: ocr-and-documents
-description: "Extract text from PDFs/scans (pymupdf, marker-pdf)."
-version: 2.3.0
+name: pdf-tools
+description: "PDF workflows: extract text from PDFs/scans (pymupdf, marker-pdf, OCR), edit PDF text/typos/titles via NL prompts (nano-pdf), split/merge/search PDFs."
+version: 1.0.0
 author: Hermes Agent
 license: MIT
 platforms: [linux, macos, windows]
 metadata:
   hermes:
-    tags: [PDF, Documents, Research, Arxiv, Text-Extraction, OCR]
+    tags: [PDF, Documents, OCR, Text-Extraction, Editing, Research, Arxiv, Productivity]
     related_skills: [powerpoint]
 ---
 
-# PDF & Document Extraction
+# PDF Tools — Extract, Edit, Split, Merge
 
-For DOCX: use `python-docx` (parses actual document structure, far better than OCR).
-For PPTX: see the `powerpoint` skill (uses `python-pptx` with full slide/notes support).
-This skill covers **PDFs and scanned documents**.
+Two workflows for working with PDFs:
 
-## Step 1: Remote URL Available?
+1. **Extract text** — from text-based or scanned PDFs (pymupdf, marker-pdf)
+2. **Edit text** — fix typos, change titles, update content (nano-pdf)
+
+Plus: split, merge, search PDFs with pymupdf.
+
+---
+
+## Part 1: Extract Text from PDFs
+
+### Step 1: Remote URL Available?
 
 If the document has a URL, **always try `web_extract` first**:
-
 ```
 web_extract(urls=["https://arxiv.org/pdf/2402.03300"])
-web_extract(urls=["https://example.com/report.pdf"])
 ```
-
-This handles PDF-to-markdown conversion via Firecrawl with no local dependencies.
+This handles PDF-to-markdown via Firecrawl with no local dependencies.
 
 Only use local extraction when: the file is local, web_extract fails, or you need batch processing.
 
-## Step 2: Choose Local Extractor
+### Step 2: Choose Local Extractor
 
 | Feature | pymupdf (~25MB) | marker-pdf (~3-5GB) |
 |---------|-----------------|---------------------|
@@ -40,29 +44,18 @@ Only use local extraction when: the file is local, web_extract fails, or you nee
 | **Equations / LaTeX** | ❌ | ✅ |
 | **Code blocks** | ❌ | ✅ |
 | **Forms** | ❌ | ✅ |
-| **Headers/footers removal** | ❌ | ✅ |
-| **Reading order detection** | ❌ | ✅ |
-| **Images extraction** | ✅ (embedded) | ✅ (with context) |
-| **Images → text (OCR)** | ❌ | ✅ |
-| **EPUB** | ✅ | ✅ |
-| **Markdown output** | ✅ (via pymupdf4llm) | ✅ (native, higher quality) |
 | **Install size** | ~25MB | ~3-5GB (PyTorch + models) |
-| **Speed** | Instant | ~1-14s/page (CPU), ~0.2s/page (GPU) |
+| **Speed** | Instant | ~1-14s/page (CPU) |
 
 **Decision**: Use pymupdf unless you need OCR, equations, forms, or complex layout analysis.
 
-If the user needs marker capabilities but the system lacks ~5GB free disk:
-> "This document needs OCR/advanced extraction (marker-pdf), which requires ~5GB for PyTorch and models. Your system has [X]GB free. Options: free up space, provide a URL so I can use web_extract, or I can try pymupdf which works for text-based PDFs but not scanned documents or equations."
-
----
-
-## pymupdf (lightweight)
+### pymupdf (lightweight)
 
 ```bash
 pip install pymupdf pymupdf4llm
 ```
 
-**Via helper script**:
+**Via helper script** (`scripts/extract_pymdf.py`):
 ```bash
 python scripts/extract_pymupdf.py document.pdf              # Plain text
 python scripts/extract_pymupdf.py document.pdf --markdown    # Markdown
@@ -82,18 +75,13 @@ for page in doc:
 "
 ```
 
----
-
-## marker-pdf (high-quality OCR)
+### marker-pdf (high-quality OCR)
 
 ```bash
-# Check disk space first
-python scripts/extract_marker.py --check
-
 pip install marker-pdf
 ```
 
-**Via helper script**:
+**Via helper script** (`scripts/extract_marker.py`):
 ```bash
 python scripts/extract_marker.py document.pdf                # Markdown
 python scripts/extract_marker.py document.pdf --json         # JSON with metadata
@@ -102,30 +90,63 @@ python scripts/extract_marker.py scanned.pdf                 # Scanned PDF (OCR)
 python scripts/extract_marker.py document.pdf --use_llm      # LLM-boosted accuracy
 ```
 
-**CLI** (installed with marker-pdf):
+**CLI**:
 ```bash
 marker_single document.pdf --output_dir ./output
 marker /path/to/folder --workers 4    # Batch
 ```
 
+### Arxiv Papers
+
+```
+web_extract(urls=["https://arxiv.org/abs/2402.03300"])   # Abstract
+web_extract(urls=["https://arxiv.org/pdf/2402.03300"])   # Full paper
+web_search(query="arxiv GRPO reinforcement learning 2026")  # Search
+```
+
 ---
 
-## Arxiv Papers
+## Part 2: Edit PDF Text
 
-```
-# Abstract only (fast)
-web_extract(urls=["https://arxiv.org/abs/2402.03300"])
+Edit PDFs using natural-language instructions via nano-pdf.
 
-# Full paper
-web_extract(urls=["https://arxiv.org/pdf/2402.03300"])
+### Prerequisites
 
-# Search
-web_search(query="arxiv GRPO reinforcement learning 2026")
+```bash
+uv pip install nano-pdf  # or pip install nano-pdf
 ```
 
-## Split, Merge & Search
+### Usage
 
-pymupdf handles these natively — use `execute_code` or inline Python:
+```bash
+nano-pdf edit <file.pdf> <page_number> "<instruction>"
+```
+
+### Examples
+
+```bash
+# Change a title on page 1
+nano-pdf edit deck.pdf 1 "Change the title to 'Q3 Results' and fix the typo in the subtitle"
+
+# Update a date on a specific page
+nano-pdf edit report.pdf 3 "Update the date from January to February 2026"
+
+# Fix content
+nano-pdf edit contract.pdf 2 "Change the client name from 'Acme Corp' to 'Acme Industries'"
+```
+
+### Notes
+
+- Page numbers may be 0-based or 1-based — if the edit hits the wrong page, retry with ±1
+- Always verify the output PDF after editing
+- The tool uses an LLM under the hood — requires an API key
+- Works well for text changes; complex layout modifications may need a different approach
+
+---
+
+## Part 3: Split, Merge & Search
+
+pymupdf handles these natively:
 
 ```python
 # Split: extract pages 1-5 to a new PDF
@@ -154,10 +175,7 @@ for i, page in enumerate(doc):
     results = page.search_for("revenue")
     if results:
         print(f"Page {i+1}: {len(results)} match(es)")
-        print(page.get_text("text"))
 ```
-
-No extra dependencies needed — pymupdf covers split, merge, search, and text extraction in one package.
 
 ---
 
@@ -165,8 +183,7 @@ No extra dependencies needed — pymupdf covers split, merge, search, and text e
 
 - `web_extract` is always first choice for URLs
 - pymupdf is the safe default — instant, no models, works everywhere
-- marker-pdf is for OCR, scanned docs, equations, complex layouts — install only when needed
-- Both helper scripts accept `--help` for full usage
+- marker-pdf is for OCR, scanned docs, equations — install only when needed
 - marker-pdf downloads ~2.5GB of models to `~/.cache/huggingface/` on first use
 - For Word docs: `pip install python-docx` (better than OCR — parses actual structure)
 - For PowerPoint: see the `powerpoint` skill (uses python-pptx)

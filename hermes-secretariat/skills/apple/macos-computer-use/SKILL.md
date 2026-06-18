@@ -222,6 +222,48 @@ This produces a ~200–500 KB image that delivers reliably.
   Without the `activate` + `sleep` step, the Electron window may remain
   off-screen and `screencapture` captures only the desktop wallpaper.
 
+## Find My — Track Apple Devices and AirTags
+
+Track Apple devices and AirTags via the FindMy.app. Since Apple doesn't provide a CLI for FindMy, this uses AppleScript + screen capture.
+
+### Prerequisites
+- macOS with Find My app and iCloud signed in
+- Screen Recording permission for terminal
+- Optional: `brew install steipete/tap/peekaboo` for better UI automation
+
+### Method 1: AppleScript + Screenshot
+```bash
+osascript -e 'tell application "FindMy" to activate'
+sleep 3
+screencapture -w -o /tmp/findmy.png
+```
+Then use `vision_analyze` to read the screenshot.
+
+### Method 2: Peekaboo UI Automation (Recommended)
+```bash
+osascript -e 'tell application "FindMy" to activate'
+sleep 3
+peekaboo see --app "FindMy" --annotate --path /tmp/findmy-ui.png
+peekaboo click --on B3 --app "FindMy"
+peekaboo image --app "FindMy" --path /tmp/findmy-detail.png
+```
+
+### Switching Tabs
+```bash
+# Devices tab
+osascript -e 'tell application "System Events" to tell process "FindMy" to click button "Devices" of toolbar 1 of window 1'
+# Items tab (AirTags)
+osascript -e 'tell application "System Events" to tell process "FindMy" to click button "Items" of toolbar 1 of window 1'
+```
+
+### Tracking Over Time
+Keep FindMy in foreground (updates stop when minimized). Use a cronjob to periodically capture and log locations.
+
+### Limitations
+- No CLI or API — must use UI automation
+- AirTags only update while FindMy page is actively displayed
+- Location accuracy depends on nearby Apple devices
+
 ## When NOT to use `computer_use`
 
 - Web automation you can do via `browser_*` tools — those use a real

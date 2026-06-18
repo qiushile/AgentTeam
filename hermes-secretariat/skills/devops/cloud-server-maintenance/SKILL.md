@@ -246,6 +246,63 @@ See `references/post-install-zsh-setup.md` for the complete prompt customization
   - Add to Mac login items for persistence
   - See `references/tailscale-alternatives.md` for detailed comparison and setup
 
+## Tailscale Exit Node Setup on Linux
+
+When setting up a Linux VPS as a Tailscale Exit Node (for newer OS versions that support it):
+
+### Installation
+```bash
+curl -fsSL https://tailscale.com/install.sh | sh
+```
+
+### IP Forwarding (required for Exit Node)
+```bash
+sysctl -w net.ipv4.ip_forward=1
+sysctl -w net.ipv6.conf.all.forwarding=1
+cat > /etc/sysctl.d/99-tailscale.conf << 'EOF'
+net.ipv4.ip_forward = 1
+net.ipv6.conf.all.forwarding = 1
+EOF
+```
+
+### Systemd Daemon Configuration
+**Critical:** `/etc/default/tailscaled` is read by systemd. Only put daemon flags here:
+```bash
+cat > /etc/default/tailscaled << 'EOF'
+PORT=41641
+EOF
+```
+
+**PITFALLS:**
+1. `$FLAGS` must NOT contain `tailscale up` flags (--accept-dns, --advertise-exit-node are client prefs, not daemon flags)
+2. `PORT` must be set (empty string causes failure)
+3. `/etc/default/tailscaled` (with `d`), NOT `/etc/default/tailscale`
+4. After editing: `systemctl daemon-reload && systemctl reset-failed tailscaled && systemctl restart tailscaled`
+
+### Authenticating and Setting Exit Node
+```bash
+systemctl start tailscaled
+tailscale up --accept-dns=false --accept-routes --advertise-exit-node
+```
+
+### Architecture Summary
+| Layer | Config Location | What Goes Here |
+|-------|----------------|----------------|
+| Daemon (systemd) | `/etc/default/tailscaled` | `PORT=41641` only |
+| Client prefs (state) | Stored via `tailscale up` | `--accept-dns`, `--advertise-exit-node`, etc. |
+| Kernel | `/etc/sysctl.d/` | `net.ipv4.ip_forward=1` |
+
+### UDP GRO Optimization
+```bash
+ethtool -K eth0 rx-gro-list on
+ethtool -K eth0 rx-udp-gro-forwarding on
+```
+
+### Troubleshooting
+- `status=2/INVALIDARGUMENT` → invalid flag in `$FLAGS`, remove `tailscale up` flags
+- `invalid value "" for flag -port` → `PORT` not set in `/etc/default/tailscaled`
+- `Start request repeated too quickly` → `systemctl reset-failed tailscaled`
+
 ## Pitfalls
 
 - **appdog/daemon loops:** Always `service stop` + `kill -9` BEFORE truncating logs. Truncating alone just creates a race where the daemon writes more data.
