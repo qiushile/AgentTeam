@@ -1,7 +1,9 @@
-DashScope 端点与 Key 兼容性：
-1. `coding.dashscope.aliyuncs.com/v1` — 仅接受 `sk-sp-*` 前缀的 Key，用于其他 Key 返回 401
-2. `dashscope.aliyuncs.com/compatible-mode/v1` — 百炼标准 OpenAI 兼容端点，接受普通 `sk-*` Key。路径必须含 `/compatible-mode/`，裸 `/v1` 返回 404
-3. 两个端点不共用同一个 Key。配置 providers 时 base_url 必须写完整路径（含 `/compatible-mode`），不能只写 `/v1`
+DashScope 端点与 Key：
+1. `coding.dashscope.aliyuncs.com/v1` — 仅接受 `sk-sp-*` Key
+2. `dashscope.aliyuncs.com/compatible-mode/v1` — 接受普通 `sk-*` Key，路径必须含 `/compatible-mode/`
+3. 两端点 Key 不共用，base_url 须写完整路径
+4. `alibaba-coding-plan` 是内置 plugin，默认国际版 URL，需 config.yaml 覆盖为国内版。别名：alibaba_coding, dashscope-coding。env: DASHSCOPE_API_KEY
+5. 自定义 provider 在 config.yaml `providers:` 下自由定义
 §
 openclaw-team 部署架构：
 - 远端（ubuntu24）：ssh root@ubuntu24.tailcc8506.ts.net，源码/opt/openclaw/，配置/opt/openclaw-team/，sentinel用systemd管理，Agent为Docker容器
