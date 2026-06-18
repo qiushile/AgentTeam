@@ -415,6 +415,19 @@
     "use_count": 0,
     "view_count": 0
   },
+  "m3max-hermes-maintenance": {
+    "archived_at": null,
+    "created_at": "2026-06-18T03:28:06.164726+00:00",
+    "created_by": null,
+    "last_patched_at": null,
+    "last_used_at": "2026-06-18T03:28:06.167250+00:00",
+    "last_viewed_at": "2026-06-18T03:28:06.164737+00:00",
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 1,
+    "view_count": 1
+  },
   "macos-computer-use": {
     "archived_at": null,
     "created_at": "2026-06-11T12:36:35.115968+00:00",
@@ -862,13 +875,13 @@
     "created_at": "2026-06-09T05:16:49.920716+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-06-09T06:53:36.309433+00:00",
-    "last_viewed_at": "2026-06-09T06:53:36.308468+00:00",
+    "last_used_at": "2026-06-18T03:28:06.168239+00:00",
+    "last_viewed_at": "2026-06-18T03:28:06.166286+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 2,
-    "view_count": 2
+    "use_count": 3,
+    "view_count": 3
   },
   "webhook-subscriptions": {
     "archived_at": null,
