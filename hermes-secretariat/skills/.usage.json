@@ -909,6 +909,19 @@
     "use_count": 0,
     "view_count": 0
   },
+  "wh002-hermes-maintenance": {
+    "archived_at": null,
+    "created_at": "2026-06-18T03:28:40.510556+00:00",
+    "created_by": "agent",
+    "last_patched_at": null,
+    "last_used_at": null,
+    "last_viewed_at": null,
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 0,
+    "view_count": 0
+  },
   "writing-plans": {
     "archived_at": null,
     "created_at": "2026-06-11T12:36:35.168201+00:00",
