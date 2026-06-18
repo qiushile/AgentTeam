@@ -158,6 +158,7 @@ process(action="submit", session_id="<id>", data="Implement OAuth refresh flow")
 2. Exit with Ctrl+C (`\x03`), NOT `/exit` (opens agent selector)
 3. Separate workdirs for parallel sessions
 4. Enter may need double-press in TUI
+5. Default model depends on which provider API key is set — see `references/opencode-default-models.md` for the priority order
 
 ---
 

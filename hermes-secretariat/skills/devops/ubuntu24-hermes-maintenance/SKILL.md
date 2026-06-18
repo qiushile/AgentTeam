@@ -8,8 +8,8 @@ tags: [hermes, ubuntu, systemd, venv, feishu, deployment]
 
 ## Environment
 
-- **Host**: `root@ubuntu24.tailcc8506.ts.net` (Tailscale)
-- **Source directory**: `/opt/WorkStation/agent/hermes-agent/` (migrated from `/root/WorkStation/`)
+- **Host**: `root@ubuntu24.tailcc8506.ts.net` (Tailscale), also accessible via `ssh wh002`
+- **Source directory**: `/opt/WorkStation/hermes-agent/` (migrated from `/root/WorkStation/`)
 - **HERMES_HOME**: `/root/.hermes/` (HOME=/root, unchanged by migration)
 - **Config files**: `/root/.hermes/config.yaml`, `/root/.hermes/.env` (in HOME, NOT in source dir)
 - **Service**: `hermes-gateway.service`
@@ -36,7 +36,7 @@ Paths affected: `ExecStart`, `WorkingDirectory`, `PATH`, `VIRTUAL_ENV` env vars.
 
 ```bash
 ssh root@ubuntu24.tailcc8506.ts.net \
-  "cd /opt/WorkStation/agent/hermes-agent && rm -rf venv && python3.12 -m venv venv"
+  "cd /opt/WorkStation/hermes-agent && rm -rf venv && python3.12 -m venv venv"
 ```
 
 ### Step 3: Install with [feishu] extra
@@ -45,7 +45,7 @@ ssh root@ubuntu24.tailcc8506.ts.net \
 
 ```bash
 ssh root@ubuntu24.tailcc8506.ts.net \
-  "cd /opt/WorkStation/agent/hermes-agent && /opt/WorkStation/agent/hermes-agent/venv/bin/pip install -e '.[feishu]'"
+  "cd /opt/WorkStation/hermes-agent && /opt/WorkStation/hermes-agent/venv/bin/pip install -e '.[feishu]'"
 ```
 
 Symptom of missing lark-oapi: `WARNING gateway.run: Feishu: lark-oapi not installed or FEISHU_APP_ID/SECRET not set`
@@ -137,7 +137,7 @@ cfg["model"].pop("api_key", None)
 After editing config, restart the gateway:
 
 ```bash
-ssh root@ubuntu24.tailcc8506.ts.net "cd /opt/WorkStation/agent/hermes-agent && nohup /opt/WorkStation/agent/hermes-agent/venv/bin/python -m hermes_cli.main gateway run --replace > /tmp/hermes-gateway.log 2>&1 &"
+ssh root@ubuntu24.tailcc8506.ts.net "cd /opt/WorkStation/hermes-agent && nohup /opt/WorkStation/hermes-agent/venv/bin/python -m hermes_cli.main gateway run --replace > /tmp/hermes-gateway.log 2>&1 &"
 ```
 
 Verify startup:
@@ -150,7 +150,7 @@ ssh root@ubuntu24.tailcc8506.ts.net "sleep 4 && tail -20 /tmp/hermes-gateway.log
 After config changes, test with a simple query:
 
 ```bash
-ssh root@ubuntu24.tailcc8506.ts.net "cd /opt/WorkStation/agent/hermes-agent && /opt/WorkStation/agent/hermes-agent/venv/bin/python -m hermes_cli.main chat -q '回复OK即可' 2>&1 | tail -10"
+ssh root@ubuntu24.tailcc8506.ts.net "cd /opt/WorkStation/hermes-agent && /opt/WorkStation/hermes-agent/venv/bin/python -m hermes_cli.main chat -q '回复OK即可' 2>&1 | tail -10"
 ```
 
 Expected: Model responds with "OK" or similar confirmation.
@@ -160,7 +160,7 @@ Expected: Model responds with "OK" or similar confirmation.
 After any maintenance, confirm:
 1. `systemctl status hermes-gateway.service` shows `active (running)` (if using systemd)
 2. `journalctl -u hermes-gateway.service` or `/tmp/hermes-gateway.log` shows successful wss connection
-3. `ps aux | grep hermes` shows PID with `/opt/WorkStation/` path (not `/root/WorkStation/`)
+3. `ps aux | grep hermes` shows PID with `/opt/WorkStation/hermes-agent/` path (not `/root/WorkStation/`)
 4. No TLS/certifi path errors in logs
 5. CLI test query succeeds
 6. Gateway log shows `[Lark] [INFO] connected to wss://msg-frontier.feishu.cn/ws/v2`
