@@ -222,6 +222,46 @@ This produces a ~200–500 KB image that delivers reliably.
   Without the `activate` + `sleep` step, the Electron window may remain
   off-screen and `screencapture` captures only the desktop wallpaper.
 
+## Electron apps with sparse AX trees (Codex, VS Code, etc.)
+
+Many Electron apps expose almost nothing through the macOS accessibility
+tree. `entire contents of window 1` via AppleScript returns only window
+chrome (close/minimize/fullscreen buttons) — no internal UI elements.
+
+**Codex (OpenAI desktop app) specifics:**
+- AX tree: only `AXButton` for 关闭/全屏幕/最小化 — no composer, no
+  dialogs, no option buttons visible to AppleScript.
+- Config: `~/.codex/config.toml` — contains model, personality, MCP servers,
+  per-project trust levels, and `skip-full-access-confirm`.
+- To suppress confirmation dialogs permanently:
+  ```toml
+  skip-full-access-confirm = true
+  [projects."/path/to/project"]
+  trust_level = "trusted"
+  ```
+
+**Fallback interaction pattern (no `computer_use` tool):**
+When the AX tree is empty but you know what keystroke to send (e.g. "press
+2 then Enter" for a numbered option), use AppleScript keystroke injection:
+```bash
+osascript -e '
+tell application "Codex" to activate
+delay 0.5
+tell application "System Events"
+    tell process "Codex"
+        keystroke "2"
+        delay 0.3
+        key code 36  -- Enter
+    end tell
+end tell
+'
+```
+This works because Electron apps still receive keyboard input even though
+their internal DOM isn't exposed via accessibility. Use this for simple
+confirm/dismiss/numbered-choice interactions. For anything requiring
+visual feedback or clicking specific internal elements, `computer_use`
+(with SOM overlays) or `screencapture` + `vision_analyze` is required.
+
 ## Find My — Track Apple Devices and AirTags
 
 Track Apple devices and AirTags via the FindMy.app. Since Apple doesn't provide a CLI for FindMy, this uses AppleScript + screen capture.
