@@ -1,9 +1,16 @@
-```markdown
-# Keep this file empty (or with only comments) to skip heartbeat API calls.
+# 定期检查任务
 
-# Add tasks below when you want the agent to check something periodically.
-```
+## 每周检查（每周一）
+- 检查是否有新的销售数据需要更新预测模型
+- 检查库存水位是否接近安全线
+- 检查是否有临期补货任务（距截止日<7天）
 
-## Related
+## 每月检查（每月1日）
+- 基于上月完整数据更新需求预测
+- 输出下月预测报告
+- 复盘上月预测准确率（MAPE）
 
-- [Heartbeat config](/gateway/config-agents)
+## 季节性提醒
+- 2026-08-01：检查A005防晒霜销售拐点，准备秋季清仓
+- 2026-09-01：B005护手霜恢复常规补货
+- 2026-09-27：双11备货启动（T-45天）
