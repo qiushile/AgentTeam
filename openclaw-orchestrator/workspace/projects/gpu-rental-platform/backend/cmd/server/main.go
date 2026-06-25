@@ -38,6 +38,12 @@ func main() {
 	}
 	defer db.Close()
 
+	// Run migrations
+	if err := db.Migrate(); err != nil {
+		log.Fatalf("Failed to run migrations: %v", err)
+	}
+	logger.Info("Database migrations completed")
+
 	// Connect to Redis
 	rdb, err := database.NewRedis(cfg.RedisURL)
 	if err != nil {
@@ -45,10 +51,15 @@ func main() {
 	}
 	defer rdb.Close()
 
+	// Seed GPU models
+	gpuSvc := service.NewGPUService(db)
+	if err := gpuSvc.SeedModels(context.Background()); err != nil {
+		logger.Warn("Failed to seed GPU models", zap.Error(err))
+	}
+
 	// Initialize services
 	userService := service.NewUserService(db, rdb)
-	gpuService := service.NewGPUService(db)
-	instanceService := service.NewInstanceService(db, rdb, gpuService)
+	instanceService := service.NewInstanceService(db, rdb, gpuSvc)
 	billingService := service.NewBillingService(db, rdb)
 	monitorService := service.NewMonitorService(rdb)
 
@@ -61,13 +72,17 @@ func main() {
 
 	// Health check
 	r.GET("/health", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"status": "ok", "timestamp": time.Now()})
+		c.JSON(http.StatusOK, gin.H{
+			"status":    "ok",
+			"timestamp": time.Now().Format(time.RFC3339),
+			"version":   "1.0.0",
+		})
 	})
 
 	// API v1 routes
 	v1 := r.Group("/api/v1")
 	{
-		// Auth routes (no auth required)
+		// Auth (public)
 		auth := v1.Group("/auth")
 		authHandler := handler.NewAuthHandler(userService, cfg.JWTSecret)
 		auth.POST("/register", authHandler.Register)
@@ -84,7 +99,7 @@ func main() {
 			protected.PUT("/users/me", userHandler.UpdateProfile)
 
 			// GPU models
-			gpuHandler := handler.NewGPUHandler(gpuService)
+			gpuHandler := handler.NewGPUHandler(gpuSvc)
 			protected.GET("/gpu/models", gpuHandler.ListModels)
 			protected.GET("/gpu/models/:id", gpuHandler.GetModel)
 
@@ -110,16 +125,12 @@ func main() {
 		}
 	}
 
-	// Metrics endpoint for Prometheus
-	r.GET("/metrics", gin.WrapH(prometheusHandler()))
-
 	// Start server
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", cfg.Port),
 		Handler: r,
 	}
 
-	// Graceful shutdown
 	go func() {
 		logger.Info("Server starting", zap.Int("port", cfg.Port))
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
@@ -127,7 +138,7 @@ func main() {
 		}
 	}()
 
-	// Wait for interrupt signal
+	// Graceful shutdown
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
@@ -139,12 +150,4 @@ func main() {
 		logger.Fatal("Server forced to shutdown", zap.Error(err))
 	}
 	logger.Info("Server exited")
-}
-
-func prometheusHandler() http.Handler {
-	// Prometheus metrics handler placeholder
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("# Metrics endpoint"))
-	})
 }
