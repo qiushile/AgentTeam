@@ -368,13 +368,13 @@
     "created_at": "2026-06-18T03:28:06.164726+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-06-18T03:28:06.167250+00:00",
-    "last_viewed_at": "2026-06-18T03:28:06.164737+00:00",
+    "last_used_at": "2026-06-25T02:45:03.916186+00:00",
+    "last_viewed_at": "2026-06-25T02:45:03.914510+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 1,
-    "view_count": 1
+    "use_count": 2,
+    "view_count": 2
   },
   "macos-computer-use": {
     "archived_at": null,
@@ -388,6 +388,19 @@
     "state": "active",
     "use_count": 5,
     "view_count": 5
+  },
+  "macos-office-font-management": {
+    "archived_at": null,
+    "created_at": "2026-06-25T02:44:37.497422+00:00",
+    "created_by": "agent",
+    "last_patched_at": "2026-06-25T02:44:58.534662+00:00",
+    "last_used_at": null,
+    "last_viewed_at": null,
+    "patch_count": 2,
+    "pinned": false,
+    "state": "active",
+    "use_count": 0,
+    "view_count": 0
   },
   "macos-ssh-troubleshooting": {
     "archived_at": null,
