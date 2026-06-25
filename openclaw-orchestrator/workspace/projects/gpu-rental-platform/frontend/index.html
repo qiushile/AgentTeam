@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPU Cloud - 高性能GPU算力租赁平台</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2332;
+    --border: #1e293b;
+    --text: #e5e7eb;
+    --text-muted: #9ca3af;
+    --primary: #3b82f6;
+    --primary-dark: #2563eb;
+    --accent: #06d6a0;
+    --accent-dark: #05b487;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --purple: #8b5cf6;
+    --gradient: linear-gradient(135deg, #3b82f6, #06d6a0);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.6 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  a { color: var(--primary); text-decoration: none; }
+
+  /* ===== NAV ===== */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 48px;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; color: #fff; }
+  .logo-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--gradient); display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: #fff;
+  }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a { color: var(--text-muted); font-size: 14px; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover { color: #fff; }
+  .nav-actions { display: flex; gap: 12px; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 22px; border-radius: 8px; font-size: 14px; font-weight: 600;
+    border: none; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--text-muted); }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-accent { background: var(--accent); color: #000; }
+  .btn-accent:hover { background: var(--accent-dark); }
+  .btn-lg { padding: 14px 32px; font-size: 16px; border-radius: 10px; }
+
+  /* ===== HERO ===== */
+  .hero {
+    text-align: center;
+    padding: 100px 48px 80px;
+    max-width: 900px; margin: 0 auto;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 16px; border-radius: 20px;
+    background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.25);
+    color: var(--primary); font-size: 13px; font-weight: 600; margin-bottom: 24px;
+  }
+  .badge::before { content: "⚡"; }
+  .hero h1 {
+    font-size: 52px; font-weight: 800; line-height: 1.15;
+    background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
+  }
+  .hero p { font-size: 18px; color: var(--text-muted); max-width: 640px; margin: 0 auto 36px; line-height: 1.7; }
+  .hero-actions { display: flex; gap: 16px; justify-content: center; }
+  .hero-stats {
+    display: flex; justify-content: center; gap: 64px; margin-top: 64px;
+    padding-top: 48px; border-top: 1px solid var(--border);
+  }
+  .stat-value { font-size: 36px; font-weight: 800; color: #fff; }
+  .stat-label { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+
+  /* ===== GPU CARDS ===== */
+  .section { padding: 80px 48px; max-width: 1200px; margin: 0 auto; }
+  .section-title { font-size: 32px; font-weight: 700; text-align: center; margin-bottom: 12px; color: #fff; }
+  .section-sub { text-align: center; color: var(--text-muted); margin-bottom: 48px; font-size: 16px; }
+
+  .gpu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .gpu-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 28px; transition: all 0.25s; position: relative; overflow: hidden;
+  }
+  .gpu-card:hover { border-color: var(--primary); transform: translateY(-4px); box-shadow: 0 8px 32px rgba(59,130,246,0.12); }
+  .gpu-card.popular { border-color: var(--accent); }
+  .gpu-card.popular::after {
+    content: "🔥 热门"; position: absolute; top: 14px; right: 14px;
+    padding: 4px 12px; border-radius: 12px; background: rgba(6,214,160,0.15);
+    color: var(--accent); font-size: 12px; font-weight: 600;
+  }
+  .gpu-name { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .gpu-vram { font-size: 14px; color: var(--primary); margin-bottom: 20px; }
+  .gpu-specs { list-style: none; margin-bottom: 24px; }
+  .gpu-specs li {
+    display: flex; justify-content: space-between;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .gpu-specs li span:first-child { color: var(--text-muted); }
+  .gpu-specs li span:last-child { color: #fff; font-weight: 500; }
+  .gpu-price { display: flex; align-items: baseline; gap: 4px; margin-bottom: 20px; }
+  .gpu-price .amount { font-size: 32px; font-weight: 800; color: #fff; }
+  .gpu-price .unit { font-size: 14px; color: var(--text-muted); }
+  .gpu-card .btn { width: 100%; justify-content: center; }
+
+  /* ===== FEATURES ===== */
+  .features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .feature-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; text-align: center;
+  }
+  .feature-icon { font-size: 36px; margin-bottom: 16px; }
+  .feature-card h3 { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 8px; }
+  .feature-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+  /* ===== PRICING TABLE ===== */
+  .pricing-table { width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 12px; overflow: hidden; }
+  .pricing-table th {
+    padding: 16px 20px; text-align: left; font-size: 13px; font-weight: 600;
+    color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
+    background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border);
+  }
+  .pricing-table td {
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .pricing-table tr:last-child td { border-bottom: none; }
+  .pricing-table td:last-child { font-weight: 700; color: var(--accent); }
+  .pricing-table td:nth-child(3) { color: var(--text-muted); }
+  .tag {
+    display: inline-block; padding: 3px 10px; border-radius: 10px;
+    font-size: 12px; font-weight: 600;
+  }
+  .tag-green { background: rgba(6,214,160,0.12); color: var(--accent); }
+  .tag-yellow { background: rgba(245,158,11,0.12); color: var(--warning); }
+  .tag-red { background: rgba(239,68,68,0.12); color: var(--danger); }
+
+  /* ===== DASHBOARD PREVIEW ===== */
+  .dashboard-preview {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+    overflow: hidden; margin-top: 48px;
+  }
+  .dash-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px; border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+  }
+  .dash-header h3 { font-size: 16px; font-weight: 600; color: #fff; }
+  .dash-body { padding: 24px; }
+  .dash-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .dash-stat {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px;
+  }
+  .dash-stat-label { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+  .dash-stat-value { font-size: 28px; font-weight: 700; color: #fff; }
+  .dash-stat-change { font-size: 12px; margin-top: 4px; }
+  .dash-stat-change.up { color: var(--accent); }
+  .dash-stat-change.down { color: var(--danger); }
+
+  .instance-table { width: 100%; }
+  .instance-table th {
+    padding: 12px 16px; text-align: left; font-size: 12px; font-weight: 600;
+    color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+  .instance-table td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .status-dot { display: inline-flex; align-items: center; gap: 6px; }
+  .status-dot::before {
+    content: ""; width: 8px; height: 8px; border-radius: 50%;
+  }
+  .status-dot.running::before { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+  .status-dot.stopped::before { background: var(--text-muted); }
+  .status-dot.pending::before { background: var(--warning); animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* ===== CTA ===== */
+  .cta {
+    text-align: center; padding: 80px 48px;
+    background: linear-gradient(180deg, transparent, rgba(59,130,246,0.06));
+  }
+  .cta h2 { font-size: 36px; font-weight: 700; color: #fff; margin-bottom: 16px; }
+  .cta p { color: var(--text-muted); font-size: 16px; margin-bottom: 32px; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 48px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 1200px; margin: 0 auto;
+  }
+  footer p { color: var(--text-muted); font-size: 13px; }
+  .footer-links { display: flex; gap: 24px; list-style: none; }
+  .footer-links a { color: var(--text-muted); font-size: 13px; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1024px) {
+    .gpu-grid { grid-template-columns: repeat(2, 1fr); }
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .dash-stats { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 12px 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 60px 20px; }
+    .hero h1 { font-size: 36px; }
+    .section { padding: 48px 20px; }
+    .gpu-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+    .hero-stats { flex-direction: column; gap: 24px; }
+    .dash-stats { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    GPU Cloud
+  </div>
+  <ul class="nav-links">
+    <li><a href="#gpu">GPU 实例</a></li>
+    <li><a href="#pricing">价格方案</a></li>
+    <li><a href="#dashboard">控制台预览</a></li>
+    <li><a href="#features">产品优势</a></li>
+    <li><a href="#">文档中心</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn btn-ghost">登录</button>
+    <button class="btn btn-primary">免费注册</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge">全新 H100 已上线，限时 8 折</div>
+  <h1>高性能 GPU 算力<br>按需租赁，即刻启动</h1>
+  <p>为 AI 训练、推理、渲染提供弹性算力。支持 A100/H100/RTX 4090 等多型号 GPU，秒级创建，按秒计费。</p>
+  <div class="hero-actions">
+    <button class="btn btn-primary btn-lg">🚀 立即创建实例</button>
+    <button class="btn btn-ghost btn-lg">查看价格 →</button>
+  </div>
+  <div class="hero-stats">
+    <div><div class="stat-value">2,400+</div><div class="stat-label">GPU 实例在线</div></div>
+    <div><div class="stat-value">99.95%</div><div class="stat-label">服务可用性 SLA</div></div>
+    <div><div class="stat-value">12,000+</div><div class="stat-label">活跃开发者</div></div>
+    <div><div class="stat-value">¥1.5起</div><div class="stat-label">GPU 每小时起步价</div></div>
+  </div>
+</section>
+
+<!-- GPU INSTANCES -->
+<section class="section" id="gpu">
+  <h2 class="section-title">选择你的 GPU</h2>
+  <p class="section-sub">从入门到旗舰，覆盖所有 AI 工作负载场景</p>
+  <div class="gpu-grid">
+
+    <div class="gpu-card">
+      <div class="gpu-name">RTX 4090</div>
+      <div class="gpu-vram">24GB GDDR6X · 入门首选</div>
+      <ul class="gpu-specs">
+        <li><span>CUDA 核心</span><span>16,384</span></li>
+        <li><span>显存带宽</span><span>1,008 GB/s</span></li>
+        <li><span>FP32 算力</span><span>82.6 TFLOPS</span></li>
+        <li><span>推荐场景</span><span>模型推理 / 轻量训练</span></li>
+      </ul>
+      <div class="gpu-price">
+        <span class="amount">¥2.5</span><span class="unit">/小时</span>
+      </div>
+      <button class="btn btn-ghost">创建实例</button>
+    </div>
+
+    <div class="gpu-card popular">
+      <div class="gpu-name">A100 80G</div>
+      <div class="gpu-vram">80GB HBM2e · 主力训练</div>
+      <ul class="gpu-specs">
+        <li><span>CUDA 核心</span><span>6,912</span></li>
+        <li><span>显存带宽</span><span>2,039 GB/s</span></li>
+        <li><span>FP32 算力</span><span>19.5 TFLOPS</span></li>
+        <li><span>推荐场景</span><span>大模型训练 / 微调</span></li>
+      </ul>
+      <div class="gpu-price">
+        <span class="amount">¥8.0</span><span class="unit">/小时</span>
+      </div>
+      <button class="btn btn-primary">创建实例</button>
+    </div>
+
+    <div class="gpu-card">
+      <div class="gpu-name">H100 80G</div>
+      <div class="gpu-vram">80GB HBM3 · 旗舰性能</div>
+      <ul class="gpu-specs">
+        <li><span>CUDA 核心</span><span>16,896</span></li>
+        <li><span>显存带宽</span><span>3,350 GB/s</span></li>
+        <li><span>FP32 算力</span><span>67 TFLOPS</span></li>
+        <li><span>推荐场景</span><span>超大模型训练 / 推理</span></li>
+      </ul>
+      <div class="gpu-price">
+        <span class="amount">¥18.0</span><span class="unit">/小时</span>
+      </div>
+      <button class="btn btn-ghost">创建实例</button>
+    </div>
+
+    <div class="gpu-card">
+      <div class="gpu-name">RTX 4080</div>
+      <div class="gpu-vram">16GB GDDR6X · 性价比</div>
+      <ul class="gpu-specs">
+        <li><span>CUDA 核心</span><span>9,728</span></li>
+        <li><span>显存带宽</span><span>717 GB/s</span></li>
+        <li><span>FP32 算力</span><span>48.7 TFLOPS</span></li>
+        <li><span>推荐场景</span><span>Stable Diffusion / 推理</span></li>
+      </ul>
+      <div class="gpu-price">
+        <span class="amount">¥1.5</span><span class="unit">/小时</span>
+      </div>
+      <button class="btn btn-ghost">创建实例</button>
+    </div>
+
+    <div class="gpu-card">
+      <div class="gpu-name">A100 40G</div>
+      <div class="gpu-vram">40GB HBM2e · 经典之选</div>
+      <ul class="gpu-specs">
+        <li><span>CUDA 核心</span><span>6,912</span></li>
+        <li><span>显存带宽</span><span>1,555 GB/s</span></li>
+        <li><span>FP32 算力</span><span>19.5 TFLOPS</span></li>
+        <li><span>推荐场景</span><span>模型训练 / 数据处理</span></li>
+      </ul>
+      <div class="gpu-price">
+        <span class="amount">¥5.0</span><span class="unit">/小时</span>
+      </div>
+      <button class="btn btn-ghost">创建实例</button>
+    </div>
+
+    <div class="gpu-card">
+      <div class="gpu-name">V100 32G</div>
+      <div class="gpu-vram">32GB HBM2 · 经济实惠</div>
+      <ul class="gpu-specs">
+        <li><span>CUDA 核心</span><span>5,120</span></li>
+        <li><span>显存带宽</span><span>900 GB/s</span></li>
+        <li><span>FP32 算力</span><span>15.7 TFLOPS</span></li>
+        <li><span>推荐场景</span><span>学习 / 小规模训练</span></li>
+      </ul>
+      <div class="gpu-price">
+        <span class="amount">¥2.0</span><span class="unit">/小时</span>
+      </div>
+      <button class="btn btn-ghost">创建实例</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <h2 class="section-title">为什么选择我们</h2>
+  <p class="section-sub">专注 GPU 算力租赁，让 AI 开发更高效</p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>秒级创建</h3>
+      <p>选择 GPU → 确认订单 → 60秒内实例就绪，无需等待</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💰</div>
+      <h3>按秒计费</h3>
+      <p>精确到秒的计费方式，用多少付多少，不浪费每一分钱</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🖥️</div>
+      <h3>预装环境</h3>
+      <p>Ubuntu + CUDA + PyTorch/TensorFlow，开箱即用，零配置</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <h3>安全隔离</h3>
+      <p>多租户容器隔离，数据加密存储，实例释放后安全擦除</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING TABLE -->
+<section class="section" id="pricing">
+  <h2 class="section-title">完整价格表</h2>
+  <p class="section-sub">透明定价，无隐藏费用 · 包月享 7 折优惠</p>
+  <table class="pricing-table">
+    <thead>
+      <tr>
+        <th>GPU 型号</th>
+        <th>显存</th>
+        <th>FP32 算力</th>
+        <th>按小时价</th>
+        <th>包月价</th>
+        <th>库存状态</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong style="color:#fff">RTX 4080</strong></td>
+        <td>16 GB</td>
+        <td>48.7 TFLOPS</td>
+        <td>¥1.50</td>
+        <td>¥756</td>
+        <td><span class="tag tag-green">充足</span></td>
+      </tr>
+      <tr>
+        <td><strong style="color:#fff">RTX 4090</strong></td>
+        <td>24 GB</td>
+        <td>82.6 TFLOPS</td>
+        <td>¥2.50</td>
+        <td>¥1,260</td>
+        <td><span class="tag tag-green">充足</span></td>
+      </tr>
+      <tr>
+        <td><strong style="color:#fff">V100</strong></td>
+        <td>32 GB</td>
+        <td>15.7 TFLOPS</td>
+        <td>¥2.00</td>
+        <td>¥1,008</td>
+        <td><span class="tag tag-yellow">紧张</span></td>
+      </tr>
+      <tr>
+        <td><strong style="color:#fff">A100 40G</strong></td>
+        <td>40 GB</td>
+        <td>19.5 TFLOPS</td>
+        <td>¥5.00</td>
+        <td>¥2,520</td>
+        <td><span class="tag tag-green">充足</span></td>
+      </tr>
+      <tr>
+        <td><strong style="color:#fff">A100 80G</strong></td>
+        <td>80 GB</td>
+        <td>19.5 TFLOPS</td>
+        <td>¥8.00</td>
+        <td>¥4,032</td>
+        <td><span class="tag tag-green">充足</span></td>
+      </tr>
+      <tr>
+        <td><strong style="color:#fff">H100 80G</strong></td>
+        <td>80 GB</td>
+        <td>67 TFLOPS</td>
+        <td>¥18.00</td>
+        <td>¥9,072</td>
+        <td><span class="tag tag-red">紧缺</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- DASHBOARD PREVIEW -->
+<section class="section" id="dashboard">
+  <h2 class="section-title">控制台预览</h2>
+  <p class="section-sub">一站式管理你的 GPU 实例、监控与账单</p>
+  <div class="dashboard-preview">
+    <div class="dash-header">
+      <h3>📊 实例控制台</h3>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-accent" style="padding:8px 16px;font-size:13px">+ 新建实例</button>
+        <button class="btn btn-ghost" style="padding:8px 16px;font-size:13px">刷新</button>
+      </div>
+    </div>
+    <div class="dash-body">
+      <div class="dash-stats">
+        <div class="dash-stat">
+          <div class="dash-stat-label">运行中实例</div>
+          <div class="dash-stat-value">3</div>
+          <div class="dash-stat-change up">↑ 1 较昨日</div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-label">本月消费</div>
+          <div class="dash-stat-value">¥1,247</div>
+          <div class="dash-stat-change up">↑ 12% 较上月</div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-label">GPU 平均利用率</div>
+          <div class="dash-stat-value">78%</div>
+          <div class="dash-stat-change down">↓ 5% 较昨日</div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-label">账户余额</div>
+          <div class="dash-stat-value">¥3,580</div>
+          <div style="margin-top:8px"><button class="btn btn-accent" style="padding:6px 14px;font-size:12px">充值</button></div>
+        </div>
+      </div>
+
+      <table class="instance-table">
+        <thead>
+          <tr>
+            <th>实例 ID</th>
+            <th>GPU 型号</th>
+            <th>状态</th>
+            <th>IP 地址</th>
+            <th>运行时长</th>
+            <th>累计费用</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:#fff;font-family:monospace">inst-a8f3k2</td>
+            <td>A100 80G</td>
+            <td><span class="status-dot running">运行中</span></td>
+            <td style="font-family:monospace">10.0.3.12</td>
+            <td>14h 32m</td>
+            <td style="color:#fff">¥116.00</td>
+            <td><a href="#">SSH</a> · <a href="#">监控</a> · <a href="#" style="color:var(--danger)">停止</a></td>
+          </tr>
+          <tr>
+            <td style="color:#fff;font-family:monospace">inst-b7x9m1</td>
+            <td>RTX 4090</td>
+            <td><span class="status-dot running">运行中</span></td>
+            <td style="font-family:monospace">10.0.5.28</td>
+            <td>3d 7h 15m</td>
+            <td style="color:#fff">¥202.50</td>
+            <td><a href="#">SSH</a> · <a href="#">监控</a> · <a href="#" style="color:var(--danger)">停止</a></td>
+          </tr>
+          <tr>
+            <td style="color:#fff;font-family:monospace">inst-c2n5p8</td>
+            <td>H100 80G</td>
+            <td><span class="status-dot pending">创建中</span></td>
+            <td style="color:var(--text-muted)">分配中...</td>
+            <td>—</td>
+            <td style="color:var(--text-muted)">¥0.00</td>
+            <td><a href="#" style="color:var(--warning)">等待就绪</a></td>
+          </tr>
+          <tr>
+            <td style="color:#fff;font-family:monospace">inst-d4r1q6</td>
+            <td>A100 40G</td>
+            <td><span class="status-dot stopped">已停止</span></td>
+            <td style="color:var(--text-muted)">—</td>
+            <td>—</td>
+            <td style="color:#fff">¥340.00</td>
+            <td><a href="#" style="color:var(--accent)">启动</a> · <a href="#" style="color:var(--danger)">释放</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>准备好开始了吗？</h2>
+  <p>注册即送 ¥100 体验金，无需绑卡</p>
+  <div style="display:flex;gap:16px;justify-content:center">
+    <button class="btn btn-accent btn-lg">🎁 免费注册领 ¥100</button>
+    <button class="btn btn-ghost btn-lg">联系销售团队</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 GPU Cloud · 高性能算力租赁平台</p>
+  <ul class="footer-links">
+    <li><a href="#">服务条款</a></li>
+    <li><a href="#">隐私政策</a></li>
+    <li><a href="#">API 文档</a></li>
+    <li><a href="#">帮助中心</a></li>
+    <li><a href="#">联系我们</a></li>
+  </ul>
+</footer>
+
+</body>
+</html>
