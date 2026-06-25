@@ -25,12 +25,16 @@ func (h *UserHandler) GetProfile(c *gin.Context) {
 		return
 	}
 
+	balance, _ := h.userSvc.GetBalance(c.Request.Context(), userID)
+
 	c.JSON(http.StatusOK, gin.H{
 		"id":       user.ID,
 		"username": user.Username,
 		"email":    user.Email,
 		"phone":    user.Phone,
 		"status":   user.Status,
+		"balance":  balance.Balance,
+		"currency": balance.Currency,
 		"created_at": user.CreatedAt,
 	})
 }
@@ -46,7 +50,6 @@ func (h *UserHandler) UpdateProfile(c *gin.Context) {
 		return
 	}
 
-	// Update phone
 	_, err := h.userSvc.GetDB().Pool.Exec(c.Request.Context(),
 		`UPDATE users SET phone = $1, updated_at = NOW() WHERE id = $2`,
 		req.Phone, userID,
