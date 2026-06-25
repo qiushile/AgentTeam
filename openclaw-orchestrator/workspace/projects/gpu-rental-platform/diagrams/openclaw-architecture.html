@@ -1,0 +1,274 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OpenClaw Architecture Diagram</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+    --ai: #e9d5ff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1e3a5f;
+      --process: #312e81;
+      --storage: #0f766e;
+      --external: #78350f;
+      --risk: #991b1b;
+      --ai: #581c87;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 14px/1.4 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  main {
+    max-width: 1100px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title { font-size: 22px; font-weight: 700; fill: var(--fg); }
+  .subtitle { font-size: 13px; fill: var(--muted); }
+  .label { font-size: 13px; font-weight: 600; fill: var(--fg); }
+  .small { font-size: 11px; fill: var(--muted); }
+  .node { stroke: var(--line); stroke-width: 1; rx: 6; }
+  .neutral { fill: var(--neutral); }
+  .input { fill: var(--input); }
+  .process { fill: var(--process); }
+  .storage { fill: var(--storage); }
+  .external { fill: var(--external); }
+  .risk { fill: var(--risk); }
+  .ai { fill: var(--ai); }
+  .edge { stroke: var(--line); stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+  .zone { fill: none; stroke: var(--line); stroke-width: 1; stroke-dasharray: 6 5; opacity: 0.6; rx: 8; }
+  .zone-label { font-size: 11px; font-weight: 600; fill: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+</style>
+<main>
+<svg viewBox="0 0 1060 820" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="var(--line)" />
+    </marker>
+    <marker id="arrow-bi" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="var(--line)" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="530" y="32" class="title" text-anchor="middle">OpenClaw 技术架构图</text>
+  <text x="530" y="50" class="subtitle" text-anchor="middle">Multi-Agent Orchestration Platform</text>
+
+  <!-- ═══════════ LAYER 1: User Channels ═══════════ -->
+  <rect x="20" y="70" width="1020" height="90" class="zone" />
+  <text x="30" y="88" class="zone-label">① User Channels</text>
+
+  <rect x="40" y="98" width="140" height="50" class="node input" />
+  <text x="110" y="120" class="label" text-anchor="middle">飞书 Feishu</text>
+  <text x="110" y="136" class="small" text-anchor="middle">Bot / Webhook</text>
+
+  <rect x="200" y="98" width="140" height="50" class="node input" />
+  <text x="270" y="120" class="label" text-anchor="middle">Discord</text>
+  <text x="270" y="136" class="small" text-anchor="middle">Bot / Gateway</text>
+
+  <rect x="360" y="98" width="140" height="50" class="node input" />
+  <text x="430" y="120" class="label" text-anchor="middle">Telegram</text>
+  <text x="430" y="136" class="small" text-anchor="middle">Bot API</text>
+
+  <rect x="520" y="98" width="140" height="50" class="node input" />
+  <text x="590" y="120" class="label" text-anchor="middle">WhatsApp</text>
+  <text x="590" y="136" class="small" text-anchor="middle">Business API</text>
+
+  <rect x="680" y="98" width="140" height="50" class="node input" />
+  <text x="750" y="120" class="label" text-anchor="middle">Slack</text>
+  <text x="750" y="136" class="small" text-anchor="middle">Socket Mode</text>
+
+  <rect x="840" y="98" width="170" height="50" class="node input" />
+  <text x="925" y="120" class="label" text-anchor="middle">Signal / iMessage</text>
+  <text x="925" y="136" class="small" text-anchor="middle">+ 更多通道</text>
+
+  <!-- ═══════════ LAYER 2: Gateway ═══════════ -->
+  <rect x="20" y="180" width="1020" height="80" class="zone" />
+  <text x="30" y="198" class="zone-label">② Gateway Layer</text>
+
+  <rect x="120" y="208" width="200" height="42" class="node process" />
+  <text x="220" y="234" class="label" text-anchor="middle">openclaw-gateway</text>
+
+  <rect x="360" y="208" width="200" height="42" class="node process" />
+  <text x="460" y="234" class="label" text-anchor="middle">Message Router</text>
+
+  <rect x="600" y="208" width="200" height="42" class="node process" />
+  <text x="700" y="234" class="label" text-anchor="middle">Plugin Manager</text>
+  <text x="700" y="246" class="small" text-anchor="middle">@openclaw/feishu etc.</text>
+
+  <rect x="840" y="208" width="140" height="42" class="node process" />
+  <text x="910" y="234" class="label" text-anchor="middle">Heartbeat</text>
+
+  <!-- ═══════════ LAYER 3: Agent Orchestrator ═══════════ -->
+  <rect x="20" y="280" width="1020" height="200" class="zone" />
+  <text x="30" y="298" class="zone-label">③ Agent Orchestrator</text>
+
+  <!-- Central Orchestrator -->
+  <rect x="400" y="310" width="260" height="60" class="node ai" style="stroke-width:2" />
+  <text x="530" y="334" class="label" text-anchor="middle" style="font-size:15px">🎯 Orchestrator Agent</text>
+  <text x="530" y="354" class="small" text-anchor="middle">意图识别 · 任务拆解 · 全局调度</text>
+
+  <!-- Department Agents -->
+  <rect x="40" y="395" width="150" height="55" class="node process" />
+  <text x="115" y="417" class="label" text-anchor="middle">PM Agent</text>
+  <text x="115" y="435" class="small" text-anchor="middle">产品/市场分析</text>
+
+  <rect x="210" y="395" width="150" height="55" class="node process" />
+  <text x="285" y="417" class="label" text-anchor="middle">Dev Agent</text>
+  <text x="285" y="435" class="small" text-anchor="middle">开发/架构</text>
+
+  <rect x="380" y="395" width="150" height="55" class="node process" />
+  <text x="455" y="417" class="label" text-anchor="middle">UI Designer</text>
+  <text x="455" y="435" class="small" text-anchor="middle">UI/UX 设计</text>
+
+  <rect x="550" y="395" width="150" height="55" class="node process" />
+  <text x="625" y="417" class="label" text-anchor="middle">运营 Agent</text>
+  <text x="625" y="435" class="small" text-anchor="middle">数据分析</text>
+
+  <rect x="720" y="395" width="150" height="55" class="node process" />
+  <text x="795" y="417" class="label" text-anchor="middle">客服 Agent</text>
+  <text x="795" y="435" class="small" text-anchor="middle">客户服务</text>
+
+  <rect x="890" y="395" width="140" height="55" class="node process" />
+  <text x="960" y="417" class="label" text-anchor="middle">安全 Agent</text>
+  <text x="960" y="435" class="small" text-anchor="middle">网络安全</text>
+
+  <!-- ═══════════ LAYER 4: Tools ═══════════ -->
+  <rect x="20" y="500" width="1020" height="100" class="zone" />
+  <text x="30" y="518" class="zone-label">④ Tool Layer</text>
+
+  <rect x="40" y="528" width="120" height="55" class="node neutral" />
+  <text x="100" y="550" class="label" text-anchor="middle">read/write</text>
+  <text x="100" y="568" class="small" text-anchor="middle">文件操作</text>
+
+  <rect x="180" y="528" width="120" height="55" class="node neutral" />
+  <text x="240" y="550" class="label" text-anchor="middle">message</text>
+  <text x="240" y="568" class="small" text-anchor="middle">消息发送</text>
+
+  <rect x="320" y="528" width="120" height="55" class="node neutral" />
+  <text x="380" y="550" class="label" text-anchor="middle">web_search</text>
+  <text x="380" y="568" class="small" text-anchor="middle">网络搜索</text>
+
+  <rect x="460" y="528" width="120" height="55" class="node neutral" />
+  <text x="520" y="550" class="label" text-anchor="middle">web_fetch</text>
+  <text x="520" y="568" class="small" text-anchor="middle">URL抓取</text>
+
+  <rect x="600" y="528" width="120" height="55" class="node neutral" />
+  <text x="660" y="550" class="label" text-anchor="middle">exec</text>
+  <text x="660" y="568" class="small" text-anchor="middle">命令执行</text>
+
+  <rect x="740" y="528" width="120" height="55" class="node neutral" />
+  <text x="800" y="550" class="label" text-anchor="middle">skills</text>
+  <text x="800" y="568" class="small" text-anchor="middle">技能扩展</text>
+
+  <rect x="880" y="528" width="120" height="55" class="node neutral" />
+  <text x="940" y="550" class="label" text-anchor="middle">memory</text>
+  <text x="940" y="568" class="small" text-anchor="middle">语义记忆</text>
+
+  <!-- ═══════════ LAYER 5: LLM Provider ═══════════ -->
+  <rect x="20" y="620" width="500" height="100" class="zone" />
+  <text x="30" y="638" class="zone-label">⑤ LLM Provider</text>
+
+  <rect x="60" y="650" width="200" height="55" class="node ai" />
+  <text x="160" y="674" class="label" text-anchor="middle">阿里云 Qwen3.6-plus</text>
+  <text x="160" y="692" class="small" text-anchor="middle">主模型 (default_model)</text>
+
+  <rect x="280" y="650" width="200" height="55" class="node ai" />
+  <text x="380" y="674" class="label" text-anchor="middle">通义千问系列</text>
+  <text x="380" y="692" class="small" text-anchor="middle">备用 / 不同任务选型</text>
+
+  <!-- ═══════════ LAYER 6: Storage ═══════════ -->
+  <rect x="540" y="620" width="500" height="100" class="zone" />
+  <text x="550" y="638" class="zone-label">⑥ Storage Layer</text>
+
+  <rect x="580" y="650" width="140" height="55" class="node storage" />
+  <text x="650" y="674" class="label" text-anchor="middle">PostgreSQL</text>
+  <text x="650" y="692" class="small" text-anchor="middle">跨Agent协作</text>
+
+  <rect x="740" y="650" width="140" height="55" class="node storage" />
+  <text x="810" y="674" class="label" text-anchor="middle">LanceDB</text>
+  <text x="810" y="692" class="small" text-anchor="middle">向量检索</text>
+
+  <rect x="900" y="650" width="110" height="55" class="node storage" />
+  <text x="955" y="674" class="label" text-anchor="middle">本地FS</text>
+  <text x="955" y="692" class="small" text-anchor="middle">Workspace</text>
+
+  <!-- ═══════════ CONNECTORS ═══════════ -->
+  <!-- Channels → Gateway -->
+  <line x1="110" y1="148" x2="220" y2="208" class="edge" />
+  <line x1="270" y1="148" x2="220" y2="208" class="edge" />
+  <line x1="430" y1="148" x2="460" y2="208" class="edge" />
+  <line x1="590" y1="148" x2="700" y2="208" class="edge" />
+  <line x1="750" y1="148" x2="700" y2="208" class="edge" />
+  <line x1="925" y1="148" x2="910" y2="208" class="edge" />
+
+  <!-- Gateway → Orchestrator -->
+  <line x1="220" y1="250" x2="530" y2="310" class="edge" />
+  <line x1="460" y1="250" x2="530" y2="310" class="edge" />
+  <line x1="700" y1="250" x2="530" y2="310" class="edge" />
+  <line x1="910" y1="250" x2="530" y2="310" class="edge" />
+
+  <!-- Orchestrator → Departments -->
+  <line x1="460" y1="370" x2="115" y2="395" class="edge" />
+  <line x1="480" y1="370" x2="285" y2="395" class="edge" />
+  <line x1="510" y1="370" x2="455" y2="395" class="edge" />
+  <line x1="550" y1="370" x2="625" y2="395" class="edge" />
+  <line x1="580" y1="370" x2="795" y2="395" class="edge" />
+  <line x1="600" y1="370" x2="960" y2="395" class="edge" />
+
+  <!-- Departments → Tools -->
+  <line x1="115" y1="450" x2="100" y2="528" class="edge" />
+  <line x1="285" y1="450" x2="240" y2="528" class="edge" />
+  <line x1="455" y1="450" x2="380" y2="528" class="edge" />
+  <line x1="625" y1="450" x2="520" y2="528" class="edge" />
+  <line x1="795" y1="450" x2="660" y2="528" class="edge" />
+  <line x1="960" y1="450" x2="940" y2="528" class="edge" />
+
+  <!-- Orchestrator → LLM -->
+  <line x1="480" y1="370" x2="160" y2="650" class="edge" />
+  <line x1="530" y1="370" x2="380" y2="650" class="edge" />
+
+  <!-- Orchestrator → Storage -->
+  <line x1="580" y1="370" x2="650" y2="650" class="edge" />
+  <line x1="600" y1="370" x2="810" y2="650" class="edge" />
+  <line x1="630" y1="370" x2="955" y2="650" class="edge" />
+
+  <!-- Legend -->
+  <rect x="40" y="750" width="16" height="12" class="node input" rx="2" />
+  <text x="62" y="761" class="small">用户通道</text>
+  <rect x="140" y="750" width="16" height="12" class="node process" rx="2" />
+  <text x="162" y="761" class="small">网关/处理</text>
+  <rect x="250" y="750" width="16" height="12" class="node ai" rx="2" />
+  <text x="272" y="761" class="small">AI模型</text>
+  <rect x="350" y="750" width="16" height="12" class="node neutral" rx="2" />
+  <text x="372" y="761" class="small">工具</text>
+  <rect x="440" y="750" width="16" height="12" class="node storage" rx="2" />
+  <text x="462" y="761" class="small">存储</text>
+  <text x="540" y="761" class="small" fill="var(--muted)">──→ 数据流向</text>
+</svg>
+</main>
