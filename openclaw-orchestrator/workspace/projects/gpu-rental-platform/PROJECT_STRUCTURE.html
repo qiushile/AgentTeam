@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPU Cloud - 项目文件结构</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg-card: #111827;
+    --border: #1e293b;
+    --text: #e5e7eb;
+    --text-muted: #9ca3af;
+    --primary: #3b82f6;
+    --accent: #06d6a0;
+    --purple: #8b5cf6;
+    --orange: #f59e0b;
+    --red: #ef4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 14px/1.6 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding: 40px 20px;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  h1 {
+    font-size: 24px; font-weight: 700; color: #fff;
+    margin-bottom: 8px; text-align: center;
+  }
+  .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 32px; font-size: 14px; }
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    margin-bottom: 32px;
+  }
+  .stat {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 20px; text-align: center;
+  }
+  .stat-value { font-size: 28px; font-weight: 700; color: #fff; }
+  .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+  .tree-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 13px; line-height: 1.8;
+  }
+  .tree { white-space: pre; overflow-x: auto; }
+  .dir { color: var(--primary); font-weight: 600; }
+  .file { color: var(--text); }
+  .file-go { color: var(--accent); }
+  .file-sql { color: var(--purple); }
+  .file-html { color: var(--orange); }
+  .file-md { color: var(--red); }
+  .file-yml { color: #60a5fa; }
+  .file-docker { color: #f472b6; }
+  .file-json { color: #a78bfa; }
+  .comment { color: var(--text-muted); font-style: italic; }
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 16px; margin-top: 24px;
+    padding-top: 16px; border-top: 1px solid var(--border);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+  @media (max-width: 768px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .tree { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🚀 GPU Cloud 算力租赁平台</h1>
+  <p class="subtitle">项目文件结构总览 · 2026-06-26</p>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value">45</div>
+      <div class="stat-label">文件总数</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">~4,200</div>
+      <div class="stat-label">Go 代码行数</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">16</div>
+      <div class="stat-label">API 端点</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">8</div>
+      <div class="stat-label">数据库表</div>
+    </div>
+  </div>
+
+  <div class="tree-card">
+    <div class="tree"><span class="dir">gpu-rental-platform/</span>
+├── <span class="file-md">PROJECT_BRIEF.md</span>              <span class="comment"># 项目总览与部门分工</span>
+├── <span class="file-md">DEPARTMENT_TASKS.md</span>           <span class="comment"># 六部门Agent详细任务分配</span>
+├── <span class="file-md">PROJECT_SUMMARY.md</span>            <span class="comment"># 项目总结报告</span>
+│
+├── <span class="dir">tasks/</span>                        <span class="comment"># 6个Agent详细任务文档</span>
+│   ├── <span class="file-md">PM_AGENT_TASKS.md</span>              <span class="comment"># 产品部：市场调研/竞品分析/PRD</span>
+│   ├── <span class="file-md">DEV_AGENT_TASKS.md</span>             <span class="comment"># 开发部：架构/前后端/GPU调度</span>
+│   ├── <span class="file-md">UI_DESIGNER_AGENT_TASKS.md</span>     <span class="comment"># 设计部：品牌VI/控制台UI/设计系统</span>
+│   ├── <span class="file-md">OPERATIONS_AGENT_TASKS.md</span>      <span class="comment"># 运营部：指标体系/埋点/BI看板</span>
+│   ├── <span class="file-md">CUSTOMER_SERVICE_AGENT_TASKS.md</span><span class="comment"># 客服部：多渠道/知识库/智能客服</span>
+│   └── <span class="file-md">SECURITY_AGENT_TASKS.md</span>        <span class="comment"># 安全部：零信任/数据安全/合规</span>
+│
+├── <span class="dir">frontend/</span>                     <span class="comment"># 前端官网+控制台</span>
+│   └── <span class="file-html">index.html</span>                     <span class="comment"># 完整响应式页面 (~22KB)</span>
+│
+├── <span class="dir">backend/</span>                      <span class="comment"># 后端 API (Go + Gin)</span>
+│   ├── <span class="file-go">go.mod</span>                         <span class="comment"># Go 模块依赖</span>
+│   ├── <span class="file-go">go.sum</span>                         <span class="comment"># 依赖校验</span>
+│   ├── <span class="file-docker">Dockerfile</span>                     <span class="comment"># 多阶段构建</span>
+│   ├── <span class="file-yml">docker-compose.yml</span>             <span class="comment"># 全栈部署 (Postgres+Redis+Prometheus+Grafana)</span>
+│   ├── <span class="file-md">README.md</span>                      <span class="comment"># 后端文档</span>
+│   │
+│   ├── <span class="dir">cmd/server/</span>
+│   │   └── <span class="file-go">main.go</span>                        <span class="comment"># 入口文件 (含Billing Worker)</span>
+│   │
+│   ├── <span class="dir">migrations/</span>
+│   │   └── <span class="file-sql">001_init.sql</span>                   <span class="comment"># 数据库迁移 (8表+索引+种子数据)</span>
+│   │
+│   ├── <span class="dir">monitoring/</span>
+│   │   └── <span class="file-yml">prometheus.yml</span>                 <span class="comment"># Prometheus 监控配置</span>
+│   │
+│   └── <span class="dir">internal/</span>
+│       ├── <span class="dir">config/</span>
+│       │   └── <span class="file-go">config.go</span>                    <span class="comment"># 配置加载 (环境变量)</span>
+│       │
+│       ├── <span class="dir">database/</span>
+│       │   ├── <span class="file-go">postgres.go</span>                  <span class="comment"># PostgreSQL 连接 + 自动迁移</span>
+│       │   └── <span class="file-go">redis.go</span>                     <span class="comment"># Redis 连接 + 缓存操作</span>
+│       │
+│       ├── <span class="dir">models/</span>
+│       │   ├── <span class="file-go">user.go</span>                      <span class="comment"># 用户/钱包/SSHKey/APIToken 模型</span>
+│       │   ├── <span class="file-go">gpu.go</span>                       <span class="comment"># GPU型号模型</span>
+│       │   ├── <span class="file-go">instance.go</span>                  <span class="comment"># GPU实例模型</span>
+│       │   └── <span class="file-go">billing.go</span>                   <span class="comment"># 计费/充值模型</span>
+│       │
+│       ├── <span class="dir">service/</span>
+│       │   ├── <span class="file-go">user_service.go</span>              <span class="comment"># 用户服务 (注册/登录/JWT/余额)</span>
+│       │   ├── <span class="file-go">gpu_service.go</span>               <span class="comment"># GPU服务 (列表/库存管理/种子数据)</span>
+│       │   ├── <span class="file-go">instance_service.go</span>          <span class="comment"># 实例服务 (创建/启停/释放/SSH)</span>
+│       │   ├── <span class="file-go">billing_service.go</span>           <span class="comment"># 计费服务 (扣费/充值/账单)</span>
+│       │   ├── <span class="file-go">monitor_service.go</span>           <span class="comment"># 监控服务 (GPU指标采集)</span>
+│       │   └── <span class="file-go">service_test.go</span>              <span class="comment"># 服务层基础测试</span>
+│       │
+│       ├── <span class="dir">handler/</span>
+│       │   ├── <span class="file-go">auth_handler.go</span>              <span class="comment"># 认证处理器 (注册/登录/刷新)</span>
+│       │   ├── <span class="file-go">user_handler.go</span>              <span class="comment"># 用户处理器 (信息/更新)</span>
+│       │   ├── <span class="file-go">gpu_handler.go</span>               <span class="comment"># GPU处理器 (列表/详情)</span>
+│       │   ├── <span class="file-go">instance_handler.go</span>          <span class="comment"># 实例处理器 (CRUD/SSH)</span>
+│       │   ├── <span class="file-go">billing_handler.go</span>           <span class="comment"># 计费处理器 (余额/账单/充值)</span>
+│       │   └── <span class="file-go">monitor_handler.go</span>           <span class="comment"># 监控处理器 (GPU指标)</span>
+│       │
+│       ├── <span class="dir">middleware/</span>
+│       │   ├── <span class="file-go">auth.go</span>                      <span class="comment"># JWT 认证中间件</span>
+│       │   ├── <span class="file-go">cors.go</span>                      <span class="comment"># CORS 跨域中间件</span>
+│       │   └── <span class="file-go">logger.go</span>                    <span class="comment"># 请求日志中间件</span>
+│       │
+│       └── <span class="dir">worker/</span>
+│           └── <span class="file-go">billing_worker.go</span>            <span class="comment"># 计费定时任务 (按小时扣费)</span>
+│
+├── <span class="dir">diagrams/</span>                     <span class="comment"># 架构图</span>
+│   ├── <span class="file-html">openclaw-architecture.html</span>         <span class="comment"># OpenClaw 6层架构图 (HTML)</span>
+│   └── <span class="file-json">gpu-cloud-architecture.excalidraw</span>  <span class="comment"># GPU Cloud 平台架构图 (Excalidraw)</span>
+│
+└── <span class="dir">memory/</span>                       <span class="comment"># 记忆文件 (系统自动生成)</span>
+    └── <span class="file-md">2026-06-25.md</span>                  <span class="comment"># 会话日志</span></div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Go 代码</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>SQL 迁移</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div>HTML 页面</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Markdown 文档</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#60a5fa"></div>YAML 配置</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f472b6"></div>Docker 文件</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#a78bfa"></div>JSON / Excalidraw</div>
+  </div>
+</div>
+</body>
+</html>
