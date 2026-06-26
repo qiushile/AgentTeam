@@ -228,9 +228,41 @@ pdftoppm -jpeg -r 150 -f N -l N output.pdf slide-fixed
 
 ---
 
+## Font Management (macOS)
+
+When PowerPoint shows font embedding warnings ("连同字体保存", "不可用的字体", "不支持的字体文件格式"):
+
+### Diagnosis
+1. Check font installation: `fc-list | grep -i "font-name"`
+2. Check font format: `file ~/Library/Fonts/font-file.otf`
+   - `.ttf`/`.otf` = OK for embedding
+   - `.ttc` = TrueType Collection (may have issues)
+   - AAT format = not supported by Office
+
+### Common Issues
+
+**Font Name Mismatch:** PPT references "思源黑体 CN" but only "Noto Sans CJK SC" is installed. Use `scripts/rename_font.py` to rename font internal names:
+```bash
+python3 scripts/rename_font.py input.otf output.otf "New Family Name" "Full Name" "PostScriptName"
+```
+
+**Duplicate Font Conflicts:** Noto Sans CJK SC and Source Han Sans SC are the same font. Delete one version.
+
+**AAT Format (System Fonts):** macOS system fonts like Heiti SC use Apple's AAT format, which Office cannot embed. Replace with OTF/TTF alternatives (PingFang SC, Noto Sans CJK SC).
+
+**Font Cache Issues:** Clear with `sudo atsutil databases -remove && sudo atsutil server -shutdown && sudo atsutil server -ping`, then restart.
+
+### Pitfalls
+- `fontTools` required: `pip3 install fonttools`
+- nameID meanings: 1=Family, 2=Subfamily, 4=Full Name, 6=PostScript Name
+- Platform encoding: platformID=3 (Windows) uses UTF-16-BE, platformID=1 (Mac) uses UTF-8
+- AAT is unfixable — must use alternatives
+
+---
+
 ## Dependencies
 
-- `pip install "markitdown[pptx]"` - text extraction
+`markitdown[pptx]`, `Pillow`, `pptxgenjs`, LibreOffice (`soffice`), Poppler (`pdftoppm`).
 - `pip install Pillow` - thumbnail grids
 - `npm install -g pptxgenjs` - creating from scratch
 - LibreOffice (`soffice`) - PDF conversion (auto-configured for sandboxed environments via `scripts/office/soffice.py`)

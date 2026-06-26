@@ -77,19 +77,6 @@
     "use_count": 2,
     "view_count": 2
   },
-  "dashscope-hermes-config": {
-    "archived_at": null,
-    "created_at": "2026-06-25T00:31:07.754946+00:00",
-    "created_by": "agent",
-    "last_patched_at": "2026-06-25T00:31:56.965654+00:00",
-    "last_used_at": "2026-06-26T02:13:55.189414+00:00",
-    "last_viewed_at": "2026-06-26T02:13:55.186279+00:00",
-    "patch_count": 2,
-    "pinned": false,
-    "state": "active",
-    "use_count": 1,
-    "view_count": 1
-  },
   "debugging-hermes-tui-commands": {
     "archived_at": null,
     "created_at": "2026-06-11T12:36:35.081547+00:00",
@@ -172,14 +159,14 @@
     "archived_at": null,
     "created_at": "2026-06-11T12:36:35.098167+00:00",
     "created_by": null,
-    "last_patched_at": "2026-06-18T13:20:28.155014+00:00",
-    "last_used_at": "2026-06-26T02:13:55.182203+00:00",
-    "last_viewed_at": "2026-06-26T02:13:55.180286+00:00",
-    "patch_count": 3,
+    "last_patched_at": "2026-06-26T02:36:31.972403+00:00",
+    "last_used_at": "2026-06-26T02:36:18.437938+00:00",
+    "last_viewed_at": "2026-06-26T02:36:18.436810+00:00",
+    "patch_count": 4,
     "pinned": false,
     "state": "active",
-    "use_count": 9,
-    "view_count": 9
+    "use_count": 10,
+    "view_count": 10
   },
   "hermes-s6-container-supervision": {
     "archived_at": null,
@@ -337,19 +324,6 @@
     "use_count": 6,
     "view_count": 6
   },
-  "macos-office-font-management": {
-    "archived_at": null,
-    "created_at": "2026-06-25T02:44:37.497422+00:00",
-    "created_by": "agent",
-    "last_patched_at": "2026-06-25T02:44:58.534662+00:00",
-    "last_used_at": "2026-06-26T02:13:55.188604+00:00",
-    "last_viewed_at": "2026-06-26T02:13:55.185160+00:00",
-    "patch_count": 2,
-    "pinned": false,
-    "state": "active",
-    "use_count": 1,
-    "view_count": 1
-  },
   "macos-ssh-troubleshooting": {
     "archived_at": null,
     "created_at": "2026-06-09T03:09:22.585688+00:00",
@@ -383,19 +357,6 @@
     "last_patched_at": null,
     "last_used_at": "2026-06-09T06:53:25.419392+00:00",
     "last_viewed_at": "2026-06-09T06:53:25.417742+00:00",
-    "patch_count": 0,
-    "pinned": false,
-    "state": "active",
-    "use_count": 2,
-    "view_count": 2
-  },
-  "manim-video": {
-    "archived_at": null,
-    "created_at": "2026-06-11T12:36:35.117152+00:00",
-    "created_by": null,
-    "last_patched_at": null,
-    "last_used_at": "2026-06-26T02:13:42.585511+00:00",
-    "last_viewed_at": "2026-06-26T02:13:42.583010+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
@@ -480,19 +441,6 @@
     "use_count": 1,
     "view_count": 1
   },
-  "p5js": {
-    "archived_at": null,
-    "created_at": "2026-06-11T12:36:35.133083+00:00",
-    "created_by": null,
-    "last_patched_at": null,
-    "last_used_at": "2026-06-26T02:13:42.583782+00:00",
-    "last_viewed_at": "2026-06-26T02:13:42.579408+00:00",
-    "patch_count": 0,
-    "pinned": false,
-    "state": "active",
-    "use_count": 2,
-    "view_count": 2
-  },
   "pixel-art": {
     "archived_at": null,
     "created_at": "2026-06-11T12:36:35.134479+00:00",
@@ -536,27 +484,14 @@
     "archived_at": null,
     "created_at": "2026-06-11T12:36:35.140811+00:00",
     "created_by": null,
-    "last_patched_at": null,
+    "last_patched_at": "2026-06-26T02:36:03.008185+00:00",
     "last_used_at": "2026-06-26T02:13:42.580530+00:00",
     "last_viewed_at": "2026-06-26T02:13:42.576054+00:00",
-    "patch_count": 0,
+    "patch_count": 1,
     "pinned": false,
     "state": "active",
     "use_count": 1,
     "view_count": 1
-  },
-  "pretext": {
-    "archived_at": null,
-    "created_at": "2026-06-11T12:36:35.142115+00:00",
-    "created_by": null,
-    "last_patched_at": null,
-    "last_used_at": "2026-06-26T02:13:42.584661+00:00",
-    "last_viewed_at": "2026-06-26T02:13:42.581443+00:00",
-    "patch_count": 0,
-    "pinned": false,
-    "state": "active",
-    "use_count": 2,
-    "view_count": 2
   },
   "segment-anything-model": {
     "archived_at": null,
