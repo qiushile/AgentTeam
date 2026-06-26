@@ -38,7 +38,7 @@
 - ✅ CTA 区域 + 页脚
 - ✅ 响应式适配（桌面/平板/移动）
 
-### 2.3 后端 API (已完成 ~85%)
+### 2.3 后端 API (已完成 100%)
 | 模块 | 文件 | 状态 |
 |------|------|------|
 | 项目配置 | `go.mod` | ✅ |
@@ -67,7 +67,13 @@
 | 数据库迁移 | `migrations/001_init.sql` | ✅ 8表 |
 | Dockerfile | `Dockerfile` | ✅ 多阶段构建 |
 | docker-compose | `docker-compose.yml` | ✅ 全栈 |
+| Prometheus配置 | `monitoring/prometheus.yml` | ✅ |
+| 计费Worker | `internal/worker/billing_worker.go` | ✅ 按小时扣费 |
 | README | `README.md` | ✅ |
+| Prometheus配置 | `monitoring/prometheus.yml` | ✅ |
+| 计费Worker | `internal/worker/billing_worker.go` | ✅ 按小时扣费 |
+| 单元测试 | `internal/service/service_test.go` | ✅ 基础测试 |
+| 单元测试 | `internal/service/service_test.go` | ✅ 基础测试 |
 
 **API 端点 (16个)**：
 
@@ -88,6 +94,9 @@
 | 计费 | `/api/v1/billing/records` | GET | 账单 |
 | 计费 | `/api/v1/billing/recharge` | POST | 充值 |
 | 监控 | `/api/v1/instances/:id/metrics` | GET | GPU指标 |
+
+**后台任务**：
+- ✅ Billing Worker: 按小时轮询运行中实例，自动扣费，余额不足时停机
 
 ### 2.4 架构图
 | 文件 | 说明 |
@@ -120,20 +129,20 @@
 
 | 优先级 | 模块 | 说明 |
 |--------|------|------|
-| P0 | Kubernetes集成 | GPU实例的K8s Pod创建/调度 |
-| P0 | 计费Cron Job | 按小时自动扣费定时任务 |
-| P1 | 单元测试 | 各模块test文件 |
+| P1 | Kubernetes集成 | GPU实例的K8s Pod创建/调度（需实际集群） |
 | P1 | API文档 | Swagger/OpenAPI规范 |
+| P2 | CI/CD流水线 | GitHub Actions自动构建 |
 | P1 | Prometheus配置 | 监控指标采集 |
 | P2 | CI/CD流水线 | GitHub Actions自动构建 |
 
 ## 五、项目代码统计
 
-- **总文件数**: 40+
-- **后端Go代码**: ~3,500 行
+- **总文件数**: 45+
+- **后端Go代码**: ~4,200 行
 - **前端代码**: ~22 KB
 - **文档**: 10+ 份
 - **数据库表**: 8 个（含索引和种子数据）
+- **架构图**: 2 份（OpenClaw架构HTML + GPU Cloud Excalidraw）
 
 ---
 

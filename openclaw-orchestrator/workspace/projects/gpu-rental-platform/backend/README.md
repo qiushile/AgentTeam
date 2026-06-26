@@ -53,6 +53,9 @@ docker compose up -d
 ### 监控
 - `GET /api/v1/instances/:id/metrics` - GPU 监控数据
 
+## 后台任务
+- **Billing Worker**: 按小时轮询运行中实例，自动扣费，余额不足时停机
+
 ## 技术栈
 - **框架**: Go 1.21 + Gin
 - **数据库**: PostgreSQL 15 (pgx)

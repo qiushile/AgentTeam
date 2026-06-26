@@ -1,0 +1,21 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'gpucloud-api'
+    static_configs:
+      - targets: ['api:8080']
+    metrics_path: '/metrics'
+
+  - job_name: 'gpucloud-postgres'
+    static_configs:
+      - targets: ['postgres:5432']
+
+  - job_name: 'gpucloud-redis'
+    static_configs:
+      - targets: ['redis:6379']
+
+  - job_name: 'gpucloud-prometheus'
+    static_configs:
+      - targets: ['localhost:9090']

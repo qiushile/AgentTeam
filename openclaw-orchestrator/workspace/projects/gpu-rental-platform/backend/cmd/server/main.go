@@ -15,6 +15,7 @@ import (
 	"gpucloud/internal/handler"
 	"gpucloud/internal/middleware"
 	"gpucloud/internal/service"
+	"gpucloud/internal/worker"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -62,6 +63,10 @@ func main() {
 	instanceService := service.NewInstanceService(db, rdb, gpuSvc)
 	billingService := service.NewBillingService(db, rdb)
 	monitorService := service.NewMonitorService(rdb)
+
+	// Start billing worker (hourly cycle)
+	billingWorker := worker.NewBillingWorker(db, rdb)
+	go billingWorker.Start(context.Background(), 1*time.Hour)
 
 	// Setup Gin router
 	gin.SetMode(gin.ReleaseMode)
