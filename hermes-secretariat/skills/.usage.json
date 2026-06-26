@@ -147,13 +147,13 @@
     "created_at": "2026-06-11T12:36:35.083826+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": null,
-    "last_viewed_at": null,
+    "last_used_at": "2026-06-26T02:18:03.577582+00:00",
+    "last_viewed_at": "2026-06-26T02:18:03.572924+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 0,
-    "view_count": 0
+    "use_count": 1,
+    "view_count": 1
   },
   "dspy": {
     "archived_at": null,
@@ -251,13 +251,13 @@
     "created_at": "2026-06-11T12:36:35.101309+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": null,
-    "last_viewed_at": null,
+    "last_used_at": "2026-06-26T02:18:03.576561+00:00",
+    "last_viewed_at": "2026-06-26T02:18:03.572036+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 0,
-    "view_count": 0
+    "use_count": 1,
+    "view_count": 1
   },
   "huggingface-hub": {
     "archived_at": null,
@@ -680,13 +680,13 @@
     "created_at": "2026-06-11T12:36:35.159751+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": null,
-    "last_viewed_at": null,
+    "last_used_at": "2026-06-26T02:18:03.573653+00:00",
+    "last_viewed_at": "2026-06-26T02:18:03.568063+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 0,
-    "view_count": 0
+    "use_count": 1,
+    "view_count": 1
   },
   "test-driven-development": {
     "archived_at": null,
@@ -771,25 +771,25 @@
     "created_at": "2026-06-11T12:36:35.169627+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": null,
-    "last_viewed_at": null,
+    "last_used_at": "2026-06-26T02:18:03.574580+00:00",
+    "last_viewed_at": "2026-06-26T02:18:03.570309+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 0,
-    "view_count": 0
+    "use_count": 1,
+    "view_count": 1
   },
   "yuanbao": {
     "archived_at": null,
     "created_at": "2026-06-11T12:36:35.172656+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": null,
-    "last_viewed_at": null,
+    "last_used_at": "2026-06-26T02:18:03.575461+00:00",
+    "last_viewed_at": "2026-06-26T02:18:03.571113+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 0,
-    "view_count": 0
+    "use_count": 1,
+    "view_count": 1
   }
 }
