@@ -20,3 +20,21 @@
 ### memory-core 初始化
 - 2026-03-23 完成 memory-lancedb 切换
 - 阿里云 text-embedding-v4 语义检索测试通过
+
+### GPU Cloud 算力租赁平台项目
+- **启动时间**: 2026-06-25
+- **完成时间**: 2026-06-26
+- **项目状态**: 核心代码 100% 完成
+- **文件位置**: workspace/projects/gpu-rental-platform/
+- **技术栈**: Go 1.21 + Gin + PostgreSQL 15 + Redis 7 + Kubernetes
+- **项目规模**: 45+ 文件, ~4,200 行 Go 代码, 16 个 API 端点, 8 个数据库表
+- **6 个 Agent 部门**: PM/Dev/UI Designer/运营/客服/安全
+- **包含模块**: 前端官网、后端 API、计费 Worker、Docker 部署、架构图
+- **架构图**: diagrams/ 目录下有 2 份 (OpenClaw 架构 HTML + GPU Cloud Excalidraw)
+
+### 飞书通道故障
+- **故障开始**: ~2026-06-12
+- **错误信息**: "Channel is unavailable: feishu. Install the official external plugin with: openclaw plugins install @openclaw/feishu"
+- **影响**: 每日任务验收报告、行业新闻推送均无法送达
+- **修复方法**: 需运行 `openclaw plugins install @openclaw/feishu` 或 `openclaw doctor --fix`
+- **状态**: 持续离线中（已通报多次）
