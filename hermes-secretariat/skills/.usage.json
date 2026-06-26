@@ -25,19 +25,6 @@
     "use_count": 1,
     "view_count": 1
   },
-  "architecture-diagram": {
-    "archived_at": null,
-    "created_at": "2026-06-11T12:36:35.068573+00:00",
-    "created_by": null,
-    "last_patched_at": null,
-    "last_used_at": "2026-06-26T02:13:24.901697+00:00",
-    "last_viewed_at": "2026-06-26T02:13:24.898354+00:00",
-    "patch_count": 0,
-    "pinned": false,
-    "state": "active",
-    "use_count": 3,
-    "view_count": 3
-  },
   "audiocraft-audio-generation": {
     "archived_at": null,
     "created_at": "2026-06-11T12:36:35.072007+00:00",
@@ -63,19 +50,6 @@
     "state": "active",
     "use_count": 2,
     "view_count": 2
-  },
-  "claude-design": {
-    "archived_at": null,
-    "created_at": "2026-06-11T12:36:35.077187+00:00",
-    "created_by": null,
-    "last_patched_at": null,
-    "last_used_at": "2026-06-26T02:13:24.896675+00:00",
-    "last_viewed_at": "2026-06-26T02:13:24.892594+00:00",
-    "patch_count": 0,
-    "pinned": false,
-    "state": "active",
-    "use_count": 3,
-    "view_count": 3
   },
   "cloud-server-maintenance": {
     "archived_at": null,
@@ -129,19 +103,6 @@
     "use_count": 0,
     "view_count": 0
   },
-  "design-md": {
-    "archived_at": null,
-    "created_at": "2026-06-11T12:36:35.082702+00:00",
-    "created_by": null,
-    "last_patched_at": null,
-    "last_used_at": "2026-06-26T02:13:24.900864+00:00",
-    "last_viewed_at": "2026-06-26T02:13:24.897587+00:00",
-    "patch_count": 0,
-    "pinned": false,
-    "state": "active",
-    "use_count": 2,
-    "view_count": 2
-  },
   "dogfood": {
     "archived_at": null,
     "created_at": "2026-06-11T12:36:35.083826+00:00",
@@ -180,19 +141,6 @@
     "state": "active",
     "use_count": 0,
     "view_count": 0
-  },
-  "excalidraw": {
-    "archived_at": null,
-    "created_at": "2026-06-11T12:36:35.087103+00:00",
-    "created_by": null,
-    "last_patched_at": null,
-    "last_used_at": "2026-06-26T02:13:24.900022+00:00",
-    "last_viewed_at": "2026-06-26T02:13:24.895928+00:00",
-    "patch_count": 0,
-    "pinned": false,
-    "state": "active",
-    "use_count": 3,
-    "view_count": 3
   },
   "godmode": {
     "archived_at": null,
@@ -583,19 +531,6 @@
     "state": "active",
     "use_count": 1,
     "view_count": 1
-  },
-  "popular-web-designs": {
-    "archived_at": null,
-    "created_at": "2026-06-11T12:36:35.139502+00:00",
-    "created_by": null,
-    "last_patched_at": null,
-    "last_used_at": "2026-06-26T02:13:24.899161+00:00",
-    "last_viewed_at": "2026-06-26T02:13:24.894469+00:00",
-    "patch_count": 0,
-    "pinned": false,
-    "state": "active",
-    "use_count": 2,
-    "view_count": 2
   },
   "powerpoint": {
     "archived_at": null,
