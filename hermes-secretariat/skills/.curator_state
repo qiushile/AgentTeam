@@ -1,9 +1,9 @@
 {
   "last_report_path": "/Users/qiushile/.hermes/logs/curator/20260626-021310",
-  "last_run_at": "2026-06-26T02:13:10.785156+00:00",
+  "last_run_at": "2026-07-03T03:06:56.738175+00:00",
   "last_run_duration_seconds": 1554.752826,
-  "last_run_summary": "auto: no changes; llm: Perfect. I've completed the consolidation pass with 10 archives. Let me write the final summary.\n\n## Consolidation Summary\n\nI processed 7 major clusters and consolidated 5 of them into umbrella skills. Here's what was done:\n\n### Clusters Pr…\narchived 10 skill(s):\n  • dashscope-hermes-config → hermes-agent\n  • macos-office-font-management → powerpoint\n  • architecture-diagram — pruned (stale)\n  • claude-design — pruned (stale)\n  • design-md — pruned (stale)\n  • excalidraw — pruned (stale)\n  • manim-video — pruned (stale)\n  • p5js — pruned (stale)\n  • popular-web-designs — pruned (stale)\n  • pretext — pruned (stale)\nfull report: hermes curator status\nkeep an umbrella stable: hermes curator pin hermes-agent",
+  "last_run_summary": "auto: no changes",
   "last_run_summary_shown_at": "2026-06-11T12:36:34.667169+00:00",
   "paused": false,
-  "run_count": 3
+  "run_count": 4
 }
