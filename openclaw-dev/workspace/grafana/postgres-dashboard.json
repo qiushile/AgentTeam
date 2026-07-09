@@ -1,0 +1,108 @@
+{
+  "dashboard": {
+    "title": "PostgreSQL 监控 Dashboard",
+    "uid": "postgres-dev",
+    "timezone": "browser",
+    "panels": [
+      {
+        "title": "连接数",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "pg_stat_activity_count{datname=\"dev_db\"}",
+            "legendFormat": "总连接数"
+          },
+          {
+            "expr": "pg_stat_activity_count{datname=\"dev_db\",state=\"active\"}",
+            "legendFormat": "活跃连接"
+          },
+          {
+            "expr": "pg_stat_activity_count{datname=\"dev_db\",state=\"idle\"}",
+            "legendFormat": "空闲连接"
+          }
+        ],
+        "thresholds": [
+          {"value": 60, "color": "yellow"},
+          {"value": 80, "color": "red"}
+        ]
+      },
+      {
+        "title": "缓存命中率",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "rate(pg_stat_database_blks_hit{datname=\"dev_db\"}[5m]) / (rate(pg_stat_database_blks_hit{datname=\"dev_db\"}[5m]) + rate(pg_stat_database_blks_read{datname=\"dev_db\"}[5m])) * 100",
+            "legendFormat": "命中率 %"
+          }
+        ],
+        "thresholds": [
+          {"value": 95, "color": "green"},
+          {"value": 90, "color": "yellow"},
+          {"value": 80, "color": "red"}
+        ]
+      },
+      {
+        "title": "慢查询 Top 10",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "topk(10, rate(pg_stat_statements_mean_exec_time_seconds{datname=\"dev_db\"}[5m]))",
+            "format": "table"
+          }
+        ]
+      },
+      {
+        "title": "事务吞吐量",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "rate(pg_stat_database_xact_commit{datname=\"dev_db\"}[5m])",
+            "legendFormat": "提交"
+          },
+          {
+            "expr": "rate(pg_stat_database_xact_rollback{datname=\"dev_db\"}[5m])",
+            "legendFormat": "回滚"
+          }
+        ]
+      },
+      {
+        "title": "锁等待",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "count(pg_locks{datname=\"dev_db\",granted=\"false\"})",
+            "legendFormat": "等待中"
+          }
+        ],
+        "thresholds": [
+          {"value": 5, "color": "yellow"},
+          {"value": 10, "color": "red"}
+        ]
+      },
+      {
+        "title": "数据库大小",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "pg_database_size_bytes{datname=\"dev_db\"}",
+            "legendFormat": "{{datname}}"
+          }
+        ]
+      }
+    ],
+    "templating": {
+      "list": [
+        {
+          "name": "instance",
+          "type": "query",
+          "query": "label_values(pg_up, instance)"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "refresh": "30s"
+  }
+}

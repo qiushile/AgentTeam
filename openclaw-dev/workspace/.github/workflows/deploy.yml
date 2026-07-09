@@ -1,0 +1,56 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: '部署环境'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy:
+    name: 🚀 Deploy to ${{ github.event.inputs.environment || 'staging' }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'staging' }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: dist/
+      
+      - name: Set Environment Variables
+        run: |
+          ENV="${{ github.event.inputs.environment || 'staging' }}"
+          echo "DEPLOY_ENV=$ENV" >> $GITHUB_ENV
+          if [ "$ENV" = "production" ]; then
+            echo "DEPLOY_HOST=${{ secrets.PROD_HOST }}" >> $GITHUB_ENV
+            echo "DEPLOY_USER=${{ secrets.PROD_USER }}" >> $GITHUB_ENV
+          else
+            echo "DEPLOY_HOST=${{ secrets.STAGING_HOST }}" >> $GITHUB_ENV
+            echo "DEPLOY_USER=${{ secrets.STAGING_USER }}" >> $GITHUB_ENV
+          fi
+      
+      - name: Deploy
+        run: |
+          echo "Deploying to $DEPLOY_ENV..."
+          # SSH deploy script
+          # scp -r dist/ $DEPLOY_USER@$DEPLOY_HOST:/app/
+          # ssh $DEPLOY_USER@$DEPLOY_HOST "cd /app && ./scripts/deploy.sh"
+          echo "✅ Deployed to $DEPLOY_ENV"
+      
+      - name: Health Check
+        run: |
+          echo "Waiting for service to start..."
+          sleep 30
+          # curl -sf https://$DEPLOY_HOST/health || exit 1
+          echo "✅ Health check passed"

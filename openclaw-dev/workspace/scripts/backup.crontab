@@ -1,0 +1,11 @@
+# crontab - PostgreSQL 备份定时任务
+# 安装: crontab backup.crontab
+
+# 每日凌晨 2 点全量备份
+0 2 * * * /home/node/.openclaw/workspace/scripts/backup.sh full >> /var/log/pg_backup.log 2>&1
+
+# 每小时增量备份 (0 分)
+0 * * * * /home/node/.openclaw/workspace/scripts/backup.sh incremental >> /var/log/pg_backup.log 2>&1
+
+# 每周日凌晨 3 点验证最新备份
+0 3 * * 0 /home/node/.openclaw/workspace/scripts/backup.sh verify >> /var/log/pg_backup.log 2>&1
