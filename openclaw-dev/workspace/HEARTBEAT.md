@@ -42,7 +42,8 @@ task: |
   3. 有任务则处理，无任务则执行「空闲行为优先级」。
 
 ## 数据库状态
-- Host: 172.23.0.20:5432 (Docker 容器，IP 可能漂移)
+- Host: 读取 `.dev-config.json` 中的 `db_host` 和 `db_port`
+- 当前值: 172.23.0.20:5432 (Docker 容器，IP 可能漂移)
 - Database: dev_db
 - Schemas: shared, dev_schema, public
 - Tables:
