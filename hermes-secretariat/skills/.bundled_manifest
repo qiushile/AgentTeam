@@ -13,6 +13,7 @@ claude-design:c1b63b7651b66fd15d096e57728ec686
 codebase-inspection:29f67c87df868dd08e76c57b86c7a5c6
 codex:a116c5f880869f663b2974c2c9a79dbd
 comfyui:c9ac1497c123c607f98a547f8cf54fc5
+computer-use:c40a491ce9f5035bb9cdfc141d5f473e
 design-md:b40264457352831ab1d06f3ec671b532
 dogfood:ae6e92c2cd27c3da8a0587f089d19fe3
 evaluating-llms-harness:ac24cf5202db5b024b3079023797a0f6
@@ -32,11 +33,8 @@ huggingface-hub:da338c5152d72db030bb81d923d1c64d
 humanizer:6645b341862575f452e86139c5c71ce9
 imessage:f545da0f5cc64dd9ee1ffd2b7733a11b
 jupyter-live-kernel:352c43dc28428592abbc8c91cb5ce295
-kanban-orchestrator:ec7a479a57f3b7b42028a46464bc3f02
-kanban-worker:bf29c26bd44db3903e317e0967bdc1f3
 llama-cpp:0991055ce47146735f0ed02d7658a254
 llm-wiki:ca957fbfecd9e573a1f99db3937a1969
-macos-computer-use:fb1787b32be343b87078d2ae2618dbcf
 manim-video:2ad3d68c3eb5d2675c05138100d3e48b
 maps:75eb39eca308ae4defa6ee2f14499428
 nano-pdf:6c643bd0cfb0548ff0ddaf367d4da6d1
@@ -47,6 +45,7 @@ ocr-and-documents:af5fba9fa8ef003951ff5fe5a0a04adf
 opencode:d2a166c7f2c74f6e47d548ed1290c458
 openhue:ce1dd061d7f49d4752a4c0711ad2666c
 p5js:5f09fa1cb8494c93bc2f5bcbd34a2ead
+petdex:472d8fe96aa175cc1678d3f52dcdc624
 plan:50c4df52eb6b0932649a444bc9984e0a
 polymarket:7644c886e028c229bc8c1f54114c3170
 popular-web-designs:b3fd685e8fbcf981755609ce98a4eea9
