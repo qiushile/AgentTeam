@@ -1,8 +1,8 @@
 {
-  "last_report_path": "/Users/qiushile/.hermes/logs/curator/20260703-030656",
+  "last_report_path": "/Users/qiushile/.hermes/logs/curator/20260710-034754",
   "last_run_at": "2026-07-10T03:47:54.954278+00:00",
-  "last_run_duration_seconds": 888.342973,
-  "last_run_summary": "auto: no changes",
+  "last_run_duration_seconds": 92.723565,
+  "last_run_summary": "auto: no changes; llm: API call failed after 3 retries: HTTP 429: usage allocated quota exceeded. please try again later.",
   "last_run_summary_shown_at": "2026-06-11T12:36:34.667169+00:00",
   "paused": false,
   "run_count": 5
