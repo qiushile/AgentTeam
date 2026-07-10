@@ -1,9 +1,9 @@
 {
   "last_report_path": "/Users/qiushile/.hermes/logs/curator/20260703-030656",
-  "last_run_at": "2026-07-03T03:06:56.738175+00:00",
+  "last_run_at": "2026-07-10T03:47:54.954278+00:00",
   "last_run_duration_seconds": 888.342973,
-  "last_run_summary": "auto: no changes; llm: ## Consolidation Summary\n\nI've completed the umbrella-building consolidation pass. Here's what was done:\n\n### Clusters Processed\n\n**1. Engineering Methodologies** (3 → 1)\n- Created `engineering-methodologies` umbrella covering systematic de…\narchived 10 skill(s):\n  • comfyui — pruned (stale)\n  • dogfood — pruned (stale)\n  • himalaya — pruned (stale)\n  • imessage — pruned (stale)\n  • macos-computer-use — pruned (stale)\n  • systematic-debugging — pruned (stale)\n  • test-driven-development — pruned (stale)\n  • touchdesigner-mcp — pruned (stale)\n  • xurl — pruned (stale)\n  • yuanbao — pruned (stale)\nfull report: hermes curator status",
+  "last_run_summary": "auto: no changes",
   "last_run_summary_shown_at": "2026-06-11T12:36:34.667169+00:00",
   "paused": false,
-  "run_count": 4
+  "run_count": 5
 }

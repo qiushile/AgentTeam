@@ -64,6 +64,19 @@
     "use_count": 9,
     "view_count": 9
   },
+  "computer-use": {
+    "archived_at": null,
+    "created_at": "2026-07-10T03:47:55.238253+00:00",
+    "created_by": null,
+    "last_patched_at": null,
+    "last_used_at": "2026-07-10T03:48:29.673635+00:00",
+    "last_viewed_at": "2026-07-10T03:48:29.670521+00:00",
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 1,
+    "view_count": 1
+  },
   "debugging-hermes-tui-commands": {
     "archived_at": null,
     "created_at": "2026-06-11T12:36:35.081547+00:00",
@@ -121,13 +134,13 @@
     "created_at": "2026-06-11T12:36:35.095883+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-07-03T03:07:23.209396+00:00",
-    "last_viewed_at": "2026-07-03T03:07:23.206032+00:00",
+    "last_used_at": "2026-07-10T03:48:29.674656+00:00",
+    "last_viewed_at": "2026-07-10T03:48:29.672846+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 2,
-    "view_count": 2
+    "use_count": 3,
+    "view_count": 3
   },
   "hermes-agent": {
     "archived_at": null,
@@ -375,6 +388,19 @@
     "state": "active",
     "use_count": 2,
     "view_count": 2
+  },
+  "petdex": {
+    "archived_at": null,
+    "created_at": "2026-07-10T03:47:55.240569+00:00",
+    "created_by": null,
+    "last_patched_at": null,
+    "last_used_at": "2026-07-10T03:48:29.671882+00:00",
+    "last_viewed_at": "2026-07-10T03:48:29.667321+00:00",
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 1,
+    "view_count": 1
   },
   "pixel-art": {
     "archived_at": null,
