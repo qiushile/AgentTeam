@@ -18,15 +18,15 @@
       "schedule_display": "every 3m",
       "repeat": {
         "times": null,
-        "completed": 9399
+        "completed": 17020
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-05T20:25:59.983422+08:00",
-      "next_run_at": "2026-06-11T20:37:34.563782+08:00",
-      "last_run_at": "2026-06-11T20:34:34.563782+08:00",
+      "next_run_at": "2026-07-17T12:39:19.669186+08:00",
+      "last_run_at": "2026-07-17T12:36:19.669186+08:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -56,15 +56,15 @@
       "schedule_display": "0 0 * * *",
       "repeat": {
         "times": null,
-        "completed": 35
+        "completed": 71
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-05T20:26:06.621545+08:00",
-      "next_run_at": "2026-06-12T00:00:00+08:00",
-      "last_run_at": "2026-06-11T00:02:20.127924+08:00",
+      "next_run_at": "2026-07-18T00:00:00+08:00",
+      "last_run_at": "2026-07-17T00:01:16.050315+08:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": "delivery error: Feishu send failed: [230002] Bot/User can NOT be out of the chat.",
@@ -94,15 +94,15 @@
       "schedule_display": "0 4 * * *",
       "repeat": {
         "times": null,
-        "completed": 33
+        "completed": 69
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-07T17:00:58.654831+08:00",
-      "next_run_at": "2026-06-12T04:00:00+08:00",
-      "last_run_at": "2026-06-11T04:01:34.984159+08:00",
+      "next_run_at": "2026-07-18T04:00:00+08:00",
+      "last_run_at": "2026-07-17T04:02:24.653421+08:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": "delivery error: Feishu send failed: [230002] Bot/User can NOT be out of the chat.",
@@ -115,5 +115,5 @@
       }
     }
   ],
-  "updated_at": "2026-06-11T20:34:34.563953+08:00"
+  "updated_at": "2026-07-17T12:36:19.669325+08:00"
 }
