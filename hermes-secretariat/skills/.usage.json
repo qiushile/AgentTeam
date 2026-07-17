@@ -394,13 +394,13 @@
     "created_at": "2026-07-10T03:47:55.240569+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-07-17T04:36:48.700892+00:00",
-    "last_viewed_at": "2026-07-17T04:36:48.699626+00:00",
+    "last_used_at": "2026-07-17T04:40:00.552277+00:00",
+    "last_viewed_at": "2026-07-17T04:40:00.550425+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 2,
-    "view_count": 2
+    "use_count": 3,
+    "view_count": 3
   },
   "pixel-art": {
     "archived_at": null,
@@ -498,13 +498,13 @@
     "created_at": "2026-06-11T12:36:35.159751+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-07-17T04:36:48.698238+00:00",
-    "last_viewed_at": "2026-07-17T04:36:48.696910+00:00",
+    "last_used_at": "2026-07-17T04:40:00.553192+00:00",
+    "last_viewed_at": "2026-07-17T04:40:00.551476+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 5,
-    "view_count": 5
+    "use_count": 6,
+    "view_count": 6
   },
   "ubuntu24-hermes-maintenance": {
     "archived_at": null,
