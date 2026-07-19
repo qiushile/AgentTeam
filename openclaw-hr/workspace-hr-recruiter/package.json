@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "lunar-calendar": "^0.1.4"
+    "lunar-calendar": "^0.1.4",
+    "lunar-javascript": "^1.7.7"
   }
 }
