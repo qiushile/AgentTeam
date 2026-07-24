@@ -170,6 +170,11 @@
       },
       "compaction": {
         "mode": "safeguard"
+      },
+      "heartbeat": {
+        "every": "60s",
+        "isolatedSession": true,
+        "lightContext": true
       }
     },
     "list": [
