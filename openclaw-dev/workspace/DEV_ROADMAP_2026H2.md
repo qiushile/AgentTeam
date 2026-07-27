@@ -6,7 +6,7 @@
 - [x] 制定数据库备份与恢复策略 ✅ docs/POSTGRES_BACKUP_STRATEGY.md
 - [x] 数据库连接池监控与告警 ✅ docs/DB_CONNECTION_POOL_MONITORING.md
 - [x] 慢查询日志分析机制 ✅ docs/SLOW_QUERY_ANALYSIS.md
-- [ ] 数据迁移与版本管理 (Flyway/Liquibase)
+- [x] 数据迁移与版本管理 (Flyway/Liquibase) ✅ docs/DATABASE_MIGRATION_GUIDE.md
 
 ### 1.2 监控体系
 - [x] PostgreSQL 指标采集 (连接数、查询延迟、锁等待) ✅ grafana/postgres-dashboard.json
@@ -37,7 +37,7 @@
 ## 三、技术储备
 
 ### 3.1 AI 能力集成
-- [ ] 内部 AI 辅助开发工具
+- [x] 内部 AI 辅助开发工具 ✅ docs/AI_DEVELOPMENT_TOOLS.md
 - [x] Prompt 工程最佳实践 ✅ docs/PROMPT_ENGINEERING_GUIDE.md
 - [x] AI 代码审查 Agent ✅ docs/AI_CODE_REVIEW_AGENT.md
 - [ ] 自动化测试生成
@@ -87,4 +87,4 @@
 
 > 最后更新: 2026-07-27
 > 更新者: 研发部高级研发专家
-> 状态: 进行中 (19/22 已完成, 3 项待执行)
+> 状态: 进行中 (21/22 已完成, 1 项待执行)
