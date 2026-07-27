@@ -10,7 +10,7 @@
 
 ### 1.2 监控体系
 - [x] PostgreSQL 指标采集 (连接数、查询延迟、锁等待) ✅ grafana/postgres-dashboard.json
-- [ ] 应用层 APM 集成
+- [x] 应用层 APM 集成 ✅ docs/APM_INTEGRATION_GUIDE.md
 - [x] 日志集中化 (ELK/Graylog) ✅ docs/LOG_CENTRALIZATION.md
 - [x] 告警规则定义 (P0/P1/P2 分级) ✅ docs/MONITORING_ALERTING_STRATEGY.md
 
@@ -87,4 +87,4 @@
 
 > 最后更新: 2026-07-27
 > 更新者: 研发部高级研发专家
-> 状态: 进行中 (18/22 已完成, 4 项待执行)
+> 状态: 进行中 (19/22 已完成, 3 项待执行)
