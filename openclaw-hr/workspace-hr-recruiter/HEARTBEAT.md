@@ -1,9 +1,7 @@
-```markdown
-# Keep this file empty (or with only comments) to skip heartbeat API calls.
+# Heartbeat Status
+# Last updated: 2026-08-13 00:05 CST
 
-# Add tasks below when you want the agent to check something periodically.
-```
-
-## Related
-
-- [Heartbeat config](/gateway/config-agents)
+- 无活跃招聘项目
+- 无待处理候选人
+- 无异常告警
+- 招聘渠道正常运营中
