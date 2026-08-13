@@ -86,6 +86,41 @@ docker logs -f openclaw-orchestrator
 
 针对企业实际落地，建议**不要一次性启动所有容器**。推荐优先启动 `Orchestrator` 与 `DevOps (Log Analyzer)` 进行灰度测试，因为日志分析对生产环境的干扰最小且提效最明显。待运转稳定后，再逐步拉起 `PM` 与 `Dev` 完成核心业务流闭环。
 
+## 更新体系
+
+本项目内置了完整的版本更新管理体系，覆盖 Hermes Agent 和 OpenClaw 两个核心组件。
+
+### 快速命令
+
+```bash
+# 检测更新
+bash monitor/update-check.sh all
+
+# 更新 Hermes Agent
+bash scripts/update-hermes.sh
+
+# 更新 OpenClaw 容器
+bash scripts/update-openclaw.sh
+
+# 回滚
+bash scripts/rollback.sh <component> <timestamp>
+
+# 检查 patch 兼容性
+bash monitor/patch-compatibility.sh
+```
+
+### 自动检测
+
+通过 Hermes cron job 定期检测：
+- **Hermes Agent**: 每周一 9:00
+- **OpenClaw**: 每两周一 9:00
+
+### 本地 Patch 管理
+
+`patches/` 目录维护所有本地独有的代码补丁，`patches/inventory.json` 追踪 upstream 合入状态。
+
+详见 [docs/update-ops.md](docs/update-ops.md)
+
 ## 参与贡献
 欢迎提交 PR 改进团队工作流或添加新的专业 Agent 配置模板！
 ```

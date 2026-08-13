@@ -1,0 +1,28 @@
+{
+  "version": "1.0",
+  "description": "本地 patch 清单 — 追踪 upstream 合入状态",
+  "last_checked": "2026-08-13",
+  "patches": [
+    {
+      "id": "feishu-approval-card",
+      "name": "飞书审批卡片命令预览",
+      "description": "审批卡片解决后显示命令预览文本，让用户看到自己批准了什么",
+      "target_repo": "hermes-agent",
+      "target_file": "plugins/platforms/feishu/adapter.py",
+      "patch_file": "patches/hermes/feishu-approval-card.patch",
+      "upstream_pr": null,
+      "upstream_status": "not_submitted",
+      "local_commit": "d16b8720d8",
+      "applied": true,
+      "last_verified": "2026-08-13",
+      "notes": "upstream 签名仍为旧版（无 command_preview），patch 仍有效"
+    }
+  ],
+  "status_legend": {
+    "not_submitted": "未提交到 upstream",
+    "pr_open": "已提交 PR，等待审核",
+    "merged": "已合入 upstream，可删除本地 patch",
+    "rejected": "upstream 拒绝，需维护本地 patch",
+    "superseded": "upstream 用不同方式实现了相同功能"
+  }
+}
