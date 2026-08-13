@@ -10,12 +10,12 @@
       "target_repo": "hermes-agent",
       "target_file": "plugins/platforms/feishu/adapter.py",
       "patch_file": "patches/hermes/feishu-approval-card.patch",
-      "upstream_pr": null,
-      "upstream_status": "not_submitted",
+      "upstream_pr": "https://github.com/NousResearch/hermes-agent/pull/85020",
+      "upstream_status": "pr_open",
       "local_commit": "d16b8720d8",
       "applied": true,
       "last_verified": "2026-08-13",
-      "notes": "upstream 签名仍为旧版（无 command_preview），patch 仍有效"
+      "notes": "PR #85020 已提交（rebased v2），等待 upstream review"
     }
   ],
   "status_legend": {
