@@ -1,7 +1,7 @@
 {
   "meta": {
-    "lastTouchedVersion": "2026.5.7",
-    "lastTouchedAt": "2026-05-08T06:47:41.219Z"
+    "lastTouchedVersion": "2026.7.1",
+    "lastTouchedAt": "2026-08-16T03:38:49.933Z"
   },
   "models": {
     "mode": "merge",
@@ -170,6 +170,9 @@
       },
       "compaction": {
         "mode": "safeguard"
+      },
+      "heartbeat": {
+        "every": "0m"
       }
     },
     "list": [
