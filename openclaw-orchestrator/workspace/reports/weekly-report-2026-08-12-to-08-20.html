@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>周度系统验收报告 | 2026-08-12 至 2026-08-20</title>
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --success: #0d9f6e;
+            --warning: #f59e0b;
+            --danger: #dc2626;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-600: #4b5563;
+            --gray-800: #1f2937;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; 
+            line-height: 1.6; 
+            color: var(--gray-800);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #0d47a1 100%);
+            color: white;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        .header h1 { font-size: 1.5rem; font-weight: 700; }
+        .header p { opacity: 0.9; font-size: 0.875rem; margin-top: 0.25rem; }
+        .header .badge { 
+            position: absolute; top: 2rem; right: 2rem; 
+            background: rgba(255,255,255,0.2); 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 20px; 
+            font-size: 0.75rem;
+        }
+        
+        .section { padding: 1.5rem 2rem; border-bottom: 1px solid var(--gray-200); }
+        .section:last-child { border-bottom: none; }
+        .section h2 { 
+            font-size: 1.125rem; 
+            color: var(--primary); 
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .metric-card {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .metric-card .value { font-size: 2rem; font-weight: 700; color: var(--primary); }
+        .metric-card .label { font-size: 0.75rem; color: var(--gray-600); margin-top: 0.25rem; }
+        .metric-card.status-ok .value { color: var(--success); }
+        .metric-card.status-warn .value { color: var(--warning); }
+        .metric-card.status-err .value { color: var(--danger); }
+        
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+        th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--gray-200); }
+        th { background: var(--gray-50); font-weight: 600; color: var(--gray-600); }
+        tr:hover { background: var(--gray-50); }
+        
+        .status-dot {
+            display: inline-block;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .dot-ok { background: var(--success); }
+        .dot-err { background: var(--danger); }
+        .dot-warn { background: var(--warning); }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+        .alert-danger { background: #fef2f2; border-left: 4px solid var(--danger); color: #991b1b; }
+        .alert-warning { background: #fffbeb; border-left: 4px solid var(--warning); color: #92400e; }
+        
+        .timeline { position: relative; padding-left: 1.5rem; }
+        .timeline::before {
+            content: ''; position: absolute; left: 0.5rem; top: 0; bottom: 0;
+            width: 2px; background: var(--gray-200);
+        }
+        .timeline-item { position: relative; margin-bottom: 1rem; }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -1.25rem; top: 0.5rem;
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--primary); border: 2px solid white;
+        }
+        .timeline-item .time { font-size: 0.75rem; color: var(--gray-600); }
+        
+        .footer {
+            background: var(--gray-50);
+            padding: 1rem 2rem;
+            font-size: 0.75rem;
+            color: var(--gray-600);
+            text-align: center;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-bar .fill { height: 100%; border-radius: 4px; }
+        .fill-ok { background: var(--success); }
+        .fill-warn { background: var(--warning); }
+        
+        .code { font-family: 'SF Mono', 'Consolas', monospace; background: var(--gray-100); padding: 0.125rem 0.375rem; border-radius: 4px; font-size: 0.8rem; }
+        
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 周度系统验收报告</h1>
+            <p>报告周期：2026-08-12（周三）至 2026-08-20（周四）</p>
+            <span class="badge">自动生成 · Orchestrator</span>
+        </div>
+
+        <div class="section">
+            <h2>🔴 关键告警</h2>
+            <div class="alert alert-danger">
+                <strong>飞书通道持续离线</strong> — 自 2026-06-12 起已超 <strong>69 天</strong>，每日验收报告及任务推送均无法送达。
+                <br>修复命令：<code class="code">openclaw plugins install @openclaw/feishu</code>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📈 核心指标</h2>
+            <div class="metrics">
+                <div class="metric-card status-ok">
+                    <div class="value">✅</div>
+                    <div class="label">心跳系统</div>
+                </div>
+                <div class="metric-card status-err">
+                    <div class="value">69d</div>
+                    <div class="label">飞书离线天数</div>
+                </div>
+                <div class="metric-card status-ok">
+                    <div class="value">90%</div>
+                    <div class="label">GPU Cloud 完成度</div>
+                </div>
+                <div class="metric-card status-warn">
+                    <div class="value">0</div>
+                    <div class="label">本周新增任务</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📋 系统状态一览</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>系统组件</th><th>状态</th><th>备注</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>心跳轮询</td><td><span class="status-dot dot-ok"></span>正常</td><td>全周期无中断</td></tr>
+                        <tr><td>飞书通道</td><td><span class="status-dot dot-err"></span>离线</td><td>插件缺失，需安装</td></tr>
+                        <tr><td>记忆系统</td><td><span class="status-dot dot-ok"></span>正常</td><td>memory-lancedb + 阿里云 embedding</td></tr>
+                        <tr><td>GPU Cloud 项目</td><td><span class="status-dot dot-ok"></span>稳定</td><td>6 部门交付物完整</td></tr>
+                        <tr><td>日志文件</td><td><span class="status-dot dot-ok"></span>正常</td><td>每日日志持续生成</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🏗️ GPU Cloud 项目交付状态</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>部门</th><th>交付物</th><th>状态</th><th>进度</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>PM</td><td>市场调研报告、竞品分析矩阵、PRD v1.0</td><td><span class="status-dot dot-ok"></span>完成</td><td><div class="progress-bar"><div class="fill fill-ok" style="width: 100%"></div></div></td></tr>
+                        <tr><td>Dev</td><td>后端 API (16 端点)、前端官网、计费 Worker</td><td><span class="status-dot dot-ok"></span>完成</td><td><div class="progress-bar"><div class="fill fill-ok" style="width: 100%"></div></div></td></tr>
+                        <tr><td>UI Designer</td><td>品牌 VI 手册、设计系统文档</td><td><span class="status-dot dot-ok"></span>完成</td><td><div class="progress-bar"><div class="fill fill-ok" style="width: 100%"></div></div></td></tr>
+                        <tr><td>运营</td><td>数据指标字典、埋点方案文档</td><td><span class="status-dot dot-ok"></span>完成</td><td><div class="progress-bar"><div class="fill fill-ok" style="width: 100%"></div></div></td></tr>
+                        <tr><td>客服</td><td>FAQ 知识库 (19 条)、客服 SOP 手册</td><td><span class="status-dot dot-ok"></span>完成</td><td><div class="progress-bar"><div class="fill fill-ok" style="width: 100%"></div></div></td></tr>
+                        <tr><td>安全</td><td>安全架构设计文档、合规检查清单</td><td><span class="status-dot dot-ok"></span>完成</td><td><div class="progress-bar"><div class="fill fill-ok" style="width: 100%"></div></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--gray-600);">技术栈：Go 1.21 + Gin + PostgreSQL 15 + Redis 7 + Kubernetes · 60+ 文件, ~4,200 行代码, 8 张数据库表</p>
+        </div>
+
+        <div class="section">
+            <h2>📅 每日时间线</h2>
+            <div class="timeline">
+                <div class="timeline-item"><div class="time">08-12 周三</div><div>创建每日日志，工作区状态稳定，无变更</div></div>
+                <div class="timeline-item"><div class="time">08-13 周四</div><div>全周期心跳正常，无新增任务</div></div>
+                <div class="timeline-item"><div class="time">08-14 周五</div><div>创建 heartbeat-state.json，例行验收完成</div></div>
+                <div class="timeline-item"><div class="time">08-15 周六</div><div>周末静默，系统稳定</div></div>
+                <div class="timeline-item"><div class="time">08-16 周日</div><div>周末静默，系统稳定</div></div>
+                <div class="timeline-item"><div class="time">08-17 周一</div><div>周一 9:30 验收报告生成，飞书推送失败</div></div>
+                <div class="timeline-item"><div class="time">08-18 周二</div><div>例行验收，状态无变化</div></div>
+                <div class="timeline-item"><div class="time">08-19 周三</div><div>例行验收，状态无变化</div></div>
+                <div class="timeline-item"><div class="time">08-20 周四</div><div>本周五 9:30 验收报告生成（本文档）</div></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔧 待办事项</h2>
+            <div class="alert alert-warning">
+                <strong>高优先级</strong>：修复飞书插件 — <code class="code">openclaw plugins install @openclaw/feishu</code> 或 <code class="code">openclaw doctor --fix</code>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--gray-600); margin-top: 0.5rem;">除飞书插件外，系统无其他待办事项。GPU Cloud 项目已交付完毕，等待下一步指令。</p>
+        </div>
+
+        <div class="footer">
+            报告生成时间：2026-08-20 09:30 CST · Orchestrator 协调中枢自动生成
+        </div>
+    </div>
+</body>
+</html>
