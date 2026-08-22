@@ -77,6 +77,8 @@ async function getDbClient() {
  * 获取所有待处理任务 (shared.tasks + dev_schema.dev_tasks)
  * 按优先级排序 (P0 > P1 > P2 > P3)，同优先级按创建时间
  * 
+ * 注意: shared.tasks 没有 priority 列，使用 CASE 从标题推导优先级
+ * 
  * @param {string|null} assignee - 可选，过滤指定负责人
  * @returns {Array} 排序后的任务列表
  */
@@ -87,43 +89,44 @@ async function getPendingTasks(assignee = null) {
   try {
     await client.connect();
     
-    // 查询 shared.tasks
-    let sharedQuery = `
-      SELECT 'shared' as source, id, title, description, assignee, requester, status, result, created_at, updated_at,
-             CASE 
-               WHEN priority IS NOT NULL THEN priority
-               WHEN title ILIKE '%紧急%' OR title ILIKE '%critical%' OR title ILIKE '%p0%' THEN 'P0'
-               WHEN title ILIKE '%重要%' OR title ILIKE '%high%' OR title ILIKE '%p1%' THEN 'P1'
-               WHEN title ILIKE '%低%' OR title ILIKE '%low%' OR title ILIKE '%p3%' THEN 'P3'
-               ELSE 'P2'
-             END as priority
-      FROM shared.tasks 
-      WHERE status IN ('PENDING', 'IN_PROGRESS')
-    `;
+    // 查询 shared.tasks (无 priority 列，从标题推导)
     const sharedParams = [];
+    let sharedWhere = "WHERE status IN ('PENDING', 'IN_PROGRESS')";
     if (assignee) {
-      sharedQuery += ` AND assignee = $1`;
+      sharedWhere += ' AND assignee = $1';
       sharedParams.push(assignee);
     }
-    sharedQuery += ` ORDER BY created_at`;
     
-    const sharedResult = await client.query(sharedQuery, sharedParams);
+    const sharedResult = await client.query(`
+      SELECT 
+        'shared' as source, id, title, description, assignee, requester, status, result, created_at, updated_at,
+        CASE 
+          WHEN title ILIKE '%紧急%' OR title ILIKE '%critical%' OR title ILIKE '%p0%' THEN 'P0'
+          WHEN title ILIKE '%重要%' OR title ILIKE '%urgent%' OR title ILIKE '%p1%' THEN 'P1'
+          WHEN title ILIKE '%低%' OR title ILIKE '%low%' OR title ILIKE '%p3%' THEN 'P3'
+          ELSE 'P2'
+        END as priority
+      FROM shared.tasks 
+      ${sharedWhere}
+      ORDER BY created_at
+    `, sharedParams);
     
-    // 查询 dev_schema.dev_tasks
-    let devQuery = `
-      SELECT 'dev' as source, id, title, description, assignee, requester, status, result, created_at, updated_at,
-             COALESCE(priority, 'P2') as priority
-      FROM dev_schema.dev_tasks 
-      WHERE status IN ('PENDING', 'IN_PROGRESS')
-    `;
+    // 查询 dev_schema.dev_tasks (有 priority 列)
     const devParams = [];
+    let devWhere = "WHERE status IN ('PENDING', 'IN_PROGRESS')";
     if (assignee) {
-      devQuery += ` AND assignee = $1`;
+      devWhere += ' AND assignee = $1';
       devParams.push(assignee);
     }
-    devQuery += ` ORDER BY created_at`;
     
-    const devResult = await client.query(devQuery, devParams);
+    const devResult = await client.query(`
+      SELECT 
+        'dev' as source, id, title, description, assignee, requester, status, result, created_at, updated_at,
+        COALESCE(priority, 'P2') as priority
+      FROM dev_schema.dev_tasks 
+      ${devWhere}
+      ORDER BY created_at
+    `, devParams);
     
     // 合并 + 按优先级排序
     const allTasks = [...sharedResult.rows, ...devResult.rows];
@@ -221,7 +224,7 @@ async function updateTaskStatus(source, taskId, status, result = null) {
       `, [status, result, taskId]);
     } else {
       await client.query(`
-        UPDATE ${table} SET status = $1, updated_at = NOW() WHERE id = $1
+        UPDATE ${table} SET status = $1, updated_at = NOW() WHERE id = $2
       `, [status, taskId]);
     }
     
