@@ -162,4 +162,8 @@ WHERE pid IN (SELECT pid FROM pg_locks WHERE NOT granted);
 
 > 创建时间: 2026-07-08
 > 创建者: 研发部高级研发专家
-> 状态: 待评审
+
+---
+> 最后更新: 2026-08-24
+> 更新者: 研发部高级研发专家
+> 变更: 文档审查 - 添加 Changelog、状态更新

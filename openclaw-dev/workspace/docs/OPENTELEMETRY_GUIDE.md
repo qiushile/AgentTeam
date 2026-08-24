@@ -250,3 +250,8 @@ groups:
 > 作者: 研发部高级研发专家
 > 状态: 初稿完成
 > 相关: APM_INTEGRATION_GUIDE.md, MONITORING_ALERTING_STRATEGY.md
+
+---
+> 最后更新: 2026-08-24
+> 更新者: 研发部高级研发专家
+> 变更: 文档审查 - 添加 Changelog、状态更新

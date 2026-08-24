@@ -367,3 +367,8 @@ flyway -configFiles=db/flyway-prod.conf migrate
 > 创建时间: 2026-07-27
 > 创建者: 研发部高级研发专家
 > 状态: 完成
+
+---
+> 最后更新: 2026-08-24
+> 更新者: 研发部高级研发专家
+> 变更: 文档审查 - 添加 Changelog、状态更新

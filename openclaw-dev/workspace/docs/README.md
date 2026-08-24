@@ -1,131 +1,109 @@
-# 研发部文档索引
+# 研发部文档导航
 
 > 更新日期: 2026-08-24  
-> 维护者: 研发部高级研发专家 (dev_user)  
-> 文档总数: 34 篇
+> 维护者: 研发部高级研发专家  
+> 文档总数: 36 篇
 
 ---
 
-## 一、按类别浏览
+## 核心文档
 
-### 📐 架构设计 (5 篇)
-| 文档 | 日期 | 状态 | 说明 |
-|---|---|---|---|
-| [ADR_PROCESS.md](ADR_PROCESS.md) | Jul 9 | ✅ | ADR 决策流程 |
-| [ADR_TEMPLATE.md](ADR_TEMPLATE.md) | Jul 8 | ⚠️ | ADR 模板 + 索引 |
-| [CICD_PIPELINE.md](CICD_PIPELINE.md) | Jul 8 | ⚠️ | CI/CD 流水线设计 |
-| [MICROSERVICE_COMMUNICATION.md](MICROSERVICE_COMMUNICATION.md) | Jul 27 | ✅ | 微服务间通信优化 |
-| [TASK_SCHEDULER_DESIGN.md](TASK_SCHEDULER_DESIGN.md) | Aug 22 | ✅ | 任务调度系统设计 |
+| 文档 | 说明 | 大小 | 更新 |
+|------|------|------|------|
+| [DEV_WORKPLAN_2026H2_2027Q1.md](DEV_WORKPLAN_2026H2_2027Q1.md) | 6 个月工作计划 | 12.5KB | Aug 22 |
+| [SECURITY_BASELINE.md](SECURITY_BASELINE.md) | 安全基线检查清单 | 3.7KB | Jul 8 |
+| [CODE_QUALITY_STANDARDS.md](CODE_QUALITY_STANDARDS.md) | 代码质量规范 | 3.5KB | Jul 8 |
+| [CICD_PIPELINE.md](CICD_PIPELINE.md) | CI/CD 流水线方案 | 8.0KB | Aug 24 |
+| [ONBOARDING.md](ONBOARDING.md) | 新人入职指南 | 3.2KB | Aug 24 |
 
-### 🔧 运维指南 (8 篇)
-| 文档 | 日期 | 状态 | 说明 |
-|---|---|---|---|
-| [POSTGRES_BACKUP_STRATEGY.md](POSTGRES_BACKUP_STRATEGY.md) | Jul 8 | ✅ | 数据库备份策略 |
-| [DB_CONNECTION_POOL_MONITORING.md](DB_CONNECTION_POOL_MONITORING.md) | Jul 8 | ⚠️ | 连接池监控 |
-| [INCIDENT_SOP.md](INCIDENT_SOP.md) | Jul 8 | ✅ | 故障处理 SOP |
-| [LOG_CENTRALIZATION.md](LOG_CENTRALIZATION.md) | Jul 8 | ⚠️ | 日志集中化方案 |
-| [MONITORING_ALERTING_STRATEGY.md](MONITORING_ALERTING_STRATEGY.md) | Jul 8 | ✅ | 监控告警体系 |
-| [SLOW_QUERY_ANALYSIS.md](SLOW_QUERY_ANALYSIS.md) | Jul 8 | ✅ | 慢查询日志分析 |
-| [RUNBOOK_DB_RECOVERY.md](RUNBOOK_DB_RECOVERY.md) | Aug 24 | ✅ | DB 故障恢复 Runbook |
-| [RUNBOOK_AGENT_RECOVERY.md](RUNBOOK_AGENT_RECOVERY.md) | Aug 24 | ✅ | Agent 重启/恢复 Runbook |
+## 运维手册 (Runbook)
 
-### 💻 开发规范 (4 篇)
-| 文档 | 日期 | 状态 | 说明 |
-|---|---|---|---|
-| [CODE_QUALITY_STANDARDS.md](CODE_QUALITY_STANDARDS.md) | Jul 8 | ✅ | 代码质量规范 |
-| [API_DOCUMENTATION_STRATEGY.md](API_DOCUMENTATION_STRATEGY.md) | Jul 8 | ✅ | API 文档体系 |
-| [SECURITY_BASELINE.md](SECURITY_BASELINE.md) | Jul 8 | ✅ | 安全基线检查清单 |
-| [PROMPT_ENGINEERING_GUIDE.md](PROMPT_ENGINEERING_GUIDE.md) | Jul 9 | ✅ | Prompt 工程最佳实践 |
+| 文档 | 说明 | 大小 | 更新 |
+|------|------|------|------|
+| [RUNBOOK_DB_RECOVERY.md](RUNBOOK_DB_RECOVERY.md) | DB 故障恢复 | 3.7KB | Aug 24 |
+| [RUNBOOK_AGENT_RECOVERY.md](RUNBOOK_AGENT_RECOVERY.md) | Agent 重启/恢复 | 2.1KB | Aug 24 |
+| [RUNBOOK_FEISHU_TROUBLESHOOTING.md](RUNBOOK_FEISHU_TROUBLESHOOTING.md) | 飞书连接排查 | 3.5KB | Aug 24 |
+| [INCIDENT_SOP.md](INCIDENT_SOP.md) | 故障处理 SOP | 4.0KB | Jul 8 |
 
-### 🛠️ 工具指南 (5 篇)
-| 文档 | 日期 | 状态 | 说明 |
-|---|---|---|---|
-| [AI_DEVELOPMENT_TOOLS.md](AI_DEVELOPMENT_TOOLS.md) | Jul 27 | ✅ | AI 辅助开发工具 |
-| [AI_CODE_REVIEW_AGENT.md](AI_CODE_REVIEW_AGENT.md) | Jul 9 | ✅ | AI 代码审查 Agent |
-| [DATABASE_MIGRATION_GUIDE.md](DATABASE_MIGRATION_GUIDE.md) | Jul 27 | ✅ | 数据库迁移指南 |
-| [OPENTELEMETRY_GUIDE.md](OPENTELEMETRY_GUIDE.md) | Aug 12 | ✅ | OpenTelemetry 接入指南 |
-| [PERFORMANCE_OPTIMIZATION_GUIDE.md](PERFORMANCE_OPTIMIZATION_GUIDE.md) | Jul 8 | ✅ | 性能优化指南 |
+## 数据库相关
 
-### 📊 报告与计划 (7 篇)
-| 文档 | 日期 | 状态 | 说明 |
-|---|---|---|---|
-| [DEV_WORKPLAN_2026H2_2027Q1.md](DEV_WORKPLAN_2026H2_2027Q1.md) | Aug 22 | ✅ | 6 个月工作计划 |
-| [SECURITY_AUDIT_20260824.md](SECURITY_AUDIT_20260824.md) | Aug 24 | ✅ | 安全审计报告 |
-| [CICD_STATUS_REPORT.md](CICD_STATUS_REPORT.md) | Aug 24 | ✅ | CI/CD 状态报告 |
-| [DOCUMENT_AUDIT_REPORT.md](DOCUMENT_AUDIT_REPORT.md) | Aug 24 | ✅ | 文档审计报告 |
-| [DAY1_REPORT_20260822.md](DAY1_REPORT_20260822.md) | Aug 22 | ✅ | Day 1 执行报告 |
-| [WEEK1_SUMMARY_20260822.md](WEEK1_SUMMARY_20260822.md) | Aug 22 | ✅ | Week 1 周报 |
-| [WEEK2_REPORT_20260824.md](WEEK2_REPORT_20260824.md) | Aug 24 | ✅ | Week 2 周报 |
+| 文档 | 说明 | 大小 | 更新 |
+|------|------|------|------|
+| [POSTGRES_BACKUP_STRATEGY.md](POSTGRES_BACKUP_STRATEGY.md) | 数据库备份策略 | 3.0KB | Jul 8 |
+| [DB_CONNECTION_POOL_MONITORING.md](DB_CONNECTION_POOL_MONITORING.md) | 连接池监控 | 4.7KB | Aug 24 |
+| [SLOW_QUERY_ANALYSIS.md](SLOW_QUERY_ANALYSIS.md) | 慢查询分析 | 4.5KB | Jul 8 |
+| [DATABASE_MIGRATION_GUIDE.md](DATABASE_MIGRATION_GUIDE.md) | 数据迁移指南 | 9.0KB | Jul 27 |
+| [DB_PERMISSION_AUDIT.md](DB_PERMISSION_AUDIT.md) | 数据库权限审计 | 4.4KB | Aug 22 |
 
-### 🔍 故障排查 (3 篇)
-| 文档 | 日期 | 状态 | 说明 |
-|---|---|---|---|
-| [RUNBOOK_DB_RECOVERY.md](RUNBOOK_DB_RECOVERY.md) | Aug 24 | ✅ | DB 故障恢复 |
-| [RUNBOOK_AGENT_RECOVERY.md](RUNBOOK_AGENT_RECOVERY.md) | Aug 24 | ✅ | Agent 重启/恢复 |
-| [RUNBOOK_FEISHU_TROUBLESHOOTING.md](RUNBOOK_FEISHU_TROUBLESHOOTING.md) | Aug 24 | ✅ | 飞书连接排查 |
+## 监控与可观测性
 
-### 📝 其他 (2 篇)
-| 文档 | 日期 | 状态 | 说明 |
-|---|---|---|---|
-| [ONBOARDING.md](ONBOARDING.md) | Jul 9 | ⚠️ | 入职指南 (占位符待替换) |
-| [TASK_SCHEDULER_REQUIREMENTS.md](TASK_SCHEDULER_REQUIREMENTS.md) | Aug 22 | ✅ | 任务调度需求 |
-| [TASK_SCHEDULER_API_DESIGN.md](TASK_SCHEDULER_API_DESIGN.md) | Aug 22 | ✅ | 任务调度 API 设计 |
-| [DB_PERMISSION_AUDIT.md](DB_PERMISSION_AUDIT.md) | Aug 22 | ✅ | 数据库权限审计 |
+| 文档 | 说明 | 大小 | 更新 |
+|------|------|------|------|
+| [MONITORING_ALERTING_STRATEGY.md](MONITORING_ALERTING_STRATEGY.md) | 监控告警体系 | 5.0KB | Jul 8 |
+| [APM_INTEGRATION_GUIDE.md](APM_INTEGRATION_GUIDE.md) | APM 集成指南 | 11.4KB | Jul 27 |
+| [OPENTELEMETRY_GUIDE.md](OPENTELEMETRY_GUIDE.md) | OpenTelemetry 部署 | 8.5KB | Aug 12 |
+| [LOG_CENTRALIZATION.md](LOG_CENTRALIZATION.md) | 日志集中化方案 | 4.7KB | Aug 24 |
+| [PERFORMANCE_OPTIMIZATION_GUIDE.md](PERFORMANCE_OPTIMIZATION_GUIDE.md) | 性能优化指南 | 6.0KB | Jul 8 |
 
----
+## 架构设计
 
-## 二、按优先级浏览
+| 文档 | 说明 | 大小 | 更新 |
+|------|------|------|------|
+| [ADR_TEMPLATE.md](ADR_TEMPLATE.md) | 架构决策记录 | 2.3KB | Aug 24 |
+| [ADR_PROCESS.md](ADR_PROCESS.md) | ADR 决策流程 | 1.5KB | Jul 9 |
+| [MICROSERVICE_COMMUNICATION.md](MICROSERVICE_COMMUNICATION.md) | 微服务通信优化 | 9.1KB | Jul 27 |
 
-### 🔴 需立即更新 (5 篇)
-| 文档 | 问题 | 行动 |
-|---|---|---|
-| ADR_TEMPLATE.md | 2 个 ADR 状态未推进 | 更新或弃用 |
-| CICD_PIPELINE.md | 缺蓝绿部署实战步骤 | 补充配置 |
-| DB_CONNECTION_POOL_MONITORING.md | 架构描述过时 | 更新为 health-monitor 方案 |
-| LOG_CENTRALIZATION.md | 缺 Loki 方案 | 补充对比 |
-| ONBOARDING.md | 占位符未替换 | 替换为实际值 |
+## AI 与开发工具
 
-### ✅ 有效 (29 篇)
-其余 29 篇文档内容完整、时效性良好，无需更新。
+| 文档 | 说明 | 大小 | 更新 |
+|------|------|------|------|
+| [AI_DEVELOPMENT_TOOLS.md](AI_DEVELOPMENT_TOOLS.md) | AI 辅助开发工具 | 9.7KB | Jul 27 |
+| [AI_CODE_REVIEW_AGENT.md](AI_CODE_REVIEW_AGENT.md) | AI 代码审查 Agent | 2.7KB | Jul 9 |
+| [PROMPT_ENGINEERING_GUIDE.md](PROMPT_ENGINEERING_GUIDE.md) | Prompt 工程实践 | 2.7KB | Jul 9 |
+
+## 其他
+
+| 文档 | 说明 | 大小 | 更新 |
+|------|------|------|------|
+| [API_DOCUMENTATION_STRATEGY.md](API_DOCUMENTATION_STRATEGY.md) | API 文档体系 | 5.5KB | Jul 8 |
+| [SECURITY_AUDIT_20260824.md](SECURITY_AUDIT_20260824.md) | 安全审计报告 | 6.8KB | Aug 24 |
+| [CICD_STATUS_REPORT.md](CICD_STATUS_REPORT.md) | CI/CD 现状 | 3.6KB | Aug 24 |
+
+## 报告与总结
+
+| 文档 | 说明 | 大小 | 更新 |
+|------|------|------|------|
+| [DAY1_REPORT_20260822.md](DAY1_REPORT_20260822.md) | Day 1 执行报告 | 3.5KB | Aug 22 |
+| [WEEK1_SUMMARY_20260822.md](WEEK1_SUMMARY_20260822.md) | Week 1 周报 | 3.2KB | Aug 22 |
+| [WEEK2_REPORT_20260824.md](WEEK2_REPORT_20260824.md) | Week 2 周报 | 3.3KB | Aug 24 |
+| [DOCUMENT_AUDIT_REPORT.md](DOCUMENT_AUDIT_REPORT.md) | 文档审计报告 | 8.3KB | Aug 24 |
+
+## 工具库与设计
+
+| 文档 | 说明 | 大小 | 更新 |
+|------|------|------|------|
+| [TASK_SCHEDULER_REQUIREMENTS.md](TASK_SCHEDULER_REQUIREMENTS.md) | 任务调度需求 | 2.2KB | Aug 22 |
+| [TASK_SCHEDULER_API_DESIGN.md](TASK_SCHEDULER_API_DESIGN.md) | 任务调度 API 设计 | 3.0KB | Aug 22 |
+| [TASK_SCHEDULER_DESIGN.md](TASK_SCHEDULER_DESIGN.md) | 任务调度系统设计 | 2.7KB | Aug 22 |
 
 ---
 
-## 三、快速链接
+## 文档统计
 
-### 新成员快速入门
-1. [ONBOARDING.md](ONBOARDING.md) — 环境搭建
-2. [CODE_QUALITY_STANDARDS.md](CODE_QUALITY_STANDARDS.md) — 代码规范
-3. [SECURITY_BASELINE.md](SECURITY_BASELINE.md) — 安全基线
-4. [PROMPT_ENGINEERING_GUIDE.md](PROMPT_ENGINEERING_GUIDE.md) — Prompt 指南
-
-### 运维值班
-1. [RUNBOOK_DB_RECOVERY.md](RUNBOOK_DB_RECOVERY.md) — DB 故障恢复
-2. [RUNBOOK_AGENT_RECOVERY.md](RUNBOOK_AGENT_RECOVERY.md) — Agent 重启
-3. [RUNBOOK_FEISHU_TROUBLESHOOTING.md](RUNBOOK_FEISHU_TROUBLESHOOTING.md) — 飞书排查
-4. [INCIDENT_SOP.md](INCIDENT_SOP.md) — 故障处理 SOP
-
-### CI/CD 与部署
-1. [CICD_PIPELINE.md](CICD_PIPELINE.md) — 流水线设计
-2. [CICD_STATUS_REPORT.md](CICD_STATUS_REPORT.md) — 状态报告
-3. [DATABASE_MIGRATION_GUIDE.md](DATABASE_MIGRATION_GUIDE.md) — 数据库迁移
-
----
-
-## 四、文档统计
-
-| 指标 | 值 |
-|---|---|
-| 文档总数 | 34 |
-| 有效文档 | 29 (85%) |
-| 需更新 | 5 (15%) |
-| 已归档 | 0 |
-| 总大小 | ~200KB |
-| 平均大小 | ~6KB |
-| 代码示例文档 | 16 (47%) |
-| Changelog 覆盖率 | 0% (需补充) |
+| 类别 | 数量 | 占比 |
+|------|------|------|
+| 核心文档 | 5 | 14% |
+| 运维手册 | 4 | 11% |
+| 数据库 | 5 | 14% |
+| 监控与可观测性 | 5 | 14% |
+| 架构设计 | 3 | 8% |
+| AI 与开发工具 | 3 | 8% |
+| 其他 | 3 | 8% |
+| 报告与总结 | 4 | 11% |
+| 工具库与设计 | 3 | 8% |
+| **总计** | **36** | **100%** |
 
 ---
 
 > 最后更新: 2026-08-24  
-> 维护者: 研发部高级研发专家 (dev_user)  
-> 下次审查: 2026-09-24
+> 维护者: 研发部高级研发专家
