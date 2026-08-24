@@ -7,7 +7,7 @@
 ## 2. 流水线架构
 
 ```
-开发者 Push → GitHub → CI 触发 → 构建 → 测试 → 安全扫描 → 构建镜像 → 部署
+开发者 Push → GitHub → CI 触发 → 构建 → 测试 → 安全扫描 → SonarQube → 构建镜像 → 部署 → 通知
 ```
 
 ## 3. CI 流水线 (Continuous Integration)
@@ -81,10 +81,27 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
+  sonarqube:
+    name: 📊 SonarQube Analysis
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 完整历史用于 PR 分析
+      - uses: sonarsource/sonarqube-scan-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - uses: sonarsource/sonarqube-quality-gate-action@v1
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
   build:
     name: 📦 Build
     runs-on: ubuntu-latest
-    needs: [test, security]
+    needs: [test, security, sonarqube]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -126,12 +143,78 @@ jobs:
 
 ### 4.2 部署策略
 
-#### 蓝绿部署
+#### 蓝绿部署实战
+
 ```yaml
-# 部署新版本到 Green 环境
-# 健康检查通过
-# 切换流量 Green → Production
-# 保留 Blue 环境 30 分钟作为回滚备用
+# .github/workflows/blue-green-deploy.yml
+name: Blue-Green Deploy
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: '部署环境'
+        required: true
+        type: choice
+        options: [staging, production]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+      - name: 确定当前活跃环境
+        id: current
+        run: |
+          # 检查当前是 Blue 还是 Green
+          curl -sf http://${{ secrets.DEPLOY_HOST }}/api/version || echo "blue"
+          echo "active=blue" >> $GITHUB_OUTPUT
+
+      - name: 部署到非活跃环境
+        run: |
+          INACTIVE=${{ steps.current.outputs.active == 'blue' && 'green' || 'blue' }}
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "
+            docker pull ghcr.io/${{ github.repository }}:${{ github.sha }}
+            docker-compose -f docker-compose.$INACTIVE.yml up -d
+          "
+
+      - name: 健康检查
+        run: |
+          INACTIVE=${{ steps.current.outputs.active == 'blue' && 'green' || 'blue' }}
+          for i in {1..15}; do
+            if curl -sf http://${{ secrets.DEPLOY_HOST }}:${{ secrets.HEALTH_PORT_$INACTIVE }}/health; then
+              echo "✅ 健康检查通过"
+              exit 0
+            fi
+            sleep 4
+          done
+          echo "❌ 健康检查失败"
+          exit 1
+
+      - name: 切换流量
+        run: |
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "
+            nginx -s reload
+          "
+
+      - name: 观察期 (5 分钟)
+        run: sleep 300
+
+      - name: 验证部署
+        run: |
+          # 检查错误率
+          ERROR_RATE=$(curl -s http://${{ secrets.DEPLOY_HOST }}/api/metrics | grep error_rate)
+          if [ "$ERROR_RATE" -gt 5 ]; then
+            echo "❌ 错误率过高，触发回滚"
+            exit 1
+          fi
+
+      - name: 清理旧环境
+        if: success()
+        run: |
+          ACTIVE=${{ steps.current.outputs.active }}
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "
+            docker-compose -f docker-compose.$ACTIVE.yml down
+          "
 ```
 
 #### 滚动更新 (Kubernetes)
@@ -222,15 +305,53 @@ docker start dev-api-production-backup
 
 ## 7. 通知机制
 
-| 事件 | 通知渠道 |
-|------|---------|
-| CI 失败 | 飞书群机器人 |
-| 部署成功 | 飞书群 + 邮件 |
-| 部署失败 | 飞书 + 短信 |
-| 回滚触发 | 飞书 + 电话 |
+### 7.1 飞书通知 (待凭证恢复后启用)
+
+```yaml
+  notify:
+    name: 📢 Notify
+    needs: [deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: 飞书通知
+        run: |
+          curl -X POST ${{ secrets.FEISHU_WEBHOOK }} \
+            -H "Content-Type: application/json" \
+            -d '{
+              "msg_type": "interactive",
+              "card": {
+                "header": {
+                  "title": {
+                    "tag": "plain_text",
+                    "content": "${{ job.status == \"success\" && \"✅ 部署成功\" || \"❌ 部署失败\" }}"
+                  }
+                },
+                "elements": [
+                  {
+                    "tag": "div",
+                    "text": {
+                      "content": "环境: ${{ github.event.inputs.environment }}\n版本: ${{ github.sha }}\n触发者: ${{ github.actor }}"
+                    }
+                  }
+                ]
+              }
+            }'
+```
+
+### 7.2 通知矩阵
+
+| 事件 | 飞书 | 邮件 | 短信 | 电话 |
+|------|------|------|------|------|
+| CI 失败 | ✅ | - | - | - |
+| 部署成功 | ✅ | ✅ | - | - |
+| 部署失败 | ✅ | ✅ | ✅ | - |
+| 回滚触发 | ✅ | ✅ | ✅ | ✅ |
+| SonarQube 质量门禁失败 | ✅ | ✅ | - | - |
 
 ---
 
-> 创建时间: 2026-07-08
-> 创建者: 研发部高级研发专家
-> 状态: 待评审
+> 创建时间: 2026-07-08  
+> 最后更新: 2026-08-24  
+> 创建者: 研发部高级研发专家  
+> 变更: 补充 SonarQube 集成、蓝绿部署实战配置、飞书通知模板
