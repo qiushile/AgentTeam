@@ -9,8 +9,7 @@
   },
   "rules": {
     "no-unused-vars": "warn",
-    "no-console": "off",
-    "no-prototype-builtins": "off"
+    "no-console": "off"
   },
-  "ignorePatterns": ["node_modules/", "logs/", "tmp/"]
+  "ignorePatterns": ["node_modules/", "logs/"]
 }
