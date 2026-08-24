@@ -1,16 +1,30 @@
 {
-  "name": "workspace",
+  "name": "dev-workspace",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "研发部工作区 - 任务调度、健康监控、技术文档",
+  "main": "lib/task-scheduler.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --coverage",
+    "lint": "eslint . --ext .js,.ts",
+    "lint:fix": "eslint . --ext .js,.ts --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "health-check": "node scripts/db-health-monitor.js",
+    "health-check:daemon": "node scripts/db-health-monitor.js --daemon",
+    "task-list": "node lib/task-scheduler.js list",
+    "task-stats": "node lib/task-scheduler.js stats",
+    "task-overdue": "node lib/task-scheduler.js overdue"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["dev", "tasks", "postgresql", "health-monitor"],
+  "author": "研发部高级研发专家",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
     "pg": "^8.23.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "prettier": "^3.0.0",
+    "jest": "^29.0.0"
   }
 }
