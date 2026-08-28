@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  tempo:
+    image: grafana/tempo:2.5.0
+    container_name: tempo
+    ports:
+      - "3200:3200"   # Tempo API
+      - "4317:4317"   # OTLP gRPC (接收 traces)
+    volumes:
+      - ./tempo-config.yml:/etc/tempo-config.yml:ro
+      - tempo-data:/tmp/tempo
+    command: -config.file=/etc/tempo-config.yml
+    restart: unless-stopped
+    networks:
+      - openclaw_default
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 256M
+
+volumes:
+  tempo-data:
+
+networks:
+  openclaw_default:
+    external: true
