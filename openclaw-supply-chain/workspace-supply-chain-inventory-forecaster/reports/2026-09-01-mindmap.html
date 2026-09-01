@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>库存预测专家 - 核心能力思维导图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; }
+  h1 { color: #e2e8f0; font-size: 28px; margin-bottom: 8px; text-align: center; }
+  .subtitle { color: #94a3b8; font-size: 14px; margin-bottom: 30px; }
+  .mindmap { display: flex; flex-direction: column; align-items: center; gap: 0; width: 100%; max-width: 1200px; }
+  .center-node { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; padding: 18px 36px; border-radius: 50px; font-size: 20px; font-weight: 700; box-shadow: 0 8px 32px rgba(59,130,246,0.4); margin-bottom: 24px; position: relative; z-index: 10; }
+  .level-1-row { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; width: 100%; }
+  .branch { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 0; margin: 8px; min-width: 220px; max-width: 260px; flex: 1; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+  .branch:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .branch-header { padding: 14px 18px; font-size: 15px; font-weight: 700; color: white; display: flex; align-items: center; gap: 8px; }
+  .branch-body { padding: 12px 18px 16px; }
+  .branch-body ul { list-style: none; padding: 0; }
+  .branch-body li { padding: 6px 0; color: #cbd5e1; font-size: 13px; border-bottom: 1px solid #334155; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+  .branch-body li:last-child { border-bottom: none; }
+  .branch-body li .icon { flex-shrink: 0; width: 20px; text-align: center; }
+  .b-blue .branch-header { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+  .b-green .branch-header { background: linear-gradient(135deg, #22c55e, #16a34a); }
+  .b-orange .branch-header { background: linear-gradient(135deg, #f97316, #ea580c); }
+  .b-purple .branch-header { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+  .b-red .branch-header { background: linear-gradient(135deg, #ef4444, #dc2626); }
+  .b-teal .branch-header { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+  .footer { color: #64748b; font-size: 12px; margin-top: 30px; text-align: center; }
+  .connector { width: 2px; height: 16px; background: #475569; margin: 0 auto; }
+  @media (max-width: 768px) { .level-1-row { flex-direction: column; align-items: center; } .branch { max-width: 95%; min-width: auto; } }
+</style>
+</head>
+<body>
+<h1>🧠 库存预测专家</h1>
+<p class="subtitle">供应链库存预测与补货策略专家 · 核心能力全景图</p>
+
+<div class="mindmap">
+  <div class="center-node">库存预测专家</div>
+  <div class="connector"></div>
+  
+  <div class="level-1-row">
+    <!-- 需求预测 -->
+    <div class="branch b-blue">
+      <div class="branch-header">📈 需求预测建模</div>
+      <div class="branch-body">
+        <ul>
+          <li><span class="icon">📊</span> 时间序列分解（趋势+季节+残差）</li>
+          <li><span class="icon">📉</span> 移动平均 / 指数平滑 / ARIMA</li>
+          <li><span class="icon">🎯</span> 新品类比预测模型</li>
+          <li><span class="icon">📅</span> 促销增量叠加（618/双11）</li>
+          <li><span class="icon">🔍</span> 外部变量整合（竞品/行业）</li>
+          <li><span class="icon">📐</span> 预测结果附带置信区间</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 安全库存 -->
+    <div class="branch b-green">
+      <div class="branch-header">🛡️ 安全库存管理</div>
+      <div class="branch-body">
+        <ul>
+          <li><span class="icon">🎯</span> 服务水平目标（95%/98%/99.5%）</li>
+          <li><span class="icon">🚚</span> 供应商交期波动缓冲</li>
+          <li><span class="icon">📦</span> ABC分类差异化策略</li>
+          <li><span class="icon">📊</span> 库存周转天数监控</li>
+          <li><span class="icon">⚠️</span> 呆滞库存占比管控</li>
+          <li><span class="icon">🔄</span> 大促上调/淡季下调</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 补货优化 -->
+    <div class="branch b-orange">
+      <div class="branch-header">🔄 补货优化策略</div>
+      <div class="branch-body">
+        <ul>
+          <li><span class="icon">🔔</span> 再订货点（ROP）+ EOQ</li>
+          <li><span class="icon">⚖️</span> 订货成本 vs 持有成本权衡</li>
+          <li><span class="icon">🏭</span> 1688采购周期协同</li>
+          <li><span class="icon">📋</span> 大促备货倒排计划</li>
+          <li><span class="icon">🏢</span> 多仓补货协同调拨</li>
+          <li><span class="icon">🚨</span> 自动补货触发机制</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SKU管理 -->
+    <div class="branch b-purple">
+      <div class="branch-header">📦 SKU生命周期</div>
+      <div class="branch-body">
+        <ul>
+          <li><span class="icon">🌱</span> 新品试销（小批量快补）</li>
+          <li><span class="icon">📈</span> 成长期放量策略</li>
+          <li><span class="icon">⭐</span> 成熟期稳定补货</li>
+          <li><span class="icon">📉</span> 衰退期清仓促销</li>
+          <li><span class="icon">❄️</span> 季节性商品入库/清仓窗口</li>
+          <li><span class="icon">🏷️</span> 保质期敏感商品周转管控</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 风险管理 -->
+    <div class="branch b-red">
+      <div class="branch-header">🚨 风险管理</div>
+      <div class="branch-body">
+        <ul>
+          <li><span class="icon">🛑</span> 核心爆款覆盖最长交期</li>
+          <li><span class="icon">🔀</span> 至少一个备选供应源</li>
+          <li><span class="icon">📏</span> 大促备货≤预测1.3倍</li>
+          <li><span class="icon">⏰</span> 保质期商品周转天数管控</li>
+          <li><span class="icon">📊</span> 偏差>20%触发预警修正</li>
+          <li><span class="icon">🔍</span> 异常数据清洗（刷单/错单）</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 成功指标 -->
+    <div class="branch b-teal">
+      <div class="branch-header">🏆 成功指标</div>
+      <div class="branch-body">
+        <ul>
+          <li><span class="icon">🎯</span> MAPE < 15%</li>
+          <li><span class="icon">🔄</span> 库存周转天数 < 30天</li>
+          <li><span class="icon">📦</span> 缺货率 < 2%（A类<0.5%）</li>
+          <li><span class="icon">🗑️</span> 呆滞库存 < 5%</li>
+          <li><span class="icon">🎉</span> 大促备货达成率 > 95%</li>
+          <li><span class="icon">💰</span> 库存资金占用同比↓>10%</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="footer">库存预测专家 · 核心能力全景图 · 2026-09-01</p>
+</body>
+</html>
