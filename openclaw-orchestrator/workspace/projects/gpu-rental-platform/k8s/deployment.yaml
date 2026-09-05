@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gpu-platform
+  labels:
+    app: gpu-platform
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gpu-platform
+  template:
+    metadata:
+      labels:
+        app: gpu-platform
+    spec:
+      containers:
+      - name: api
+        image: gpu-platform:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: gpu-platform-secrets
+              key: database-url
+        - name: REDIS_URL
+          value: "redis://redis-service:6379"
+        - name: GIN_MODE
+          value: release
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gpu-platform-service
+spec:
+  selector:
+    app: gpu-platform
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: LoadBalancer
