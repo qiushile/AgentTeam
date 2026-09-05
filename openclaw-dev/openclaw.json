@@ -350,8 +350,8 @@
       "reactionNotifications": "own",
       "typingIndicator": true,
       "resolveSenderNames": true,
-      "appId": "${FEISHU_APP_ID}",
-      "appSecret": "${FEISHU_APP_SECRET}",
+      "appId": "cli_a98635d30734500b",
+      "appSecret": "4Dy2D6D6D9G4G5A6",
       "requireMention": true
     }
   },
