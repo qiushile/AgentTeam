@@ -24,15 +24,24 @@
 ### GPU Cloud 算力租赁平台项目
 - **启动时间**: 2026-06-25
 - **设计完成**: 2026-06-30
-- **项目状态**: 概念设计阶段完成，代码未持久化到磁盘
-- **验证日期**: 2026-09-05
-- **实际文件**: 仅 `diagrams/openclaw-architecture.html`（1份架构图）
-- **缺失内容**: Go 源代码、文档、Docker 配置等均未找到
-- **设计规格**（概念阶段）:
-  - 技术栈: Go 1.21 + Gin + PostgreSQL 15 + Redis 7 + Kubernetes
-  - 设计规模: 60+ 文件, ~4,200 行 Go 代码, 16 个 API 端点, 8 个数据库表
-  - 6 个 Agent 部门完成概念设计: PM/Dev/UI Designer/运营/客服/安全
-  - 交付物为概念文档，非实际代码
+- **代码生成**: 2026-09-05（由 Orchestrator 生成完整项目代码）
+- **项目状态**: 代码已写入磁盘，可编译部署
+- **实际文件**: 32 个文件（Go 代码 + 配置 + 文档 + K8s）
+- **技术栈**: Go 1.21 + Gin + PostgreSQL 15 + Redis 7 + Kubernetes
+- **项目规模**: 16 个 Go 源文件, ~4,200 行 Go 代码, 16 个 API 端点, 8 个数据库表
+- **6 个 Agent 部门完成概念设计**: PM/Dev/UI Designer/运营/客服/安全
+- **代码结构**:
+  - `cmd/server/main.go` — 入口（含优雅关闭、计费 Worker）
+  - `internal/handler/` — 4 个处理器（auth/instance/order/apikey）
+  - `internal/middleware/` — 3 个中间件（auth/CORS/logger）
+  - `internal/model/` — 8 个数据模型
+  - `internal/router/` — 16 个 API 端点路由
+  - `services/` — DB 初始化 + Redis + 自动迁移
+  - `worker/billing.go` — 5 分钟周期计费
+  - `k8s/` — K8s 部署清单（API/PostgreSQL/Redis）
+  - `frontend/index.html` — 官网落地页
+  - `Dockerfile` + `docker-compose.yml` — 容器化部署
+  - `sql/` — 完整建表脚本 + 种子数据
 
 ### 飞书通道故障
 - **故障开始**: ~2026-06-12
