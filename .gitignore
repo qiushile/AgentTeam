@@ -195,3 +195,4 @@ Thumbs.db
 
 # 更新检测运行时状态
 monitor/update-check-state.json
+.env.example
